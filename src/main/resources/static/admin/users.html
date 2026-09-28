@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers Management — Kaveri Restaurant Group Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .admin-body { background: #f0f2f5; }
+        @media (max-width: 991.98px) {
+            .fn-navbar { padding-left: 15px !important; }
+        }
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--fn-burgundy), var(--fn-gold));
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .table th { font-weight: 600; color: #495057; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .table td { font-size: 0.92rem; vertical-align: middle; }
+    </style>
+</head>
+<body class="admin-body">
+
+<!-- ===== TOP NAV ===== -->
+<nav class="navbar navbar-dark fn-navbar" style="position:fixed;top:0;left:0;right:0;z-index:200;padding-left:260px;">
+    <div class="container-fluid">
+        <span class="navbar-brand fn-brand mb-0 h1"><i class="fas fa-users me-2 text-gold"></i>Customer Accounts</span>
+        <div class="d-flex align-items-center gap-3">
+            <a href="/" class="btn btn-outline-light btn-sm rounded-pill" target="_blank">
+                <i class="fas fa-external-link-alt me-1"></i>View Website
+            </a>
+            <span class="text-white-50" id="adminName">Admin</span>
+            <button class="btn btn-outline-danger btn-sm rounded-pill" id="adminLogout">
+                <i class="fas fa-sign-out-alt me-1"></i>Logout
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="admin-sidebar">
+    <div class="px-4 py-3 mb-2" style="margin-top:70px;">
+        <div class="footer-brand" style="font-size:1.15rem; color:var(--fn-gold); display:flex; align-items:center;">
+            <img src="/images/footer_logo.png" alt="Kaveri" style="height:26px; margin-right:8px;" onerror="this.style.display='none'">
+            <span>KAVERI ADMIN</span>
+        </div>
+        <small class="text-white-50">Ranchi, Jharkhand</small>
+    </div>
+    <nav>
+        <a href="/admin/dashboard.html" class="admin-nav-link">
+            <i class="fas fa-tachometer-alt fa-fw"></i> Dashboard
+        </a>
+        <a href="/admin/orders.html" class="admin-nav-link">
+            <i class="fas fa-shopping-bag fa-fw"></i> Orders
+        </a>
+        <a href="/admin/menu.html" class="admin-nav-link">
+            <i class="fas fa-utensils fa-fw"></i> Menu
+        </a>
+        <a href="/admin/categories.html" class="admin-nav-link">
+            <i class="fas fa-tags fa-fw"></i> Categories
+        </a>
+        <a href="/admin/users.html" class="admin-nav-link active">
+            <i class="fas fa-users fa-fw"></i> Customers
+        </a>
+        <a href="/admin/reservations.html" class="admin-nav-link">
+            <i class="fas fa-calendar-check fa-fw"></i> Reservations
+        </a>
+        <a href="/admin/reviews.html" class="admin-nav-link">
+            <i class="fas fa-star fa-fw"></i> Reviews
+        </a>
+    </nav>
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="admin-content">
+    <!-- Page Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h2 class="mb-1 fw-bold" style="font-family:'Playfair Display',serif;">Customers & Users</h2>
+            <p class="text-muted mb-0 small">Manage registered customers, view roles, and handle account activation</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" id="refreshBtn">
+                <i class="fas fa-sync-alt me-1"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- Search & Filter Card -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius:16px;">
+        <div class="card-body p-3 p-md-4">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control border-start-0 ps-0" id="userSearchInput"
+                               placeholder="Search customer by name or email...">
+                    </div>
+                </div>
+                <div class="col-md-3 col-lg-2">
+                    <select class="form-select" id="pageSizeSelect">
+                        <option value="10">10 per page</option>
+                        <option value="20" selected>20 per page</option>
+                        <option value="50">50 per page</option>
+                    </select>
+                </div>
+                <div class="col-md-3 col-lg-5 text-md-end text-muted small" id="totalUsersCount">
+                    Loading users...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table Card -->
+    <div class="card border-0 shadow-sm" style="border-radius:16px; overflow:hidden;">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="usersTable">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4" style="width: 80px;">ID</th>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Registered Date</th>
+                        <th class="text-end pe-4" style="width: 150px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr>
+                        <td colspan="8" class="text-center py-5">
+                            <div class="spinner-border text-danger" role="status"></div>
+                            <div class="mt-2 text-muted small">Loading customers...</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination Footer -->
+        <div class="card-footer bg-white border-0 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <span class="text-muted small" id="paginationInfo">Showing 0 of 0</span>
+            <nav>
+                <ul class="pagination pagination-sm mb-0" id="paginationControls">
+                    <!-- Dynamic pagination -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+</main>
+
+<!-- ===== MODAL: CONFIRM TOGGLE STATUS ===== -->
+<div class="modal fade" id="toggleStatusModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow" style="border-radius:16px;">
+            <div class="modal-body p-4 text-center">
+                <i class="fas fa-user-shield fa-3x text-warning mb-3"></i>
+                <h6 class="fw-bold mb-2">Change Account Status?</h6>
+                <p class="small text-muted mb-4">
+                    Are you sure you want to <strong id="toggleActionVerb">toggle</strong> account for
+                    <strong id="toggleUserName">User</strong>?
+                </p>
+                <div class="d-flex justify-content-center gap-2">
+                    <button type="button" class="btn btn-light btn-sm rounded-pill px-3" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-sm rounded-pill px-4" id="confirmToggleStatusBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/main.js"></script>
+<script>
+let currentPage = 0;
+let pageSize = 20;
+let currentSearch = '';
+let targetUserId = null;
+let targetUserEnabled = false;
+
+let toggleModalInstance = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Guard check
+    if (!Auth.isLoggedIn() || !Auth.isAdmin()) {
+        alert('Admin access required');
+        window.location.href = '/login.html';
+        return;
+    }
+
+    const user = Auth.getUser();
+    document.getElementById('adminName').textContent = user?.name || 'Admin';
+    document.getElementById('adminLogout').addEventListener('click', () => Auth.logout());
+
+    // 2. Initialize Modal
+    toggleModalInstance = new bootstrap.Modal(document.getElementById('toggleStatusModal'));
+
+    // 3. Listeners
+    let debounceTimer = null;
+    document.getElementById('userSearchInput').addEventListener('input', (e) => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            currentSearch = e.target.value.trim();
+            currentPage = 0;
+            loadUsers();
+        }, 350);
+    });
+
+    document.getElementById('pageSizeSelect').addEventListener('change', (e) => {
+        pageSize = parseInt(e.target.value) || 20;
+        currentPage = 0;
+        loadUsers();
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+        loadUsers();
+        Toast.info('Refreshing customer list...');
+    });
+
+    document.getElementById('confirmToggleStatusBtn').addEventListener('click', async () => {
+        if (!targetUserId) return;
+        await executeToggleStatus(targetUserId);
+        toggleModalInstance.hide();
+    });
+
+    // 4. Initial Load
+    loadUsers();
+});
+
+// Load Users from /api/admin/users
+async function loadUsers() {
+    const tbody = document.getElementById('usersTableBody');
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="8" class="text-center py-5">
+                <div class="spinner-border text-danger" role="status"></div>
+                <div class="mt-2 text-muted small">Loading customers...</div>
+            </td>
+        </tr>`;
+
+    const query = new URLSearchParams();
+    if (currentSearch) query.set('keyword', currentSearch);
+    query.set('page', currentPage);
+    query.set('size', pageSize);
+
+    try {
+        const res = await Api.get(`/admin/users?${query.toString()}`);
+        const pageData = res.data;
+        const users = pageData.content || [];
+
+        document.getElementById('totalUsersCount').textContent =
+            `Total: ${pageData.totalElements || 0} registered users`;
+
+        renderUsersTable(users);
+        renderPagination(pageData);
+    } catch (err) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="text-center py-5 text-danger">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                    <div>Failed to load users: ${err.message}</div>
+                    <button class="btn btn-sm btn-outline-danger mt-2" onclick="loadUsers()">Retry</button>
+                </td>
+            </tr>`;
+        Toast.error('Failed to load users: ' + err.message);
+    }
+}
+
+// Render Users Table
+function renderUsersTable(users) {
+    const tbody = document.getElementById('usersTableBody');
+    if (!users || users.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="text-center py-5 text-muted">
+                    <i class="fas fa-users-slash fa-3x mb-3 text-secondary" style="opacity:0.4;"></i>
+                    <h6 class="fw-bold">No customers found</h6>
+                    <p class="small mb-0">Try searching with a different name or email.</p>
+                </td>
+            </tr>`;
+        return;
+    }
+
+    let html = '';
+    users.forEach(u => {
+        const initials = getInitials(u.name);
+        const roleBadge = u.role === 'ROLE_ADMIN'
+            ? '<span class="badge bg-danger-subtle text-danger border border-danger-subtle"><i class="fas fa-shield-alt me-1"></i>Admin</span>'
+            : '<span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i class="fas fa-user me-1"></i>Customer</span>';
+
+        const statusBadge = u.enabled
+            ? '<span class="badge bg-success-subtle text-success border border-success-subtle">Active</span>'
+            : '<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">Disabled</span>';
+
+        const actionBtn = u.enabled
+            ? `<button class="btn btn-outline-danger btn-sm rounded-pill px-3" onclick="openToggleModal(${u.id}, '${escapeHtml(u.name)}', ${u.enabled})">
+                   <i class="fas fa-ban me-1"></i>Disable
+               </button>`
+            : `<button class="btn btn-outline-success btn-sm rounded-pill px-3" onclick="openToggleModal(${u.id}, '${escapeHtml(u.name)}', ${u.enabled})">
+                   <i class="fas fa-check me-1"></i>Enable
+               </button>`;
+
+        html += `
+        <tr>
+            <td class="ps-4">
+                <span class="badge bg-light text-secondary border font-monospace">#${u.id}</span>
+            </td>
+            <td>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="user-avatar">${initials}</div>
+                    <div>
+                        <div class="fw-bold text-dark">${escapeHtml(u.name || 'Anonymous')}</div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <a href="mailto:${escapeHtml(u.email)}" class="text-decoration-none text-dark">${escapeHtml(u.email || '—')}</a>
+            </td>
+            <td class="text-muted small">
+                ${escapeHtml(u.phone || '—')}
+            </td>
+            <td>
+                ${roleBadge}
+            </td>
+            <td>
+                ${statusBadge}
+            </td>
+            <td class="text-muted small">
+                ${formatDate(u.createdAt)}
+            </td>
+            <td class="text-end pe-4">
+                ${actionBtn}
+            </td>
+        </tr>`;
+    });
+
+    tbody.innerHTML = html;
+}
+
+// Render Pagination
+function renderPagination(pageData) {
+    const totalPages = pageData.totalPages || 0;
+    const pageNum = pageData.number || 0;
+    const totalElements = pageData.totalElements || 0;
+
+    const start = totalElements === 0 ? 0 : (pageNum * pageSize) + 1;
+    const end = Math.min((pageNum + 1) * pageSize, totalElements);
+    document.getElementById('paginationInfo').textContent =
+        `Showing ${start} to ${end} of ${totalElements} customers`;
+
+    const container = document.getElementById('paginationControls');
+    if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+    }
+
+    let html = `
+        <li class="page-item ${pageNum === 0 ? 'disabled' : ''}">
+            <button class="page-link" onclick="goToPage(${pageNum - 1})"><i class="fas fa-chevron-left"></i></button>
+        </li>
+    `;
+
+    const maxButtons = 5;
+    let startPage = Math.max(0, pageNum - Math.floor(maxButtons / 2));
+    let endPage = Math.min(totalPages - 1, startPage + maxButtons - 1);
+    if (endPage - startPage < maxButtons - 1) {
+        startPage = Math.max(0, endPage - maxButtons + 1);
+    }
+
+    for (let p = startPage; p <= endPage; p++) {
+        html += `
+            <li class="page-item ${p === pageNum ? 'active' : ''}">
+                <button class="page-link" onclick="goToPage(${p})">${p + 1}</button>
+            </li>
+        `;
+    }
+
+    html += `
+        <li class="page-item ${pageNum >= totalPages - 1 ? 'disabled' : ''}">
+            <button class="page-link" onclick="goToPage(${pageNum + 1})"><i class="fas fa-chevron-right"></i></button>
+        </li>
+    `;
+
+    container.innerHTML = html;
+}
+
+function goToPage(page) {
+    currentPage = page;
+    loadUsers();
+}
+
+// Open Toggle Modal
+function openToggleModal(userId, userName, currentEnabled) {
+    targetUserId = userId;
+    targetUserEnabled = currentEnabled;
+    document.getElementById('toggleUserName').textContent = userName;
+    document.getElementById('toggleActionVerb').textContent = currentEnabled ? 'disable' : 'enable';
+
+    const btn = document.getElementById('confirmToggleStatusBtn');
+    if (currentEnabled) {
+        btn.className = 'btn btn-danger btn-sm rounded-pill px-4';
+        btn.textContent = 'Disable User';
+    } else {
+        btn.className = 'btn btn-success btn-sm rounded-pill px-4';
+        btn.textContent = 'Enable User';
+    }
+
+    toggleModalInstance.show();
+}
+
+// Execute Toggle Status via PATCH /api/admin/users/{id}/toggle-status
+async function executeToggleStatus(userId) {
+    try {
+        const res = await Api.patch(`/admin/users/${userId}/toggle-status`);
+        const statusText = res.data?.enabled ? 'enabled' : 'disabled';
+        Toast.success(`User #${userId} account has been ${statusText}`);
+        loadUsers();
+    } catch (err) {
+        Toast.error('Failed to change user status: ' + err.message);
+    }
+}
+
+// Helpers
+function getInitials(name) {
+    if (!name) return 'U';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+        return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return parts[0].substring(0, 2).toUpperCase();
+}
+
+function formatDate(isoString) {
+    if (!isoString) return '—';
+    try {
+        const d = new Date(isoString);
+        return d.toLocaleDateString('en-IN', {
+            day: '2-digit', month: 'short', year: 'numeric'
+        });
+    } catch (_) {
+        return isoString;
+    }
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+</script>
+</body>
+</html>

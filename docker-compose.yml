@@ -1,0 +1,61 @@
+version: '3.9'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: foodnest-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: foodnest
+      MYSQL_USER: ${MYSQL_USER:-foodnest}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-foodnest123}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - foodnest-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Spring Boot Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: foodnest-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: jdbc:mysql://mysql:3306/foodnest?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DATABASE_USERNAME: ${MYSQL_USER:-foodnest}
+      DATABASE_PASSWORD: ${MYSQL_PASSWORD:-foodnest123}
+      JWT_SECRET: ${JWT_SECRET:-foodnest-super-secret-key-change-this-in-production-must-be-at-least-256-bits}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:-your_razorpay_key_id}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET:-your_razorpay_key_secret}
+      UPLOAD_DIR: /app/uploads
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8080:8080"
+    volumes:
+      - uploads_data:/app/uploads
+    networks:
+      - foodnest-network
+
+volumes:
+  mysql_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  foodnest-network:
+    driver: bridge

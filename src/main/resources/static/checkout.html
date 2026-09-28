@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — Kaveri Restaurant Group Ranchi</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .checkout-section-card {
+      background:#fff;
+      border-radius:20px;
+      border:1px solid var(--gold-border);
+      padding:28px;
+      margin-bottom:24px;
+      box-shadow:0 2px 12px rgba(80,16,21,.04);
+    }
+    .checkout-section-title {
+      font-family:var(--font-serif);
+      font-size:1.25rem;
+      font-weight:700;
+      color:var(--primary-dark);
+      margin-bottom:20px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .section-badge {
+      width:32px;height:32px;border-radius:50%;
+      background:var(--gold-gradient);
+      color:#fff;font-weight:700;font-size:.85rem;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    }
+    .payment-option {
+      border:2px solid #eee;
+      border-radius:12px;
+      padding:16px 20px;
+      cursor:pointer;
+      transition:all .2s;
+      margin-bottom:12px;
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .payment-option:hover, .payment-option.selected { border-color:var(--gold); background:var(--gold-bg); }
+    .payment-option input[type=radio] { accent-color:var(--gold-dark); width:18px; height:18px; }
+    .checkout-item { display:flex; align-items:center; gap:14px; padding:10px 0; border-bottom:1px solid #f5f5f5; }
+    .checkout-item:last-child { border-bottom:none; }
+    .checkout-item-img { width:56px;height:56px;border-radius:10px;object-fit:cover;background:#f5f5f5; }
+    .checkout-item-name { font-weight:700; font-size:.95rem; color:var(--primary-dark); }
+    .checkout-item-qty { color:#888; font-size:.85rem; }
+    .order-summary-sticky { position:sticky; top:90px; }
+    .summary-line { display:flex; justify-content:space-between; padding:6px 0; font-size:.9rem; }
+    .summary-line.total { border-top:2px solid var(--bg-surface-alt); margin-top:8px; padding-top:14px; font-size:1.15rem; font-weight:800; font-family:var(--font-serif); }
+    .address-option {
+      border:2px solid #eee; border-radius:12px; padding:14px 16px; cursor:pointer; transition:all .2s; margin-bottom:10px;
+    }
+    .address-option:hover, .address-option.selected { border-color:var(--gold); background:var(--gold-bg); }
+    #successOverlay {
+      display:none;
+      position:fixed;inset:0;
+      background:linear-gradient(135deg,var(--primary-dark),#181213);
+      z-index:9999;
+      align-items:center;justify-content:center;
+      flex-direction:column;color:#fff;text-align:center;
+    }
+    .success-icon { font-size:5rem; color:var(--gold-light); margin-bottom:24px; animation:popIn .5s ease; }
+    @keyframes popIn { 0%{transform:scale(0)} 70%{transform:scale(1.2)} 100%{transform:scale(1)} }
+  </style>
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-info">
+        <span><i class="fas fa-location-dot text-gold"></i> G.E.L. Church Shopping Complex, Main Road, Ranchi</span>
+        <span><i class="fas fa-phone text-gold"></i> <a href="tel:06512330330">0651 2330330</a> / <a href="tel:+918235520520">+91-8235520520</a></span>
+        <span><i class="far fa-clock text-gold"></i> 10:30 AM - 10:30 PM</span>
+      </div>
+      <div class="top-bar-cta">
+        <a href="https://www.zomato.com/ranchi/kaveri-restaurant-2-hindpiri/order" target="_blank" rel="noopener" class="zomato-badge">
+          <i class="fas fa-motorcycle"></i> Order on Zomato
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fn-navbar sticky-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand fn-brand" href="/">
+        <img src="/images/logo.png" alt="Kaveri" onerror="this.style.display='none'">
+        <div class="brand-text-block">
+          <span class="brand-main-name">KAVERI</span>
+          <span class="brand-tagline-sub">Restaurant Group · Est. 1947</span>
+        </div>
+      </a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto gap-1">
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/about.html">About Us</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/group.html" role="button" data-bs-toggle="dropdown">
+              Our Group <i class="fas fa-chevron-down ms-1" style="font-size:0.7rem;"></i>
+            </a>
+            <ul class="dropdown-menu fn-dropdown">
+              <li><a class="dropdown-item" href="/kaveris.html"><i class="fas fa-utensils text-gold me-2"></i>Kaveri's Restaurant</a></li>
+              <li><a class="dropdown-item" href="/punjab_sweet_house.html"><i class="fas fa-candy-cane text-gold me-2"></i>Punjab Sweet House</a></li>
+              <li><a class="dropdown-item" href="/capitol_hotels.html"><i class="fas fa-hotel text-gold me-2"></i>Capitol Hotels</a></li>
+              <li><a class="dropdown-item" href="/the_kavs.html"><i class="fas fa-glass-cheers text-gold me-2"></i>The Kav's Banquets</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/group.html"><i class="fas fa-building me-2"></i>View All Group Ventures</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="/menu.html">Menu</a></li>
+          <li class="nav-item"><a class="nav-link" href="/catering.html">Catering</a></li>
+          <li class="nav-item"><a class="nav-link" href="/gallery.html">Gallery</a></li>
+          <li class="nav-item"><a class="nav-link" href="/testimonials.html">Testimonials</a></li>
+          <li class="nav-item"><a class="nav-link" href="/contact.html">Contact</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-2">
+          <a href="/cart.html" class="nav-icon-btn position-relative"><i class="fas fa-shopping-bag"></i><span class="cart-badge" id="cartBadge" style="display:none;">0</span></a>
+          <div id="userNav" style="display:none;" class="dropdown">
+            <button class="btn btn-fn btn-sm rounded-pill px-3 dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"><i class="fas fa-user-circle me-1"></i><span id="navUserName">User</span></button>
+            <ul class="dropdown-menu dropdown-menu-end fn-dropdown">
+              <li><a class="dropdown-item" href="/profile.html">My Profile</a></li>
+              <li><a class="dropdown-item" href="/orders.html">My Orders</a></li>
+              <li><a class="dropdown-item" href="/reservations.html">Table Bookings</a></li>
+              <li><a class="dropdown-item text-danger" href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- SUCCESS OVERLAY -->
+  <div id="successOverlay">
+    <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+    <h2 class="fw-bold mb-2" style="font-family:'Playfair Display',serif;">Order Placed Successfully!</h2>
+    <p style="color:#eedddf; font-size:1.1rem;">Kaveri kitchen is preparing your delicacies.</p>
+    <p id="successOrderId" style="color:var(--gold-light); font-size:1rem; font-weight:700;"></p>
+    <div class="mt-4">
+      <div class="spinner-border text-light me-3" style="width:1.5rem;height:1.5rem;"></div>
+      <span style="color:rgba(255,255,255,0.7); font-size:.9rem;">Redirecting to orders…</span>
+    </div>
+  </div>
+
+  <!-- Banner -->
+  <section class="kaveri-page-banner">
+    <div class="banner-gradient"></div>
+    <div class="container kaveri-banner-inner">
+      <span class="section-tag-gold on-dark text-gold" style="background:rgba(212,175,55,0.15); border-color:rgba(212,175,55,0.3);"><i class="fas fa-credit-card"></i> Order Finalization</span>
+      <h1>Secure Checkout</h1>
+      <div class="kaveri-breadcrumb">
+        <a href="/">Home</a> <span>/</span> <a href="/cart.html">Cart</a> <span>/</span> <span>Checkout</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN -->
+  <section class="py-5" style="background:var(--bg-page); min-height:60vh;">
+    <div class="container">
+
+      <!-- Loading -->
+      <div id="checkoutLoading" class="text-center py-5">
+        <div class="spinner-border text-danger" style="width:3rem; height:3rem;"></div>
+        <p class="text-muted mt-3">Preparing checkout…</p>
+      </div>
+
+      <div id="checkoutContent" style="display:none;">
+        <div class="row g-4">
+
+          <!-- LEFT: Sections -->
+          <div class="col-lg-8">
+
+            <!-- Section 1: Delivery Address -->
+            <div class="checkout-section-card">
+              <div class="checkout-section-title">
+                <span class="section-badge">1</span> Delivery Address (Ranchi)
+              </div>
+
+              <!-- Saved Addresses -->
+              <div id="savedAddresses">
+                <p class="text-muted small mb-2">Select a delivery destination in Ranchi or add a new address:</p>
+                <div id="addressList"></div>
+                <button class="btn btn-outline-secondary btn-sm rounded-pill mt-2" id="showAddAddressBtn">
+                  <i class="fas fa-plus me-1"></i>Add New Address
+                </button>
+              </div>
+
+              <!-- Add New Address Form -->
+              <div id="newAddressForm" style="display:none;" class="mt-3">
+                <hr>
+                <h6 class="fw-semibold mb-3">Add Ranchi Address</h6>
+                <div class="row g-2">
+                  <div class="col-12">
+                    <input type="text" class="form-control" id="addrStreet" placeholder="Street / Flat / Colony *" required>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control" id="addrCity" placeholder="City *" value="Ranchi" required>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control" id="addrState" placeholder="State *" value="Jharkhand" required>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control" id="addrZip" placeholder="Pincode *" required>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control" id="addrCountry" placeholder="Country" value="India">
+                  </div>
+                </div>
+                <div class="d-flex gap-2 mt-3">
+                  <button class="btn btn-fn btn-sm rounded-pill px-4" id="saveAddrBtn">Save &amp; Use</button>
+                  <button class="btn btn-outline-secondary btn-sm rounded-pill" id="cancelAddrBtn">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 2: Order Summary -->
+            <div class="checkout-section-card">
+              <div class="checkout-section-title">
+                <span class="section-badge">2</span> Items in Order
+              </div>
+              <div id="checkoutItems"></div>
+            </div>
+
+            <!-- Section 3: Payment -->
+            <div class="checkout-section-card">
+              <div class="checkout-section-title">
+                <span class="section-badge">3</span> Payment Method
+              </div>
+
+              <div class="payment-option selected" id="opt-online" onclick="selectPayment('ONLINE')">
+                <input type="radio" name="paymentMethod" value="ONLINE" id="payOnline" checked>
+                <div>
+                  <label for="payOnline" class="fw-bold mb-0" style="cursor:pointer; color:var(--primary-dark);">
+                    <i class="fas fa-credit-card me-2 text-gold"></i>Online Payment (Instant &amp; Contactless)
+                  </label>
+                  <p class="text-muted small mb-0">Pay securely via Razorpay (UPI, Google Pay, PhonePe, Cards, NetBanking)</p>
+                </div>
+              </div>
+
+              <div class="payment-option" id="opt-cod" onclick="selectPayment('COD')">
+                <input type="radio" name="paymentMethod" value="COD" id="payCOD">
+                <div>
+                  <label for="payCOD" class="fw-bold mb-0" style="cursor:pointer; color:var(--primary-dark);">
+                    <i class="fas fa-money-bill-wave me-2 text-success"></i>Cash on Delivery
+                  </label>
+                  <p class="text-muted small mb-0">Pay with cash or UPI on food delivery</p>
+                </div>
+              </div>
+
+              <div id="paymentError" class="alert alert-danger mt-3" style="display:none; font-size:.875rem;"></div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Price Summary -->
+          <div class="col-lg-4">
+            <div class="checkout-section-card order-summary-sticky">
+              <h6 class="fw-bold mb-3" style="color:var(--primary-dark); font-family:var(--font-serif); font-size:1.1rem;">Price Details</h6>
+              <div class="summary-line"><span class="text-muted">Subtotal</span><span id="ckSubtotal" class="fw-semibold">₹0.00</span></div>
+              <div class="summary-line"><span class="text-muted">GST (5%)</span><span id="ckTax" class="fw-semibold">₹0.00</span></div>
+              <div class="summary-line"><span class="text-muted">Delivery Fee</span><span id="ckDelivery" class="fw-semibold">₹40.00</span></div>
+              <div class="summary-line total"><span>Total Payable</span><span id="ckTotal" style="color:var(--gold-dark);">₹0.00</span></div>
+
+              <button class="btn btn-fn-gold w-100 rounded-pill py-3 fw-bold mt-4" id="placeOrderBtn">
+                <span id="placeOrderText"><i class="fas fa-check me-2"></i>Place Kaveri Order</span>
+                <span id="placeOrderSpinner" style="display:none;"><span class="spinner-border spinner-border-sm me-2"></span>Processing…</span>
+              </button>
+              <a href="/cart.html" class="btn btn-outline-secondary w-100 rounded-pill mt-2">
+                <i class="fas fa-arrow-left me-2"></i>Back to Cart
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="fn-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+          <div class="footer-brand">
+            <img src="/images/footer_logo.png" alt="Kaveri" style="height:36px; margin-right:8px;" onerror="this.style.display='none'">
+            <span>KAVERI GROUP</span>
+          </div>
+          <p class="footer-desc">Serving Ranchi with unmatched culinary excellence and royal hospitality since 1947.</p>
+        </div>
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="footer-heading">Our Ventures</h6>
+          <ul class="footer-links">
+            <li><a href="/kaveris.html">Kaveri's Restaurant</a></li>
+            <li><a href="/punjab_sweet_house.html">Punjab Sweet House</a></li>
+            <li><a href="/capitol_hotels.html">Capitol Hotels</a></li>
+            <li><a href="/the_kavs.html">The Kav's Banquets</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="footer-heading">Quick Links</h6>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about.html">About Us</a></li>
+            <li><a href="/menu.html">Explore Menu</a></li>
+            <li><a href="/contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <h6 class="footer-heading">Flagship Location</h6>
+          <p class="footer-desc mb-2"><i class="fas fa-map-marker-alt text-gold me-2"></i> G.E.L. Church Shopping Complex, Main Road, Ranchi - 834001</p>
+          <p class="footer-desc mb-2"><i class="fas fa-phone-alt text-gold me-2"></i> 0651 2330330, +91-8235520520</p>
+        </div>
+      </div>
+      <hr class="footer-divider">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 footer-copy">
+        <div>&copy; 2024 Kaveri Restaurant Group. All Rights Reserved. Ranchi, Jharkhand.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    let cartData = null;
+    let selectedAddressId = null;
+    let selectedPayment = 'ONLINE';
+
+    function getToken() {
+      return (typeof Auth !== 'undefined' ? Auth.getToken() : null) || localStorage.getItem('fn_token');
+    }
+
+    function authHeaders() {
+      return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() };
+    }
+
+    function fmt(n) { return '₹' + parseFloat(n || 0).toFixed(2); }
+
+    function selectPayment(method) {
+      selectedPayment = method;
+      document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
+      document.getElementById('opt-' + method.toLowerCase()).classList.add('selected');
+      document.getElementById('pay' + (method === 'ONLINE' ? 'Online' : 'COD')).checked = true;
+    }
+
+    async function loadCheckout() {
+      const token = getToken();
+      if (!token) { window.location.href = '/login.html?redirect=/checkout.html'; return; }
+
+      try {
+        const cartRes = await fetch('/api/cart', { headers: authHeaders() });
+        if (!cartRes.ok) throw new Error('Cart load failed');
+        cartData = await cartRes.json();
+
+        if (!cartData.items || cartData.items.length === 0) {
+          window.location.href = '/cart.html';
+          return;
+        }
+
+        renderCheckoutItems();
+        renderSummary();
+
+        const addrRes = await fetch('/api/users/addresses', { headers: authHeaders() });
+        if (addrRes.ok) {
+          const addresses = await addrRes.json();
+          renderAddresses(addresses);
+        }
+
+        document.getElementById('checkoutLoading').style.display = 'none';
+        document.getElementById('checkoutContent').style.display = 'block';
+      } catch (err) {
+        document.getElementById('checkoutLoading').innerHTML = '<p class="text-danger">Failed to load checkout. <a href="/cart.html">Return to cart</a></p>';
+      }
+    }
+
+    function renderCheckoutItems() {
+      const items = cartData.items || [];
+      document.getElementById('checkoutItems').innerHTML = items.map(item => `
+        <div class="checkout-item">
+          <img src="${item.foodImageUrl || '/images/vegthali.jpg'}" class="checkout-item-img" alt="${item.foodName}" onerror="this.src='/images/vegthali.jpg'">
+          <div class="flex-grow-1">
+            <div class="checkout-item-name">${item.foodName}</div>
+            <div class="checkout-item-qty">Qty: ${item.quantity} × ${fmt(item.price)}</div>
+          </div>
+          <div class="fw-bold" style="color:var(--gold-dark);">${fmt(item.subtotal)}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderSummary() {
+      const sub = cartData.subtotal || 0;
+      const tax = cartData.tax || (sub * 0.05);
+      const delivery = sub >= 500 ? 0 : 40;
+      const total = sub + tax + delivery;
+      document.getElementById('ckSubtotal').textContent = fmt(sub);
+      document.getElementById('ckTax').textContent = fmt(tax);
+      document.getElementById('ckDelivery').textContent = delivery === 0 ? 'FREE' : fmt(delivery);
+      document.getElementById('ckTotal').textContent = fmt(total);
+    }
+
+    function renderAddresses(addresses) {
+      const list = document.getElementById('addressList');
+      if (!addresses || addresses.length === 0) {
+        list.innerHTML = '<p class="text-muted small">No saved addresses. Add one below.</p>';
+        document.getElementById('showAddAddressBtn').click();
+        return;
+      }
+      list.innerHTML = addresses.map(a => `
+        <div class="address-option ${a.isDefault ? 'selected' : ''}" onclick="selectAddress(${a.id}, this)" data-id="${a.id}">
+          <div class="d-flex align-items-start gap-2">
+            <input type="radio" name="addressRadio" ${a.isDefault ? 'checked' : ''} style="margin-top:3px; accent-color:var(--gold-dark);">
+            <div>
+              <div class="fw-semibold small">${a.street}, ${a.city}</div>
+              <div class="text-muted small">${a.state} - ${a.zipCode}, ${a.country || 'India'}</div>
+              ${a.isDefault ? '<span class="badge bg-success" style="font-size:.65rem;">Default</span>' : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+      const def = addresses.find(a => a.isDefault) || addresses[0];
+      if (def) selectedAddressId = def.id;
+    }
+
+    function selectAddress(id, el) {
+      selectedAddressId = id;
+      document.querySelectorAll('.address-option').forEach(e => e.classList.remove('selected'));
+      el.classList.add('selected');
+      el.querySelector('input[type=radio]').checked = true;
+    }
+
+    document.getElementById('showAddAddressBtn').addEventListener('click', function() {
+      document.getElementById('newAddressForm').style.display = 'block';
+      this.style.display = 'none';
+    });
+
+    document.getElementById('cancelAddrBtn').addEventListener('click', function() {
+      document.getElementById('newAddressForm').style.display = 'none';
+      document.getElementById('showAddAddressBtn').style.display = 'inline-block';
+    });
+
+    document.getElementById('saveAddrBtn').addEventListener('click', async function() {
+      const street = document.getElementById('addrStreet').value.trim();
+      const city = document.getElementById('addrCity').value.trim();
+      const state = document.getElementById('addrState').value.trim();
+      const zip = document.getElementById('addrZip').value.trim();
+      const country = document.getElementById('addrCountry').value.trim() || 'India';
+      if (!street || !city || !state || !zip) { alert('Please fill all required address fields.'); return; }
+
+      try {
+        const res = await fetch('/api/users/addresses', {
+          method: 'POST',
+          headers: authHeaders(),
+          body: JSON.stringify({ street, city, state, zipCode: zip, country })
+        });
+        if (res.ok) {
+          const addr = await res.json();
+          selectedAddressId = addr.id;
+          const addrRes = await fetch('/api/users/addresses', { headers: authHeaders() });
+          if (addrRes.ok) renderAddresses(await addrRes.json());
+          document.getElementById('newAddressForm').style.display = 'none';
+          document.getElementById('showAddAddressBtn').style.display = 'inline-block';
+        }
+      } catch(e) { alert('Failed to save address.'); }
+    });
+
+    document.getElementById('placeOrderBtn').addEventListener('click', async function() {
+      const errDiv = document.getElementById('paymentError');
+      errDiv.style.display = 'none';
+
+      if (!selectedAddressId) {
+        errDiv.textContent = 'Please select or add a delivery address.';
+        errDiv.style.display = 'block';
+        return;
+      }
+
+      document.getElementById('placeOrderText').style.display = 'none';
+      document.getElementById('placeOrderSpinner').style.display = 'inline';
+      this.disabled = true;
+
+      try {
+        const orderRes = await fetch('/api/orders', {
+          method: 'POST',
+          headers: authHeaders(),
+          body: JSON.stringify({ addressId: selectedAddressId, paymentMethod: selectedPayment })
+        });
+
+        if (!orderRes.ok) {
+          const err = await orderRes.json();
+          throw new Error(err.message || 'Order creation failed');
+        }
+
+        const order = await orderRes.json();
+
+        if (selectedPayment === 'COD') {
+          showSuccess(order.id || order.orderId);
+        } else {
+          const payRes = await fetch(`/api/payments/create/${order.id || order.orderId}`, {
+            method: 'POST',
+            headers: authHeaders()
+          });
+          if (!payRes.ok) throw new Error('Payment initiation failed');
+          const payData = await payRes.json();
+
+          const options = {
+            key: payData.key,
+            amount: payData.amount,
+            currency: payData.currency || 'INR',
+            name: 'Kaveri Restaurant Group',
+            description: 'Kaveri Ranchi Food Order',
+            order_id: payData.razorpayOrderId,
+            handler: async function(response) {
+              await fetch('/api/payments/verify', {
+                method: 'POST',
+                headers: authHeaders(),
+                body: JSON.stringify({
+                  razorpayPaymentId: response.razorpay_payment_id,
+                  razorpayOrderId: response.razorpay_order_id,
+                  razorpaySignature: response.razorpay_signature,
+                  orderId: order.id || order.orderId
+                })
+              });
+              showSuccess(order.id || order.orderId);
+            },
+            prefill: {
+              name: payData.customerName || '',
+              email: payData.customerEmail || '',
+              contact: payData.customerPhone || ''
+            },
+            theme: { color: '#75171e' },
+            modal: {
+              ondismiss: function() {
+                document.getElementById('placeOrderText').style.display = 'inline';
+                document.getElementById('placeOrderSpinner').style.display = 'none';
+                document.getElementById('placeOrderBtn').disabled = false;
+              }
+            }
+          };
+          const rzp = new Razorpay(options);
+          rzp.open();
+          return;
+        }
+      } catch (err) {
+        errDiv.textContent = err.message || 'Failed to place order. Please try again.';
+        errDiv.style.display = 'block';
+        document.getElementById('placeOrderText').style.display = 'inline';
+        document.getElementById('placeOrderSpinner').style.display = 'none';
+        this.disabled = false;
+      }
+    });
+
+    function showSuccess(orderId) {
+      const overlay = document.getElementById('successOverlay');
+      overlay.style.display = 'flex';
+      document.getElementById('successOrderId').textContent = 'Order #' + orderId;
+      setTimeout(() => window.location.href = '/orders.html', 3000);
+    }
+
+    loadCheckout();
+  </script>
+</body>
+</html>

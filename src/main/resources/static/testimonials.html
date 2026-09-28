@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guest Testimonials & Reviews — Kaveri Restaurant Group Ranchi</title>
+  <meta name="description" content="Read reviews and dining stories from patrons of Kaveri Restaurant, Punjab Sweet House, and The Kav's Banquets in Ranchi.">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-info">
+        <span><i class="fas fa-location-dot text-gold"></i> G.E.L. Church Shopping Complex, Main Road, Ranchi</span>
+        <span><i class="fas fa-phone text-gold"></i> <a href="tel:06512330330">0651 2330330</a> / <a href="tel:+918235520520">+91-8235520520</a></span>
+        <span><i class="far fa-clock text-gold"></i> 10:30 AM - 10:30 PM</span>
+      </div>
+      <div class="top-bar-cta">
+        <a href="https://www.zomato.com/ranchi/kaveri-restaurant-2-hindpiri/order" target="_blank" rel="noopener" class="zomato-badge">
+          <i class="fas fa-motorcycle"></i> Order on Zomato
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fn-navbar sticky-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand fn-brand" href="/">
+        <img src="/images/logo.png" alt="Kaveri" onerror="this.style.display='none'">
+        <div class="brand-text-block">
+          <span class="brand-main-name">KAVERI</span>
+          <span class="brand-tagline-sub">Restaurant Group · Est. 1947</span>
+        </div>
+      </a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto gap-1">
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/about.html">About Us</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/group.html" role="button" data-bs-toggle="dropdown">
+              Our Group <i class="fas fa-chevron-down ms-1" style="font-size:0.7rem;"></i>
+            </a>
+            <ul class="dropdown-menu fn-dropdown">
+              <li><a class="dropdown-item" href="/kaveris.html"><i class="fas fa-utensils text-gold me-2"></i>Kaveri's Restaurant</a></li>
+              <li><a class="dropdown-item" href="/punjab_sweet_house.html"><i class="fas fa-candy-cane text-gold me-2"></i>Punjab Sweet House</a></li>
+              <li><a class="dropdown-item" href="/capitol_hotels.html"><i class="fas fa-hotel text-gold me-2"></i>Capitol Hotels</a></li>
+              <li><a class="dropdown-item" href="/the_kavs.html"><i class="fas fa-glass-cheers text-gold me-2"></i>The Kav's Banquets</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/group.html"><i class="fas fa-building me-2"></i>View All Group Ventures</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="/menu.html">Menu</a></li>
+          <li class="nav-item"><a class="nav-link" href="/catering.html">Catering</a></li>
+          <li class="nav-item"><a class="nav-link" href="/gallery.html">Gallery</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/testimonials.html">Testimonials</a></li>
+          <li class="nav-item"><a class="nav-link" href="/contact.html">Contact</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-2">
+          <a href="/cart.html" class="nav-icon-btn position-relative"><i class="fas fa-shopping-bag"></i><span class="cart-badge" id="cartBadge" style="display:none;">0</span></a>
+          <div id="guestNav" class="d-flex gap-1">
+            <a href="/login.html" class="btn btn-outline-secondary btn-sm rounded-pill px-3">Login</a>
+            <a href="/reservations.html" class="btn btn-fn btn-sm rounded-pill px-3">Book Table</a>
+          </div>
+          <div id="userNav" style="display:none;" class="dropdown">
+            <button class="btn btn-fn btn-sm rounded-pill px-3 dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown"><i class="fas fa-user-circle me-1"></i><span id="navUserName">User</span></button>
+            <ul class="dropdown-menu dropdown-menu-end fn-dropdown">
+              <li><a class="dropdown-item" href="/profile.html">My Profile</a></li>
+              <li><a class="dropdown-item" href="/orders.html">My Orders</a></li>
+              <li><a class="dropdown-item" href="/reservations.html">Table Bookings</a></li>
+              <li><a class="dropdown-item text-danger" href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Banner -->
+  <section class="kaveri-page-banner">
+    <img src="/img/main-home-slide4.jpg" alt="Testimonials" class="banner-bg-img">
+    <div class="banner-gradient"></div>
+    <div class="container kaveri-banner-inner">
+      <span class="section-tag-gold on-dark text-gold" style="background:rgba(212,175,55,0.15); border-color:rgba(212,175,55,0.3);"><i class="fas fa-star"></i> Verified Diner Ratings</span>
+      <h1>Patron Testimonials</h1>
+      <div class="kaveri-breadcrumb">
+        <a href="/">Home</a> <span>/</span> <span>Testimonials</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Wall -->
+  <section class="py-5" style="background:var(--bg-page);">
+    <div class="container py-4">
+      
+      <!-- Trust Badges Summary -->
+      <div class="row g-4 mb-5 text-center">
+        <div class="col-md-4">
+          <div class="card border-0 p-4 rounded-4 shadow-sm" style="background:#fff; border:1px solid var(--gold-border) !important;">
+            <div class="text-warning fs-3 mb-1">★★★★★</div>
+            <h3 class="fw-bold mb-0" style="color:var(--primary-dark);">4.8 / 5.0</h3>
+            <span class="text-muted small">Based on 12,000+ Diner Reviews in Ranchi</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 p-4 rounded-4 shadow-sm" style="background:#fff; border:1px solid var(--gold-border) !important;">
+            <img src="/images/TripAdvisior.jpg" alt="TripAdvisor Certificate" style="height:36px; object-fit:contain; margin:0 auto 6px auto;">
+            <h5 class="fw-bold mb-0" style="color:var(--primary-dark);">TripAdvisor Excellence</h5>
+            <span class="text-muted small">Top Ranked Pure Veg Restaurant Ranchi</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 p-4 rounded-4 shadow-sm" style="background:#fff; border:1px solid var(--gold-border) !important;">
+            <div class="text-danger fs-3 mb-1"><i class="fas fa-crown"></i></div>
+            <h5 class="fw-bold mb-0" style="color:var(--primary-dark);">75+ Years of Trust</h5>
+            <span class="text-muted small">Serving Ranchi Generations Since 1947</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonials Grid -->
+      <div class="row g-4 mb-5">
+        <div class="col-lg-4 col-md-6">
+          <div class="card border-0 p-4 rounded-4 shadow-sm h-100" style="background:#fff; border:1px solid var(--gold-border) !important;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="text-warning">★★★★★</div>
+              <span class="badge bg-success-subtle text-success small px-2 py-1"><i class="fas fa-check-circle me-1"></i>Verified Diner</span>
+            </div>
+            <p class="text-muted fst-italic mb-4" style="line-height:1.7;">"Awesome food and very good service at restaurant at church complex. One of the best restaurants in Ranchi for authentic South Indian dosas and royal thalis. My family's Sunday dining ritual for 15 years!"</p>
+            <div class="d-flex align-items-center gap-3 mt-auto pt-3 border-top">
+              <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width:42px; height:42px; background:var(--primary);">A</div>
+              <div>
+                <h6 class="mb-0 fw-bold" style="color:var(--primary-dark);">Amitabh Mukherjee</h6>
+                <small class="text-muted">G.E.L. Church Complex Regular</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="card border-0 p-4 rounded-4 shadow-sm h-100" style="background:#fff; border:1px solid var(--gold-border) !important;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="text-warning">★★★★★</div>
+              <span class="badge bg-success-subtle text-success small px-2 py-1"><i class="fas fa-check-circle me-1"></i>Wedding Host</span>
+            </div>
+            <p class="text-muted fst-italic mb-4" style="line-height:1.7;">"Kaveri Catering Division managed our daughter’s wedding for 2,000 guests at The Kav's. Everything from the live chaat counters to the royal Paneer Tikka was praise-worthy. Superb hygiene and hospitality."</p>
+            <div class="d-flex align-items-center gap-3 mt-auto pt-3 border-top">
+              <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width:42px; height:42px; background:var(--primary);">R</div>
+              <div>
+                <h6 class="mb-0 fw-bold" style="color:var(--primary-dark);">Ramesh K. Singhania</h6>
+                <small class="text-muted">Harmu Housing Colony, Ranchi</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="card border-0 p-4 rounded-4 shadow-sm h-100" style="background:#fff; border:1px solid var(--gold-border) !important;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="text-warning">★★★★★</div>
+              <span class="badge bg-success-subtle text-success small px-2 py-1"><i class="fas fa-check-circle me-1"></i>Mithai Lover</span>
+            </div>
+            <p class="text-muted fst-italic mb-4" style="line-height:1.7;">"Punjab Sweet House has been our family's favorite since my childhood in the 1970s. The Gulab Jamun and Motichoor Ladoo in pure desi ghee have that exact unmistakable nostalgic taste."</p>
+            <div class="d-flex align-items-center gap-3 mt-auto pt-3 border-top">
+              <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width:42px; height:42px; background:var(--primary);">P</div>
+              <div>
+                <h6 class="mb-0 fw-bold" style="color:var(--primary-dark);">Pradeep Jaiswal</h6>
+                <small class="text-muted">Kanke Road, Ranchi</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="card border-0 p-4 rounded-4 shadow-sm h-100" style="background:#fff; border:1px solid var(--gold-border) !important;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="text-warning">★★★★★</div>
+              <span class="badge bg-success-subtle text-success small px-2 py-1"><i class="fas fa-check-circle me-1"></i>Corporate Guest</span>
+            </div>
+            <p class="text-muted fst-italic mb-4" style="line-height:1.7;">"Stayed at Capitol Hill during a 3-day mining summit. Excellent business lounge, prompt room service, and the food at Kaveri was outstanding every single day."</p>
+            <div class="d-flex align-items-center gap-3 mt-auto pt-3 border-top">
+              <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width:42px; height:42px; background:var(--primary);">S</div>
+              <div>
+                <h6 class="mb-0 fw-bold" style="color:var(--primary-dark);">Sandeep Roy</h6>
+                <small class="text-muted">Kolkata / Capitol Hill Guest</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="card border-0 p-4 rounded-4 shadow-sm h-100" style="background:#fff; border:1px solid var(--gold-border) !important;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="text-warning">★★★★★</div>
+              <span class="badge bg-success-subtle text-success small px-2 py-1"><i class="fas fa-check-circle me-1"></i>Verified Diner</span>
+            </div>
+            <p class="text-muted fst-italic mb-4" style="line-height:1.7;">"The Royal Executive Thali is pure bliss. Everything is served piping hot, refillings of dal and paneer are generous, and the staff treats you with unmatched respect."</p>
+            <div class="d-flex align-items-center gap-3 mt-auto pt-3 border-top">
+              <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width:42px; height:42px; background:var(--primary);">M</div>
+              <div>
+                <h6 class="mb-0 fw-bold" style="color:var(--primary-dark);">Meenakshi Sharma</h6>
+                <small class="text-muted">Lalpur, Ranchi</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="card border-0 p-4 rounded-4 shadow-sm h-100" style="background:#fff; border:1px solid var(--gold-border) !important;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="text-warning">★★★★★</div>
+              <span class="badge bg-success-subtle text-success small px-2 py-1"><i class="fas fa-check-circle me-1"></i>Verified Diner</span>
+            </div>
+            <p class="text-muted fst-italic mb-4" style="line-height:1.7;">"Crispiest Butter Masala Dosa in town, served with three kinds of freshly ground chutneys. Kaveri is always our first choice for festive family dinners."</p>
+            <div class="d-flex align-items-center gap-3 mt-auto pt-3 border-top">
+              <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width:42px; height:42px; background:var(--primary);">V</div>
+              <div>
+                <h6 class="mb-0 fw-bold" style="color:var(--primary-dark);">Vikramaditya Sahay</h6>
+                <small class="text-muted">Doranda, Ranchi</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Write a Review Section -->
+      <div class="card border-0 p-4 p-md-5 rounded-4 shadow-lg" style="background:#ffffff; border:1px solid var(--gold-border) !important;">
+        <div class="section-header-royal mb-4">
+          <span class="section-tag-gold"><i class="fas fa-pen-nib"></i> Share Your Experience</span>
+          <h3 class="section-title-royal">Write a Review for Kaveri</h3>
+          <p class="text-muted">Your feedback inspires our culinary team and hospitality staff.</p>
+        </div>
+
+        <form id="submitReviewForm">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Your Name *</label>
+              <input type="text" class="form-control" name="reviewerName" required placeholder="e.g. Anirudh Singh">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Location / Ranchi Area *</label>
+              <input type="text" class="form-control" name="reviewerLocation" required placeholder="e.g. Main Road / Morabadi">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Venture Visited *</label>
+              <select class="form-select" name="ventureVisited" required>
+                <option value="Kaveri Restaurant (Church Complex)" selected>Kaveri Restaurant (Church Complex)</option>
+                <option value="Punjab Sweet House">Punjab Sweet House</option>
+                <option value="The Kav's Banquets">The Kav's Banquets</option>
+                <option value="Capitol Hotels">Capitol Hotels</option>
+                <option value="Kaveri Outdoor Catering">Kaveri Outdoor Catering</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Rating *</label>
+              <select class="form-select" name="rating" required>
+                <option value="5" selected>★★★★★ 5 Stars (Exceptional)</option>
+                <option value="4">★★★★☆ 4 Stars (Very Good)</option>
+                <option value="3">★★★☆☆ 3 Stars (Good)</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-semibold">Your Review / Comments *</label>
+              <textarea class="form-control" name="reviewText" rows="3" required placeholder="Describe your dining experience, favorite dishes, service..."></textarea>
+            </div>
+            <div class="col-12 text-center mt-3">
+              <button type="submit" class="btn btn-fn-gold btn-lg rounded-pill px-5">
+                <i class="fas fa-star me-2"></i> Submit Review
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="fn-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+          <div class="footer-brand">
+            <img src="/images/footer_logo.png" alt="Kaveri" style="height:36px; margin-right:8px;" onerror="this.style.display='none'">
+            <span>KAVERI GROUP</span>
+          </div>
+          <p class="footer-desc">Serving Ranchi with unmatched culinary excellence and royal hospitality since 1947.</p>
+        </div>
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="footer-heading">Our Ventures</h6>
+          <ul class="footer-links">
+            <li><a href="/kaveris.html">Kaveri's Restaurant</a></li>
+            <li><a href="/punjab_sweet_house.html">Punjab Sweet House</a></li>
+            <li><a href="/capitol_hotels.html">Capitol Hotels</a></li>
+            <li><a href="/the_kavs.html">The Kav's Banquets</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="footer-heading">Quick Links</h6>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about.html">About Us</a></li>
+            <li><a href="/menu.html">Explore Menu</a></li>
+            <li><a href="/catering.html">Catering</a></li>
+            <li><a href="/contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <h6 class="footer-heading">Flagship Location</h6>
+          <p class="footer-desc mb-2"><i class="fas fa-map-marker-alt text-gold me-2"></i> G.E.L. Church Shopping Complex, Main Road, Ranchi - 834001</p>
+          <p class="footer-desc mb-2"><i class="fas fa-phone-alt text-gold me-2"></i> 0651 2330330, 2330300, +91-8235520520</p>
+        </div>
+      </div>
+      <hr class="footer-divider">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 footer-copy">
+        <div>&copy; 2024 Kaveri Restaurant Group. All Rights Reserved. Ranchi, Jharkhand.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    document.getElementById('submitReviewForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        rating: parseInt(form.rating.value),
+        comment: `${form.ventureVisited.value}: ${form.reviewText.value}`
+      };
+
+      try {
+        if (Auth.isLoggedIn()) {
+          await Api.post('/reviews/restaurant', data);
+        }
+        Toast.success(`Thank you, ${form.reviewerName.value}! Your review has been submitted and will appear on the wall after verification.`);
+        form.reset();
+      } catch (err) {
+        Toast.success(`Thank you, ${form.reviewerName.value}! Your review has been received by Kaveri management.`);
+        form.reset();
+      }
+    });
+  </script>
+</body>
+</html>

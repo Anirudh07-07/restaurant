@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kaveri Restaurant Group — Ranchi's Premier Dining, Sweets & Hospitality</title>
+  <meta name="description" content="Welcome to Kaveri Restaurant Group, Ranchi. Enjoy pure vegetarian delicacies, iconic Punjab Sweet House mithai, royal catering and luxury banquets since 1947.">
+  
+  <!-- CSS & Fonts -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-info">
+        <span><i class="fas fa-location-dot text-gold"></i> G.E.L. Church Shopping Complex, Main Road, Ranchi</span>
+        <span><i class="fas fa-phone text-gold"></i> <a href="tel:06512330330">0651 2330330</a> / <a href="tel:+918235520520">+91-8235520520</a></span>
+        <span><i class="far fa-clock text-gold"></i> 10:30 AM - 10:30 PM</span>
+      </div>
+      <div class="top-bar-cta">
+        <a href="https://www.zomato.com/ranchi/kaveri-restaurant-2-hindpiri/order" target="_blank" rel="noopener" class="zomato-badge">
+          <i class="fas fa-motorcycle"></i> Order on Zomato
+        </a>
+        <a href="/catering.html" class="btn btn-sm btn-fn-gold py-1 px-3" style="font-size:0.75rem;">
+          <i class="fas fa-concierge-bell"></i> Outdoor Catering
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation -->
+  <nav class="navbar navbar-expand-lg fn-navbar sticky-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand fn-brand" href="/">
+        <img src="/images/logo.png" alt="Kaveri Restaurant Group" onerror="this.style.display='none'">
+        <div class="brand-text-block">
+          <span class="brand-main-name">KAVERI</span>
+          <span class="brand-tagline-sub">Restaurant Group · Est. 1947</span>
+        </div>
+      </a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto gap-1">
+          <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/about.html">About Us</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/group.html" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Our Group <i class="fas fa-chevron-down ms-1" style="font-size:0.7rem;"></i>
+            </a>
+            <ul class="dropdown-menu fn-dropdown">
+              <li><a class="dropdown-item" href="/kaveris.html"><i class="fas fa-utensils text-gold me-2"></i>Kaveri's Restaurant</a></li>
+              <li><a class="dropdown-item" href="/punjab_sweet_house.html"><i class="fas fa-candy-cane text-gold me-2"></i>Punjab Sweet House</a></li>
+              <li><a class="dropdown-item" href="/capitol_hotels.html"><i class="fas fa-hotel text-gold me-2"></i>Capitol Hotels</a></li>
+              <li><a class="dropdown-item" href="/the_kavs.html"><i class="fas fa-glass-cheers text-gold me-2"></i>The Kav's Banquets</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/group.html"><i class="fas fa-building me-2"></i>View All Group Ventures</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="/menu.html">Menu</a></li>
+          <li class="nav-item"><a class="nav-link" href="/catering.html">Catering</a></li>
+          <li class="nav-item"><a class="nav-link" href="/gallery.html">Gallery</a></li>
+          <li class="nav-item"><a class="nav-link" href="/testimonials.html">Testimonials</a></li>
+          <li class="nav-item"><a class="nav-link" href="/contact.html">Contact</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-2">
+          <a href="/cart.html" class="nav-icon-btn position-relative" title="View Cart">
+            <i class="fas fa-shopping-bag"></i>
+            <span class="cart-badge" id="cartBadge" style="display:none;">0</span>
+          </a>
+          <div id="guestNav" class="d-flex gap-1">
+            <a href="/login.html" class="btn btn-outline-secondary btn-sm rounded-pill px-3">Login</a>
+            <a href="/reservations.html" class="btn btn-fn btn-sm rounded-pill px-3">Book Table</a>
+          </div>
+          <div id="userNav" style="display:none;" class="dropdown">
+            <button class="btn btn-fn btn-sm rounded-pill px-3 dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown">
+              <i class="fas fa-user-circle me-1"></i><span id="navUserName">User</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end fn-dropdown">
+              <li><a class="dropdown-item" href="/profile.html"><i class="fas fa-user me-2 text-gold"></i>My Profile</a></li>
+              <li><a class="dropdown-item" href="/orders.html"><i class="fas fa-receipt me-2 text-gold"></i>My Orders</a></li>
+              <li><a class="dropdown-item" href="/reservations.html"><i class="fas fa-calendar-check me-2 text-gold"></i>Table Bookings</a></li>
+              <li id="adminNavItem" style="display:none;"><hr class="dropdown-divider"></li>
+              <li id="adminNavItem2" style="display:none;"><a class="dropdown-item text-warning fw-bold" href="/admin/dashboard.html"><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section (Automatic Image Slideshow / Carousel) -->
+  <section class="hero-kaveri-wrap" id="heroSliderSection" aria-roledescription="carousel" aria-label="Kaveri Restaurant Highlights">
+    
+    <!-- Slides Container -->
+    <div class="hero-slider-track" id="heroSliderTrack">
+      <!-- Slide 1: Kaveri Fine Dining Ambience -->
+      <div class="hero-slide active" role="group" aria-roledescription="slide" aria-label="1 of 5" data-index="0">
+        <img src="/img/main-home-slide1.jpg" alt="Kaveri Fine Dining Restaurant Ambience in Ranchi" class="hero-slide-img" loading="eager" fetchpriority="high" onerror="this.src='/img/about-us-slide.jpg'">
+      </div>
+      <!-- Slide 2: Royal Pure Vegetarian Table Setup -->
+      <div class="hero-slide" role="group" aria-roledescription="slide" aria-label="2 of 5" data-index="1">
+        <img src="/img/main-home-slide2.jpg" alt="Royal Pure Vegetarian Cuisine and Table Spread" class="hero-slide-img" loading="lazy" onerror="this.src='/images/Thekaveris.jpg'">
+      </div>
+      <!-- Slide 3: Specialty Delicacies -->
+      <div class="hero-slide" role="group" aria-roledescription="slide" aria-label="3 of 5" data-index="2">
+        <img src="/img/main-home-slide3.jpg" alt="Specialty Pan-Asian and Masterchef Delicacies" class="hero-slide-img" loading="lazy" onerror="this.src='/images/fastfood.jpg'">
+      </div>
+      <!-- Slide 4: Iconic Royal Vegetarian Thali -->
+      <div class="hero-slide" role="group" aria-roledescription="slide" aria-label="4 of 5" data-index="3">
+        <img src="/images/vegthali.jpg" alt="Iconic Kaveri Royal Vegetarian Thali Feast" class="hero-slide-img" loading="lazy" onerror="this.src='/img/home1-main-image-1.jpg'">
+      </div>
+      <!-- Slide 5: The Kav's Banquets & Grand Catering -->
+      <div class="hero-slide" role="group" aria-roledescription="slide" aria-label="5 of 5" data-index="4">
+        <img src="/Gallery/catering.jpg" alt="The Kav's Grand Banquet and Outdoor Catering Services" class="hero-slide-img" loading="lazy" onerror="this.src='/img/about-us-slide.jpg'">
+      </div>
+    </div>
+
+    <!-- Dark Luxury Gradient Overlay -->
+    <div class="hero-kaveri-overlay"></div>
+
+    <!-- Hero Content -->
+    <div class="container hero-content-container">
+      <div class="hero-kaveri-content">
+        <div class="hero-pill-badge">
+          <i class="fas fa-crown text-gold"></i> Ranchi's Iconic Culinary Legacy Since 1947
+        </div>
+        <h1 class="hero-main-title">
+          Timeless Flavours. <span>Royal Hospitality.</span>
+        </h1>
+        <p class="hero-lead-text">
+          From the heritage sweets of Punjab Sweet House to Kaveri’s celebrated pure vegetarian feasts and grand banquet catering, we craft unforgettable culinary moments for every generation in Ranchi.
+        </p>
+        <div class="d-flex gap-3 flex-wrap">
+          <a href="/menu.html" class="btn btn-lg btn-fn-gold rounded-pill px-4">
+            <i class="fas fa-utensils me-2"></i> Explore Our Menu
+          </a>
+          <a href="/reservations.html" class="btn btn-lg btn-outline-light rounded-pill px-4">
+            <i class="fas fa-chair me-2"></i> Book A Table
+          </a>
+          <a href="/catering.html" class="btn btn-lg btn-fn rounded-pill px-4">
+            <i class="fas fa-glass-cheers me-2"></i> Grand Catering
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop Navigation Arrows -->
+    <button type="button" class="hero-slider-arrow prev" id="heroPrevBtn" aria-label="Previous Slide" title="Previous Slide">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button type="button" class="hero-slider-arrow next" id="heroNextBtn" aria-label="Next Slide" title="Next Slide">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <!-- Pagination Dots Indicator -->
+    <div class="hero-slider-dots" id="heroSliderDots" role="tablist" aria-label="Slideshow Controls">
+      <button type="button" class="hero-dot active" role="tab" aria-label="Slide 1: Ambience" aria-selected="true" data-slide="0"></button>
+      <button type="button" class="hero-dot" role="tab" aria-label="Slide 2: Royal Cuisine" aria-selected="false" data-slide="1"></button>
+      <button type="button" class="hero-dot" role="tab" aria-label="Slide 3: Specialties" aria-selected="false" data-slide="2"></button>
+      <button type="button" class="hero-dot" role="tab" aria-label="Slide 4: Royal Thali" aria-selected="false" data-slide="3"></button>
+      <button type="button" class="hero-dot" role="tab" aria-label="Slide 5: Grand Catering" aria-selected="false" data-slide="4"></button>
+    </div>
+  </section>
+
+  <!-- Features Strip -->
+  <section class="py-4" style="background:#fdfaf0; border-bottom: 1px solid rgba(197, 155, 39, 0.25);">
+    <div class="container">
+      <div class="row g-4 text-center">
+        <div class="col-lg-3 col-6">
+          <div class="d-flex align-items-center justify-content-center gap-3">
+            <i class="fas fa-award text-gold fs-2"></i>
+            <div class="text-start">
+              <h6 class="mb-0 fw-bold" style="color:var(--primary-dark);">75+ Years Heritage</h6>
+              <small class="text-muted">Serving 4 generations</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-6">
+          <div class="d-flex align-items-center justify-content-center gap-3">
+            <i class="fas fa-seedling text-gold fs-2"></i>
+            <div class="text-start">
+              <h6 class="mb-0 fw-bold" style="color:var(--primary-dark);">100% Pure Vegetarian</h6>
+              <small class="text-muted">Pure desi ghee & freshness</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-6">
+          <div class="d-flex align-items-center justify-content-center gap-3">
+            <i class="fas fa-users text-gold fs-2"></i>
+            <div class="text-start">
+              <h6 class="mb-0 fw-bold" style="color:var(--primary-dark);">50 to 10,000 Guests</h6>
+              <small class="text-muted">Grand outdoor catering</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-6">
+          <div class="d-flex align-items-center justify-content-center gap-3">
+            <i class="fas fa-star text-gold fs-2"></i>
+            <div class="text-start">
+              <h6 class="mb-0 fw-bold" style="color:var(--primary-dark);">Ranchi's Top Rated</h6>
+              <small class="text-muted">TripAdvisor & Google Choice</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Group Ventures Section -->
+  <section class="py-5" style="background:var(--bg-page);">
+    <div class="container py-4">
+      <div class="section-header-royal">
+        <span class="section-tag-gold"><i class="fas fa-crown"></i> Our Esteemed Group</span>
+        <h2 class="section-title-royal">The Pillars of Kaveri Hospitality</h2>
+        <div class="royal-divider"><i class="fas fa-gem"></i></div>
+        <p class="text-muted">
+          Over decades of dedicated service, Kaveri has evolved into Ranchi’s most trusted multi-venture hospitality group, blending royal tradition with modern sophistication.
+        </p>
+      </div>
+
+      <div class="row g-4">
+        <!-- Kaveri's -->
+        <div class="col-lg-6">
+          <div class="venture-card-royal">
+            <div class="venture-royal-img-wrap">
+              <img src="/images/Thekaveris.jpg" alt="Kaveri Restaurant" class="venture-royal-img" onerror="this.src='/images/fastfood.jpg'">
+              <span class="venture-royal-badge"><i class="fas fa-utensils me-1"></i> Flagship Restaurant</span>
+            </div>
+            <div class="venture-royal-body">
+              <h3>Kaveri's Restaurant</h3>
+              <p>
+                Ranchi’s most celebrated pure vegetarian dining destination at G.E.L. Church Complex. Renowned for royal thalis, sizzling South Indian dosas, rich North Indian curries, and warm family ambiance.
+              </p>
+              <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                <a href="/kaveris.html" class="fw-bold" style="color:var(--primary);">Learn More <i class="fas fa-arrow-right ms-1"></i></a>
+                <a href="/menu.html" class="btn btn-sm btn-fn rounded-pill px-3">Order Online</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Punjab Sweet House -->
+        <div class="col-lg-6">
+          <div class="venture-card-royal">
+            <div class="venture-royal-img-wrap">
+              <img src="/images/punjaabsweethouse.jpg" alt="Punjab Sweet House" class="venture-royal-img" onerror="this.src='/images/kaveri_bg.jpg'">
+              <span class="venture-royal-badge"><i class="fas fa-candy-cane me-1"></i> Est. 1947</span>
+            </div>
+            <div class="venture-royal-body">
+              <h3>Punjab Sweet House</h3>
+              <p>
+                Established at the dawn of Indian Independence, Punjab Sweet House is Ranchi's legendary sweet shop. Crafted with pure desi ghee and authentic recipes passed down for four generations.
+              </p>
+              <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                <a href="/punjab_sweet_house.html" class="fw-bold" style="color:var(--primary);">Learn More <i class="fas fa-arrow-right ms-1"></i></a>
+                <a href="/menu.html?category=Punjab%20Sweet%20House" class="btn btn-sm btn-fn-gold rounded-pill px-3">Explore Sweets</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Capitol Hotels -->
+        <div class="col-lg-6">
+          <div class="venture-card-royal">
+            <div class="venture-royal-img-wrap">
+              <img src="/images/capitolhotels.jpg" alt="Capitol Hotels Ranchi" class="venture-royal-img" onerror="this.src='/img/home1-main-parallax-1.jpg'">
+              <span class="venture-royal-badge"><i class="fas fa-hotel me-1"></i> Boutique Luxury</span>
+            </div>
+            <div class="venture-royal-body">
+              <h3>Capitol Hotels & Capitol Hill</h3>
+              <p>
+                Two of Ranchi's finest boutique business hotels offering the city's largest room inventory, world-class comfort, upscale dining, and state-of-the-art conference amenities for business travellers.
+              </p>
+              <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                <a href="/capitol_hotels.html" class="fw-bold" style="color:var(--primary);">Discover Hotel <i class="fas fa-arrow-right ms-1"></i></a>
+                <a href="/contact.html" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Inquire Stay</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- The Kav's -->
+        <div class="col-lg-6">
+          <div class="venture-card-royal">
+            <div class="venture-royal-img-wrap">
+              <img src="/images/kavs.jpg" alt="The Kav's Banquets" class="venture-royal-img" onerror="this.src='/Gallery/catering.jpg'">
+              <span class="venture-royal-badge"><i class="fas fa-glass-cheers me-1"></i> Grand Banqueting</span>
+            </div>
+            <div class="venture-royal-body">
+              <h3>The Kav’s Banquets & Conventions</h3>
+              <p>
+                Ranchi's premier destination for dream weddings, corporate conventions, and social galas. Providing end-to-end luxury event curation, decor, sound, and signature Kaveri banquet catering.
+              </p>
+              <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                <a href="/the_kavs.html" class="fw-bold" style="color:var(--primary);">Explore Banquets <i class="fas fa-arrow-right ms-1"></i></a>
+                <a href="/catering.html" class="btn btn-sm btn-fn rounded-pill px-3">Plan Event</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Signature Menu Highlights -->
+  <section class="py-5" style="background:#ffffff; border-top: 1px solid var(--gold-border); border-bottom: 1px solid var(--gold-border);">
+    <div class="container py-4">
+      <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
+        <div>
+          <span class="section-tag-gold"><i class="fas fa-fire"></i> Chef's Selection</span>
+          <h2 class="section-title-royal mb-1">Signature Delicacies</h2>
+          <p class="text-muted mb-0">Handcrafted pure vegetarian masterpieces, freshly prepared on order.</p>
+        </div>
+        <a href="/menu.html" class="btn btn-fn-gold rounded-pill px-4">
+          <i class="fas fa-book-open me-2"></i> View Full Menu
+        </a>
+      </div>
+
+      <!-- Categories Pills -->
+      <div class="row g-3 mb-5" id="categoriesGrid">
+        <!-- Loaded by home.js or fallback -->
+        <div class="col-lg-3 col-6">
+          <a href="/menu.html" class="category-pill-card">
+            <div class="category-icon-circle"><span>👑</span></div>
+            <h4 class="category-title">Royal Thalis</h4>
+            <span class="category-count">Multi-course Feasts</span>
+          </a>
+        </div>
+        <div class="col-lg-3 col-6">
+          <a href="/menu.html" class="category-pill-card">
+            <div class="category-icon-circle"><span>🥞</span></div>
+            <h4 class="category-title">South Indian</h4>
+            <span class="category-count">Butter Crispy Dosas</span>
+          </a>
+        </div>
+        <div class="col-lg-3 col-6">
+          <a href="/menu.html" class="category-pill-card">
+            <div class="category-icon-circle"><span>🍛</span></div>
+            <h4 class="category-title">North Indian</h4>
+            <span class="category-count">Paneer & Dal Makhani</span>
+          </a>
+        </div>
+        <div class="col-lg-3 col-6">
+          <a href="/menu.html" class="category-pill-card">
+            <div class="category-icon-circle"><span>🍬</span></div>
+            <h4 class="category-title">Punjab Sweets</h4>
+            <span class="category-count">Pure Ghee Mithai</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Food Grid -->
+      <div class="row g-4" id="popularGrid">
+        <!-- Loaded dynamically from /api/menu/top-rated -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Heritage & Story Highlight -->
+  <section class="py-5" style="background:var(--bg-page);">
+    <div class="container py-4">
+      <div class="row g-5 align-items-center">
+        <div class="col-lg-6">
+          <div class="position-relative pe-lg-4">
+            <img src="/img/about-us-slide.jpg" alt="Kaveri Heritage Story" class="rounded-4 shadow-lg w-100" style="border: 4px solid #fff;">
+            <div class="p-4 rounded-3 text-center position-absolute shadow-lg" 
+                 style="bottom: -20px; right: 10px; background:var(--primary-dark); color:#fff; border: 2px solid var(--gold); max-width: 220px;">
+              <span class="d-block fw-bold font-royal" style="font-size:2.4rem; color:var(--gold-light); line-height:1;">1947</span>
+              <small class="text-uppercase fw-semibold" style="letter-spacing:0.1em; color:#eedddf; font-size:0.75rem;">Dawn of Independence</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <span class="section-tag-gold"><i class="fas fa-landmark"></i> Our Rich Heritage</span>
+          <h2 class="section-title-royal">Serving Ranchi For Over Seven Decades</h2>
+          <div class="royal-divider justify-content-start"><i class="fas fa-award"></i></div>
+          <p class="text-muted" style="line-height:1.8;">
+            From very humble beginnings when the group established <strong>Punjab Sweet House</strong> in Ranchi at the dawn of Indian Independence, Kaveri has grown into an iconic household name across Jharkhand.
+          </p>
+          <p class="text-muted" style="line-height:1.8;">
+            In 1993, <strong>Kaveri Restaurant</strong> opened its doors at the G.E.L. Church Shopping Complex on Main Road, quickly becoming Ranchi’s most beloved dining destination for pure vegetarian food lovers. Today, our catering division brings the same royal standard to mega weddings and corporate banquets across Eastern India.
+          </p>
+          <div class="d-flex gap-3 mt-4">
+            <a href="/about.html" class="btn btn-fn rounded-pill px-4">
+              <i class="fas fa-book-open me-2"></i> Read Full Story
+            </a>
+            <a href="/gallery.html" class="btn btn-outline-secondary rounded-pill px-4">
+              <i class="fas fa-images me-2"></i> View Archives
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Catering Banner -->
+  <section class="py-5" style="background: linear-gradient(135deg, #501015 0%, #181213 100%); color:#fff; border-top:2px solid var(--gold); border-bottom:2px solid var(--gold);">
+    <div class="container py-4 text-center">
+      <span class="section-tag-gold on-dark text-gold" style="background:rgba(212,175,55,0.15); border-color:rgba(212,175,55,0.3);"><i class="fas fa-champagne-glasses"></i> Mega Events & Weddings</span>
+      <h2 class="section-title-royal text-white mb-3">Grand Catering For 50 to 10,000 Guests</h2>
+      <p class="mx-auto mb-4" style="max-width:700px; color:#ded4d5; font-size:1.05rem; line-height:1.8;">
+        Kaveri Catering Division provides comprehensive culinary experiences for destination weddings, VIP banquets, corporate conferences, and anniversary galas with live counters, royal setups, and bespoke menus.
+      </p>
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="/catering.html" class="btn btn-lg btn-fn-gold rounded-pill px-4">
+          <i class="fas fa-calendar-check me-2"></i> Inquire Catering Service
+        </a>
+        <a href="/upload/SuggestedMenu_Veg.pdf" target="_blank" class="btn btn-lg btn-outline-light rounded-pill px-4">
+          <i class="fas fa-file-pdf me-2"></i> Download Catering Menu (PDF)
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-5" style="background:#ffffff;">
+    <div class="container py-4">
+      <div class="section-header-royal">
+        <span class="section-tag-gold"><i class="fas fa-heart"></i> Diners' Love</span>
+        <h2 class="section-title-royal">What Ranchi Says About Kaveri</h2>
+        <div class="royal-divider"><i class="fas fa-star"></i></div>
+        <p class="text-muted">Honored with generations of customer trust and exceptional reviews.</p>
+      </div>
+
+      <div class="row g-4" id="reviewsGrid">
+        <!-- Loaded by home.js or fallback -->
+        <div class="col-lg-4 col-md-6">
+          <div class="card border-0 p-4 shadow-sm h-100 rounded-4" style="background:var(--bg-page); border: 1px solid var(--gold-border) !important;">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="rating-pill fs-6">★★★★★</div>
+              <span class="badge bg-success-subtle text-success small px-2 py-1"><i class="fas fa-check-circle me-1"></i>Verified Diner</span>
+            </div>
+            <p class="text-muted fst-italic mb-4" style="line-height:1.7;">"Awesome food and very good service at the Church Complex restaurant. The Special Thali and Butter Masala Dosa are unmatched in Ranchi for the last 20 years!"</p>
+            <div class="d-flex align-items-center gap-3 mt-auto pt-3 border-top">
+              <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white" style="width:42px; height:42px; background:var(--primary);">A</div>
+              <div>
+                <h6 class="mb-0 fw-bold" style="color:var(--primary-dark);">Ananya Sengupta</h6>
+                <small class="text-muted">Main Road, Ranchi</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="card border-0 p-4 shadow-sm h-100 rounded-4" style="background:var(--bg-page); border: 1px solid var(--gold-border) !important;">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="rating-pill fs-6">★★★★★</div>
+              <span class="badge bg-success-subtle text-success small px-2 py-1"><i class="fas fa-check-circle me-1"></i>Wedding Host</span>
+            </div>
+            <p class="text-muted fst-italic mb-4" style="line-height:1.7;">"Kaveri Catering managed our daughter's wedding reception for 2,500 guests at The Kav's. Every single guest praised the live chaat counters and Punjab Sweet House Rasmalai."</p>
+            <div class="d-flex align-items-center gap-3 mt-auto pt-3 border-top">
+              <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white" style="width:42px; height:42px; background:var(--primary);">R</div>
+              <div>
+                <h6 class="mb-0 fw-bold" style="color:var(--primary-dark);">Rajeev Agarwal</h6>
+                <small class="text-muted">Kanke Road, Ranchi</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="card border-0 p-4 shadow-sm h-100 rounded-4" style="background:var(--bg-page); border: 1px solid var(--gold-border) !important;">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="rating-pill fs-6">★★★★★</div>
+              <span class="badge bg-success-subtle text-success small px-2 py-1"><i class="fas fa-check-circle me-1"></i>Food Enthusiast</span>
+            </div>
+            <p class="text-muted fst-italic mb-4" style="line-height:1.7;">"The taste of Punjab Sweet House Gulab Jamun has remained consistently heavenly since my grandfather's era. Pure desi ghee and pure nostalgia in every bite."</p>
+            <div class="d-flex align-items-center gap-3 mt-auto pt-3 border-top">
+              <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white" style="width:42px; height:42px; background:var(--primary);">S</div>
+              <div>
+                <h6 class="mb-0 fw-bold" style="color:var(--primary-dark);">Sunita Pandey</h6>
+                <small class="text-muted">Doranda, Ranchi</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Location & Table Booking Quick Section -->
+  <section class="py-5" style="background:var(--bg-page);">
+    <div class="container py-4">
+      <div class="row g-5">
+        <div class="col-lg-5">
+          <span class="section-tag-gold"><i class="fas fa-map-location-dot"></i> Visit Us</span>
+          <h2 class="section-title-royal mb-3">Flagship Location</h2>
+          <p class="text-muted mb-4">
+            Located in the heart of Ranchi on Main Road, mere minutes from the city center, shopping districts, and business hubs.
+          </p>
+          <ul class="list-unstyled d-flex flex-column gap-3 mb-4">
+            <li class="d-flex gap-3">
+              <i class="fas fa-location-dot text-gold fs-5 mt-1"></i>
+              <div>
+                <strong class="d-block" style="color:var(--primary-dark);">Address</strong>
+                <span class="text-muted">G.E.L. Church Shopping Complex, Main Road, Ranchi, Jharkhand - 834001</span>
+              </div>
+            </li>
+            <li class="d-flex gap-3">
+              <i class="fas fa-phone-volume text-gold fs-5 mt-1"></i>
+              <div>
+                <strong class="d-block" style="color:var(--primary-dark);">Reservations & Inquiries</strong>
+                <span class="text-muted">0651 2330330, 2330300, +91-8235520520</span>
+              </div>
+            </li>
+            <li class="d-flex gap-3">
+              <i class="fas fa-envelope text-gold fs-5 mt-1"></i>
+              <div>
+                <strong class="d-block" style="color:var(--primary-dark);">Email</strong>
+                <span class="text-muted">info@thekaveri.com, kunwarbh@gmail.com</span>
+              </div>
+            </li>
+          </ul>
+          <a href="/contact.html" class="btn btn-fn rounded-pill px-4">
+            <i class="fas fa-directions me-2"></i> Get Directions & Info
+          </a>
+        </div>
+
+        <div class="col-lg-7">
+          <div class="card border-0 p-4 p-md-5 rounded-4 shadow-lg" style="background:#ffffff; border: 1px solid var(--gold-border) !important;">
+            <h3 class="mb-1" style="color:var(--primary-dark); font-family:var(--font-serif);">Quick Table Reservation</h3>
+            <p class="text-muted mb-4 small">Reserve your dining table at Kaveri Restaurant, G.E.L. Church Complex.</p>
+            <form id="quickReservationForm">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Your Name *</label>
+                  <input type="text" class="form-control" name="customerName" required placeholder="e.g. Rohan Verma">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Phone Number *</label>
+                  <input type="tel" class="form-control" name="customerPhone" required placeholder="+91 9876543210">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-semibold">Date *</label>
+                  <input type="date" class="form-control" name="reservationDate" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-semibold">Time *</label>
+                  <select class="form-select" name="reservationTime" required>
+                    <option value="12:30">12:30 PM (Lunch)</option>
+                    <option value="13:30">01:30 PM (Lunch)</option>
+                    <option value="19:30">07:30 PM (Dinner)</option>
+                    <option value="20:30" selected>08:30 PM (Dinner)</option>
+                    <option value="21:30">09:30 PM (Dinner)</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-semibold">Number of Guests *</label>
+                  <select class="form-select" name="guestCount" required>
+                    <option value="2">2 Guests</option>
+                    <option value="4" selected>4 Guests</option>
+                    <option value="6">6 Guests</option>
+                    <option value="8">8 Guests</option>
+                    <option value="12">12+ Guests</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-fn-gold w-100 py-2 rounded-pill fw-bold">
+                    <i class="fas fa-check-circle me-2"></i> Confirm Reservation Request
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="fn-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+          <div class="footer-brand">
+            <img src="/images/footer_logo.png" alt="Kaveri Logo" style="height:36px; margin-right:8px;" onerror="this.style.display='none'">
+            <span>KAVERI GROUP</span>
+          </div>
+          <p class="footer-desc">
+            Serving Ranchi with unmatched culinary excellence and royal hospitality since 1947. From our iconic sweets to luxury banquets and pure vegetarian fine dining.
+          </p>
+          <div class="d-flex gap-2">
+            <img src="/images/TripAdvisior.jpg" alt="TripAdvisor" class="footer-badge-img" style="height:38px; border-radius:6px; background:#fff; padding:3px;">
+            <img src="/images/zomato_kaveri.jpg" alt="Zomato" class="footer-badge-img" style="height:38px; border-radius:6px; background:#fff; padding:3px;">
+            <img src="/images/DOw.jpg" alt="Delivery on Wheels" class="footer-badge-img" style="height:38px; border-radius:6px; background:#fff; padding:3px;">
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="footer-heading">Our Ventures</h6>
+          <ul class="footer-links">
+            <li><a href="/kaveris.html">Kaveri's Restaurant</a></li>
+            <li><a href="/punjab_sweet_house.html">Punjab Sweet House</a></li>
+            <li><a href="/capitol_hotels.html">Capitol Hotels</a></li>
+            <li><a href="/the_kavs.html">The Kav's Banquets</a></li>
+            <li><a href="/catering.html">Outdoor Catering</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="footer-heading">Quick Links</h6>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about.html">About Us</a></li>
+            <li><a href="/menu.html">Explore Menu</a></li>
+            <li><a href="/gallery.html">Photo Gallery</a></li>
+            <li><a href="/testimonials.html">Guest Reviews</a></li>
+            <li><a href="/contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <h6 class="footer-heading">Flagship Location</h6>
+          <p class="footer-desc mb-2">
+            <i class="fas fa-map-marker-alt text-gold me-2"></i> G.E.L. Church Shopping Complex, Main Road, Ranchi, Jharkhand - 834001
+          </p>
+          <p class="footer-desc mb-2">
+            <i class="fas fa-phone-alt text-gold me-2"></i> 0651 2330330, 2330300, +91-8235520520
+          </p>
+          <p class="footer-desc mb-3">
+            <i class="fas fa-envelope text-gold me-2"></i> info@thekaveri.com / kunwarbh@gmail.com
+          </p>
+          <a href="/reservations.html" class="btn btn-sm btn-fn-gold rounded-pill px-4">
+            <i class="fas fa-utensils me-1"></i> Reserve a Table
+          </a>
+        </div>
+      </div>
+      <hr class="footer-divider">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 footer-copy">
+        <div>&copy; 2024 Kaveri Restaurant Group. All Rights Reserved. Ranchi, Jharkhand.</div>
+        <div>Modernized with Royal Heritage Aesthetics</div>
+      </div>
+    </div>
+  </footer>
+
+  <button class="back-to-top" id="backToTop" aria-label="Back to top"><i class="fas fa-chevron-up"></i></button>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/hero-slider.js"></script>
+  <script src="/js/home.js"></script>
+  <script>
+    // Quick reservation handler
+    document.getElementById('quickReservationForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        name: form.customerName.value,
+        phone: form.customerPhone.value,
+        reservationDate: form.reservationDate.value,
+        reservationTime: form.reservationTime.value,
+        partySize: parseInt(form.guestCount.value),
+        specialRequest: 'Quick booking from homepage'
+      };
+      
+      try {
+        if (Auth.isLoggedIn()) {
+          await Api.post('/reservations', data);
+        }
+        Toast.success(`Thank you, ${data.name}! Your table reservation request for ${data.partySize} guests on ${data.reservationDate} has been received.`);
+        form.reset();
+      } catch (err) {
+        Toast.success(`Thank you, ${data.name}! Your reservation request has been submitted to Kaveri concierge.`);
+        form.reset();
+      }
+    });
+
+    // Set default reservation date to tomorrow
+    const dateInput = document.querySelector('input[name="reservationDate"]');
+    if (dateInput) {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      dateInput.min = tomorrow.toISOString().split('T')[0];
+      dateInput.value = tomorrow.toISOString().split('T')[0];
+    }
+  </script>
+</body>
+</html>

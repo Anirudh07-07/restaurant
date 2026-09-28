@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — Kaveri Restaurant Group Ranchi</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body.auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 10% 20%, rgba(117, 23, 30, 0.45) 0%, transparent 50%),
+                  radial-gradient(circle at 90% 80%, rgba(197, 155, 39, 0.25) 0%, transparent 50%),
+                  #181213;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      padding: 30px 16px;
+    }
+    .auth-card-wrapper {
+      width: 100%;
+      max-width: 480px;
+    }
+    .auth-card {
+      background: rgba(37, 27, 29, 0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(197, 155, 39, 0.35);
+      border-radius: 28px;
+      padding: 44px 38px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.7);
+    }
+    .auth-brand {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #ffffff;
+      text-align: center;
+      margin-bottom: 2px;
+      letter-spacing: 0.05em;
+    }
+    .auth-tagline {
+      font-size: 0.75rem;
+      color: var(--gold-light);
+      text-align: center;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 28px;
+    }
+    .form-floating label {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+    }
+    .form-floating > .form-control {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1.5px solid rgba(197, 155, 39, 0.3);
+      color: #ffffff;
+      border-radius: 14px;
+      height: 58px;
+      font-size: 0.95rem;
+    }
+    .form-floating > .form-control:focus {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(197, 155, 39, 0.25);
+      color: #ffffff;
+    }
+    .pw-toggle {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      z-index: 10;
+    }
+    .btn-auth-submit {
+      background: var(--gold-gradient);
+      border: none;
+      color: #ffffff;
+      border-radius: 9999px;
+      padding: 14px;
+      font-weight: 700;
+      font-size: 1rem;
+      width: 100%;
+      box-shadow: var(--shadow-gold);
+      transition: all 0.3s ease;
+    }
+    .btn-auth-submit:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+      color: #ffffff;
+    }
+    .auth-alert-error {
+      background: rgba(211, 47, 47, 0.2);
+      border: 1px solid rgba(211, 47, 47, 0.4);
+      border-radius: 12px;
+      color: #ff8a80;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+      display: none;
+    }
+    .demo-credential-pill {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px dashed rgba(197, 155, 39, 0.35);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.8);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+    .demo-credential-pill:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--gold-light);
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body class="auth-page">
+
+<div class="auth-card-wrapper">
+  <div class="text-center mb-4">
+    <a href="/" class="text-decoration-none">
+      <img src="/images/logo.png" alt="Kaveri" style="height:54px; margin-bottom:10px;" onerror="this.style.display='none'">
+      <div class="auth-brand">KAVERI</div>
+      <div class="auth-tagline">Restaurant Group · Ranchi · Est. 1947</div>
+    </a>
+  </div>
+
+  <div class="auth-card">
+    <h4 class="text-white text-center fw-bold mb-1" style="font-family:'Playfair Display', serif;">Welcome Back</h4>
+    <p class="text-center text-white-50 small mb-4">Sign in to manage your orders, table bookings and profile.</p>
+
+    <!-- Error Alert -->
+    <div class="auth-alert-error mb-3" id="loginError">
+      <i class="fas fa-exclamation-circle me-2"></i><span id="loginErrorMsg">Invalid email or password.</span>
+    </div>
+
+    <!-- Form -->
+    <form id="loginForm" novalidate>
+      <div class="form-floating mb-3">
+        <input type="email" class="form-control" id="loginEmail" placeholder="name@thekaveri.com" required autocomplete="email">
+        <label for="loginEmail"><i class="far fa-envelope me-2"></i>Email Address</label>
+      </div>
+
+      <div class="form-floating mb-3 position-relative">
+        <input type="password" class="form-control pe-5" id="loginPassword" placeholder="Password" required autocomplete="current-password">
+        <label for="loginPassword"><i class="fas fa-lock me-2"></i>Password</label>
+        <button type="button" class="pw-toggle" id="pwToggle" tabindex="-1">
+          <i class="far fa-eye" id="pwToggleIcon"></i>
+        </button>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="rememberMe" checked>
+          <label class="form-check-label text-white-50 small" for="rememberMe">Remember me</label>
+        </div>
+        <a href="#" class="text-gold text-decoration-none small">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn-auth-submit mb-4" id="loginBtn">
+        <span id="loginBtnText"><i class="fas fa-sign-in-alt me-2"></i>Sign In</span>
+        <span id="loginSpinner" style="display:none;"><span class="spinner-border spinner-border-sm me-2"></span>Signing in...</span>
+      </button>
+
+      <!-- Quick Demo Credentials Fillers -->
+      <div class="mb-4">
+        <div class="text-white-50 small text-center mb-2" style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em;">Quick Fill Demo Accounts</div>
+        <div class="row g-2">
+          <div class="col-6">
+            <div class="demo-credential-pill" onclick="fillCredentials('customer@thekaveri.com', 'Customer@1234')">
+              <strong class="d-block text-white">Customer</strong>
+              <span>customer@thekaveri.com</span>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="demo-credential-pill" onclick="fillCredentials('admin@thekaveri.com', 'Admin@1234')">
+              <strong class="d-block text-white text-warning">Admin</strong>
+              <span>admin@thekaveri.com</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr style="border-color: rgba(255,255,255,0.15);">
+      <p class="text-center text-white-50 small mb-0">
+        Don't have an account yet? <a href="/register.html" class="text-gold fw-bold text-decoration-none ms-1">Register here</a>
+      </p>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/main.js"></script>
+<script>
+  if (typeof Auth !== 'undefined' && Auth.isLoggedIn()) {
+    if (Auth.isAdmin()) {
+      window.location.href = '/admin/dashboard.html';
+    } else {
+      window.location.href = '/';
+    }
+  }
+
+  function fillCredentials(email, pwd) {
+    document.getElementById('loginEmail').value = email;
+    document.getElementById('loginPassword').value = pwd;
+  }
+
+  document.getElementById('pwToggle').addEventListener('click', function() {
+    const inp = document.getElementById('loginPassword');
+    const icon = document.getElementById('pwToggleIcon');
+    if (inp.type === 'password') {
+      inp.type = 'text';
+      icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+      inp.type = 'password';
+      icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+  });
+
+  document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const errDiv = document.getElementById('loginError');
+    const errMsg = document.getElementById('loginErrorMsg');
+    const btnText = document.getElementById('loginBtnText');
+    const spinner = document.getElementById('loginSpinner');
+
+    errDiv.style.display = 'none';
+
+    if (!email || !password) {
+      errMsg.textContent = 'Please enter both email and password.';
+      errDiv.style.display = 'block';
+      return;
+    }
+
+    btnText.style.display = 'none';
+    spinner.style.display = 'inline';
+    document.getElementById('loginBtn').disabled = true;
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const responseData = await res.json();
+
+      if (res.ok && responseData.data && responseData.data.token) {
+        Auth.save(responseData.data);
+        Toast.success('Welcome to Kaveri, ' + responseData.data.name + '!');
+        
+        setTimeout(() => {
+          if (responseData.data.role === 'ROLE_ADMIN') {
+            window.location.href = '/admin/dashboard.html';
+          } else {
+            const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
+            window.location.href = redirect;
+          }
+        }, 500);
+      } else {
+        errMsg.textContent = responseData.message || 'Invalid email or password.';
+        errDiv.style.display = 'block';
+      }
+    } catch (err) {
+      errMsg.textContent = 'Could not reach server. Please check connection.';
+      errDiv.style.display = 'block';
+    } finally {
+      btnText.style.display = 'inline';
+      spinner.style.display = 'none';
+      document.getElementById('loginBtn').disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

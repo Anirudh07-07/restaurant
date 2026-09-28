@@ -1,0 +1,41 @@
+# Git Ignore for FoodNest Spring Boot Project
+
+# ---- Build output ----
+target/
+*.jar
+*.war
+*.ear
+
+# ---- IDE files ----
+.idea/
+*.iml
+.vscode/
+*.classpath
+*.project
+.settings/
+
+# ---- Environment and secrets ----
+.env
+application-prod.properties
+application-local.properties
+*.key
+*.pem
+*.cert
+
+# ---- Uploads ----
+uploads/
+
+# ---- Logs ----
+*.log
+logs/
+
+# ---- OS files ----
+.DS_Store
+Thumbs.db
+
+# ---- Maven ----
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ---- Spring Boot DevTools ----
+.spring-boot-devtools.properties

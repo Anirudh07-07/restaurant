@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Gallery & Albums — Kaveri Restaurant Group Ranchi</title>
+  <meta name="description" content="View photo albums and memories of Kaveri Restaurant, The Kav's Banquets, Punjab Sweet House, and royal wedding catering in Ranchi.">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-info">
+        <span><i class="fas fa-location-dot text-gold"></i> G.E.L. Church Shopping Complex, Main Road, Ranchi</span>
+        <span><i class="fas fa-phone text-gold"></i> <a href="tel:06512330330">0651 2330330</a> / <a href="tel:+918235520520">+91-8235520520</a></span>
+        <span><i class="far fa-clock text-gold"></i> 10:30 AM - 10:30 PM</span>
+      </div>
+      <div class="top-bar-cta">
+        <a href="https://www.zomato.com/ranchi/kaveri-restaurant-2-hindpiri/order" target="_blank" rel="noopener" class="zomato-badge">
+          <i class="fas fa-motorcycle"></i> Order on Zomato
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fn-navbar sticky-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand fn-brand" href="/">
+        <img src="/images/logo.png" alt="Kaveri" onerror="this.style.display='none'">
+        <div class="brand-text-block">
+          <span class="brand-main-name">KAVERI</span>
+          <span class="brand-tagline-sub">Restaurant Group · Est. 1947</span>
+        </div>
+      </a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto gap-1">
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/about.html">About Us</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/group.html" role="button" data-bs-toggle="dropdown">
+              Our Group <i class="fas fa-chevron-down ms-1" style="font-size:0.7rem;"></i>
+            </a>
+            <ul class="dropdown-menu fn-dropdown">
+              <li><a class="dropdown-item" href="/kaveris.html"><i class="fas fa-utensils text-gold me-2"></i>Kaveri's Restaurant</a></li>
+              <li><a class="dropdown-item" href="/punjab_sweet_house.html"><i class="fas fa-candy-cane text-gold me-2"></i>Punjab Sweet House</a></li>
+              <li><a class="dropdown-item" href="/capitol_hotels.html"><i class="fas fa-hotel text-gold me-2"></i>Capitol Hotels</a></li>
+              <li><a class="dropdown-item" href="/the_kavs.html"><i class="fas fa-glass-cheers text-gold me-2"></i>The Kav's Banquets</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/group.html"><i class="fas fa-building me-2"></i>View All Group Ventures</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="/menu.html">Menu</a></li>
+          <li class="nav-item"><a class="nav-link" href="/catering.html">Catering</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/gallery.html">Gallery</a></li>
+          <li class="nav-item"><a class="nav-link" href="/testimonials.html">Testimonials</a></li>
+          <li class="nav-item"><a class="nav-link" href="/contact.html">Contact</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-2">
+          <a href="/cart.html" class="nav-icon-btn position-relative"><i class="fas fa-shopping-bag"></i><span class="cart-badge" id="cartBadge" style="display:none;">0</span></a>
+          <a href="/reservations.html" class="btn btn-fn btn-sm rounded-pill px-3">Book Table</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Banner -->
+  <section class="kaveri-page-banner">
+    <img src="/img/main-home-slide3.jpg" alt="Gallery" class="banner-bg-img">
+    <div class="banner-gradient"></div>
+    <div class="container kaveri-banner-inner">
+      <span class="section-tag-gold on-dark text-gold" style="background:rgba(212,175,55,0.15); border-color:rgba(212,175,55,0.3);"><i class="fas fa-camera-retro"></i> Visual Showcase</span>
+      <h1>Photo Gallery & Albums</h1>
+      <div class="kaveri-breadcrumb">
+        <a href="/">Home</a> <span>/</span> <span>Gallery</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Grid Section -->
+  <section class="py-5" style="background:var(--bg-page);">
+    <div class="container py-4">
+      
+      <!-- Filter Nav -->
+      <div class="d-flex flex-wrap justify-content-center gap-2 mb-5">
+        <button class="btn btn-sm btn-fn-gold rounded-pill px-4 gallery-filter active" data-filter="all">All Photos</button>
+        <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 gallery-filter" data-filter="dining">Restaurant Dining</button>
+        <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 gallery-filter" data-filter="banquets">Banquets & Catering</button>
+        <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 gallery-filter" data-filter="sweets">Punjab Sweets & Delicacies</button>
+      </div>
+
+      <!-- Photo Cards Grid -->
+      <div class="row g-4" id="galleryGrid">
+        
+        <!-- Dining -->
+        <div class="col-lg-4 col-md-6 gallery-card" data-category="dining">
+          <div class="gallery-card-item" onclick="openLightbox('/upload/project/1634558158820.5.jpg', 'Kaveri Restaurant Dining Ambiance')">
+            <img src="/upload/project/1634558158820.5.jpg" alt="Kaveri Dining Room" onerror="this.src='/images/Thekaveris.jpg'">
+            <div class="gallery-card-overlay">
+              <h4 class="gallery-overlay-title">Kaveri Restaurant</h4>
+              <span class="gallery-overlay-sub">Main Dining Hall · Church Complex</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 gallery-card" data-category="dining">
+          <div class="gallery-card-item" onclick="openLightbox('/upload/image/big/1634558263887.98.jpg', 'Kaveri Family Dining Section')">
+            <img src="/upload/image/big/1634558263887.98.jpg" alt="Kaveri Section" onerror="this.src='/images/fastfood.jpg'">
+            <div class="gallery-card-overlay">
+              <h4 class="gallery-overlay-title">Family Dining Lounges</h4>
+              <span class="gallery-overlay-sub">Warm & Elegant Setting</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 gallery-card" data-category="dining">
+          <div class="gallery-card-item" onclick="openLightbox('/upload/image/big/1634558263934.85.jpg', 'Kaveri Interior Decor')">
+            <img src="/upload/image/big/1634558263934.85.jpg" alt="Kaveri Decor" onerror="this.src='/images/Thekaveris.jpg'">
+            <div class="gallery-card-overlay">
+              <h4 class="gallery-overlay-title">Contemporary Interiors</h4>
+              <span class="gallery-overlay-sub">Refurbished Luxury</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Banquets & Catering -->
+        <div class="col-lg-4 col-md-6 gallery-card" data-category="banquets">
+          <div class="gallery-card-item" onclick="openLightbox('/upload/project/1634558326269.22.jpg', 'The Kav\'s Grand Banquets')">
+            <img src="/upload/project/1634558326269.22.jpg" alt="The Kav's Banquets" onerror="this.src='/Gallery/catering.jpg'">
+            <div class="gallery-card-overlay">
+              <h4 class="gallery-overlay-title">The Kav's Grand Ballroom</h4>
+              <span class="gallery-overlay-sub">Royal Weddings & Galas</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 gallery-card" data-category="banquets">
+          <div class="gallery-card-item" onclick="openLightbox('/upload/image/big/1634558386942.67.jpg', 'Banquet Table Arrangements')">
+            <img src="/upload/image/big/1634558386942.67.jpg" alt="Banquet Setup" onerror="this.src='/images/kavs.jpg'">
+            <div class="gallery-card-overlay">
+              <h4 class="gallery-overlay-title">Royal Table Styling</h4>
+              <span class="gallery-overlay-sub">Luxury Place Settings</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 gallery-card" data-category="banquets">
+          <div class="gallery-card-item" onclick="openLightbox('/upload/image/big/1634558386973.92.jpg', 'Outdoor Catering Setup')">
+            <img src="/upload/image/big/1634558386973.92.jpg" alt="Catering Live Counters" onerror="this.src='/Gallery/catering.jpg'">
+            <div class="gallery-card-overlay">
+              <h4 class="gallery-overlay-title">Live Catering Counters</h4>
+              <span class="gallery-overlay-sub">50 to 10,000 Guests</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sweets & Delicacies -->
+        <div class="col-lg-4 col-md-6 gallery-card" data-category="sweets">
+          <div class="gallery-card-item" onclick="openLightbox('/upload/project/1634558430305.67.jpg', 'Punjab Sweet House Mithai Showcase')">
+            <img src="/upload/project/1634558430305.67.jpg" alt="Punjab Sweet House" onerror="this.src='/images/punjaabsweethouse.jpg'">
+            <div class="gallery-card-overlay">
+              <h4 class="gallery-overlay-title">Punjab Sweet House</h4>
+              <span class="gallery-overlay-sub">Heritage Desi Ghee Mithai</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 gallery-card" data-category="sweets">
+          <div class="gallery-card-item" onclick="openLightbox('/images/vegthali.jpg', 'Kaveri Royal Vegetarian Thali')">
+            <img src="/images/vegthali.jpg" alt="Kaveri Thali">
+            <div class="gallery-card-overlay">
+              <h4 class="gallery-overlay-title">Royal Executive Thali</h4>
+              <span class="gallery-overlay-sub">Signature Multi-Course Feast</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 gallery-card" data-category="sweets">
+          <div class="gallery-card-item" onclick="openLightbox('/images/ice4.jpg', 'Kaveri Shakes & Beverages')">
+            <img src="/images/ice4.jpg" alt="Kaveri Beverages">
+            <div class="gallery-card-overlay">
+              <h4 class="gallery-overlay-title">Special Shakes & Coolers</h4>
+              <span class="gallery-overlay-sub">Chilled Delights</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox Modal -->
+  <div class="lightbox-modal" id="lightboxModal">
+    <div class="lightbox-content-box">
+      <button class="lightbox-close-btn" onclick="closeLightbox()">&times;</button>
+      <img src="" alt="Zoomed Photo" id="lightboxImage" class="lightbox-modal-img">
+      <h5 id="lightboxCaption" class="lightbox-modal-title"></h5>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="fn-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+          <div class="footer-brand">
+            <img src="/images/footer_logo.png" alt="Kaveri" style="height:36px; margin-right:8px;" onerror="this.style.display='none'">
+            <span>KAVERI GROUP</span>
+          </div>
+          <p class="footer-desc">Serving Ranchi with unmatched culinary excellence and royal hospitality since 1947.</p>
+        </div>
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="footer-heading">Our Ventures</h6>
+          <ul class="footer-links">
+            <li><a href="/kaveris.html">Kaveri's Restaurant</a></li>
+            <li><a href="/punjab_sweet_house.html">Punjab Sweet House</a></li>
+            <li><a href="/capitol_hotels.html">Capitol Hotels</a></li>
+            <li><a href="/the_kavs.html">The Kav's Banquets</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="footer-heading">Quick Links</h6>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about.html">About Us</a></li>
+            <li><a href="/menu.html">Explore Menu</a></li>
+            <li><a href="/catering.html">Catering</a></li>
+            <li><a href="/contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <h6 class="footer-heading">Flagship Location</h6>
+          <p class="footer-desc mb-2"><i class="fas fa-map-marker-alt text-gold me-2"></i> G.E.L. Church Shopping Complex, Main Road, Ranchi - 834001</p>
+          <p class="footer-desc mb-2"><i class="fas fa-phone-alt text-gold me-2"></i> 0651 2330330, 2330300, +91-8235520520</p>
+        </div>
+      </div>
+      <hr class="footer-divider">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 footer-copy">
+        <div>&copy; 2024 Kaveri Restaurant Group. All Rights Reserved. Ranchi, Jharkhand.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    // Gallery filter
+    document.querySelectorAll('.gallery-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.gallery-filter').forEach(b => {
+          b.classList.remove('btn-fn-gold', 'active');
+          b.classList.add('btn-outline-secondary');
+        });
+        btn.classList.add('btn-fn-gold', 'active');
+        btn.classList.remove('btn-outline-secondary');
+
+        const filter = btn.getAttribute('data-filter');
+        document.querySelectorAll('.gallery-card').forEach(card => {
+          if (filter === 'all' || card.getAttribute('data-category') === filter) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Lightbox handlers
+    function openLightbox(imgSrc, title) {
+      const modal = document.getElementById('lightboxModal');
+      const img = document.getElementById('lightboxImage');
+      const caption = document.getElementById('lightboxCaption');
+      img.src = imgSrc;
+      caption.textContent = title;
+      modal.classList.add('active');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightboxModal').classList.remove('active');
+    }
+
+    document.getElementById('lightboxModal')?.addEventListener('click', (e) => {
+      if (e.target.id === 'lightboxModal') closeLightbox();
+    });
+  </script>
+</body>
+</html>
