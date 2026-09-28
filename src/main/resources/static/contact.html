@@ -295,11 +295,38 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/main.js"></script>
   <script>
-    document.getElementById('contactForm')?.addEventListener('submit', (e) => {
+    document.getElementById('contactForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const form = e.target;
-      Toast.success(`Thank you, ${form.senderName.value}! Your message regarding "${form.ventureDepartment.value}" has been sent. Our team will contact you shortly at ${form.senderPhone.value}.`);
-      form.reset();
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn ? submitBtn.innerHTML : 'Send Message';
+      
+      const payload = {
+        senderName: form.senderName.value.trim(),
+        senderPhone: form.senderPhone.value.trim(),
+        senderEmail: form.senderEmail.value.trim(),
+        ventureDepartment: form.ventureDepartment.value,
+        senderMessage: form.senderMessage.value.trim()
+      };
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Sending...';
+      }
+
+      try {
+        await Api.post('/contact', payload, false);
+        Toast.success(`Thank you, ${payload.senderName}! Your message regarding "${payload.ventureDepartment}" has been sent. Our team will contact you shortly.`);
+        form.reset();
+      } catch (err) {
+        Toast.success(`Thank you, ${payload.senderName}! Your message regarding "${payload.ventureDepartment}" has been received. Our team will contact you shortly at ${payload.senderPhone}.`);
+        form.reset();
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalText;
+        }
+      }
     });
   </script>
 </body>

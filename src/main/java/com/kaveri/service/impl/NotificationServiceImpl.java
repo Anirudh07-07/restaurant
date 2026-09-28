@@ -1,0 +1,67 @@
+package com.kaveri.service.impl;
+
+import com.kaveri.dto.response.NotificationResponse;
+import com.kaveri.entity.Notification;
+import com.kaveri.entity.User;
+import com.kaveri.repository.NotificationRepository;
+import com.kaveri.service.NotificationService;
+import com.kaveri.util.SecurityUtils;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class NotificationServiceImpl implements NotificationService {
+
+    private final NotificationRepository notificationRepository;
+    private final SecurityUtils securityUtils;
+
+    @Override
+    @Transactional
+    public void createNotification(User user, String title, String message) {
+        Notification notification = Notification.builder()
+                .user(user)
+                .title(title)
+                .message(message)
+                .read(false)
+                .build();
+        notificationRepository.save(notification);
+        log.debug("Notification created for user {}: {}", user.getEmail(), title);
+        // Future: trigger email/SMS/push notification here
+    }
+
+    @Transactional(readOnly = true)
+    public Page<NotificationResponse> getMyNotifications(int page, int size) {
+        User user = securityUtils.getCurrentUser();
+        return notificationRepository
+                .findByUserIdOrderByCreatedAtDesc(user.getId(), PageRequest.of(page, size))
+                .map(this::toResponse);
+    }
+
+    @Transactional(readOnly = true)
+    public long getUnreadCount() {
+        User user = securityUtils.getCurrentUser();
+        return notificationRepository.countByUserIdAndReadFalse(user.getId());
+    }
+
+    @Transactional
+    public void markAllRead() {
+        User user = securityUtils.getCurrentUser();
+        notificationRepository.markAllReadForUser(user.getId());
+    }
+
+    private NotificationResponse toResponse(Notification n) {
+        return NotificationResponse.builder()
+                .id(n.getId())
+                .title(n.getTitle())
+                .message(n.getMessage())
+                .read(n.isRead())
+                .createdAt(n.getCreatedAt())
+                .build();
+    }
+}

@@ -126,8 +126,8 @@ async function loadReviews() {
 
 function getPlaceholderReviews() {
     return [
-        { name: 'Priya Sundaram', rating: 5, text: 'Absolutely authentic flavors! The Butter Chicken paired with garlic naan was heavenly. The delivery was at my door in 25 minutes piping hot.' },
-        { name: 'Arjun Mehta', rating: 5, text: 'Best Biryani experience in Bangalore. The fragrance, tender chicken pieces and saffron aroma made our anniversary dinner unforgettable.' },
-        { name: 'Ananya Roy', rating: 5, text: 'From the molten chocolate lava cake to the handcrafted thin-crust pizza, FoodNest never fails to impress. Highly recommended!' }
+        { name: 'Priya Sundaram', rating: 5, text: 'Absolutely authentic royal flavours! The Kaveri Special Veg Thali and Paneer Butter Masala are unmatched in Ranchi. A true family tradition.' },
+        { name: 'Arjun Mehta', rating: 5, text: 'The Dal Makhani and Garlic Naan were extraordinary. Four generations of consistent quality since 1947 really shows in every bite.' },
+        { name: 'Ananya Roy', rating: 5, text: 'From the fresh heritage sweets of Punjab Sweet House to the crispy Masala Dosa, Kaveri never fails to impress. Highly recommended!' }
     ];
 }
