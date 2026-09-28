@@ -37,5 +37,6 @@ public class AddressRequest {
     @Pattern(regexp = "^[6-9]\\d{9}$", message = "Please provide a valid 10-digit phone number")
     private String phoneNumber;
 
+    @Builder.Default
     private boolean isDefault = false;
 }

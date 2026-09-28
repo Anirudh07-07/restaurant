@@ -27,8 +27,11 @@ public class FoodItemRequest {
     @NotNull(message = "Category is required")
     private Long categoryId;
 
+    @Builder.Default
     private boolean available = true;
+    @Builder.Default
     private boolean vegetarian = false;
+    @Builder.Default
     private boolean spicy = false;
 
     @Min(value = 1, message = "Preparation time must be at least 1 minute")
