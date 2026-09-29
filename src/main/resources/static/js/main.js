@@ -268,6 +268,37 @@ const Navbar = {
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) logoutBtn.addEventListener('click', (e) => { e.preventDefault(); Auth.logout(); });
 
+        // Mobile Navbar collapse on link click / outside click / escape
+        const navCollapse = document.getElementById('navbarNav');
+        if (navCollapse) {
+            // Auto close on navigation link click (except dropdown toggle)
+            navCollapse.querySelectorAll('.nav-link:not(.dropdown-toggle), .dropdown-item').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navCollapse.classList.contains('show')) {
+                        const bsCollapse = bootstrap.Collapse.getInstance(navCollapse) || new bootstrap.Collapse(navCollapse, { toggle: false });
+                        bsCollapse.hide();
+                    }
+                });
+            });
+
+            // Close on click outside
+            document.addEventListener('click', (e) => {
+                const nav = document.getElementById('mainNav');
+                if (navCollapse.classList.contains('show') && nav && !nav.contains(e.target)) {
+                    const bsCollapse = bootstrap.Collapse.getInstance(navCollapse) || new bootstrap.Collapse(navCollapse, { toggle: false });
+                    bsCollapse.hide();
+                }
+            });
+
+            // Close on Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && navCollapse.classList.contains('show')) {
+                    const bsCollapse = bootstrap.Collapse.getInstance(navCollapse) || new bootstrap.Collapse(navCollapse, { toggle: false });
+                    bsCollapse.hide();
+                }
+            });
+        }
+
         // Navbar scroll effect
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('mainNav');
