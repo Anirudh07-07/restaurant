@@ -11,7 +11,7 @@ WORKDIR /app
 RUN mkdir -p /app/uploads
 
 # Copy the JAR
-COPY --from=build /app/target/foodnest-1.0.0.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 
 # Run as non-root user for security
 RUN addgroup -S foodnest && adduser -S foodnest -G foodnest
