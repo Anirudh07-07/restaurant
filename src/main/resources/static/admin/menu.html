@@ -6,22 +6,52 @@
     <title>Menu Management — Kaveri Restaurant Group Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        .admin-body { background: #f0f2f5; }
-        @media (max-width: 991.98px) {
-            .fn-navbar { padding-left: 15px !important; }
-        }
-        .food-thumb {
-            width: 54px;
-            height: 54px;
+        .food-thumb-box {
+            position: relative;
+            width: 60px;
+            height: 60px;
             border-radius: 12px;
-            object-fit: cover;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+            background: #f1ece4;
+            border: 1px solid rgba(0,0,0,0.08);
+            flex-shrink: 0;
+            cursor: pointer;
         }
-        .table th { font-weight: 600; color: #495057; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .table td { font-size: 0.92rem; vertical-align: middle; }
+        .food-thumb-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.2s ease;
+        }
+        .food-thumb-box:hover img {
+            transform: scale(1.08);
+        }
+        .no-img-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            border: 1px dashed #ced4da;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 0.65rem;
+            flex-shrink: 0;
+            text-align: center;
+            line-height: 1.1;
+        }
+        .no-img-box i {
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+            opacity: 0.6;
+        }
+        .table th { font-weight: 600; color: #495057; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .table td { font-size: 0.9rem; vertical-align: middle; }
         .badge-veg-subtle { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
         .badge-nonveg-subtle { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
         .badge-spicy-subtle { background: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; }
@@ -29,74 +59,118 @@
             background-color: #28a745;
             border-color: #28a745;
         }
+
+        /* Responsive Mobile Dish Card */
+        @media (max-width: 767.98px) {
+            .mobile-dish-card {
+                background: #fff;
+                border-radius: 14px;
+                padding: 1rem;
+                margin-bottom: 1rem;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                border: 1px solid #eef0f3;
+            }
+        }
     </style>
 </head>
 <body class="admin-body">
 
-<!-- ===== TOP NAV ===== -->
-<nav class="navbar navbar-dark fn-navbar" style="position:fixed;top:0;left:0;right:0;z-index:200;padding-left:260px;">
-    <div class="container-fluid">
-        <span class="navbar-brand fn-brand mb-0 h1"><i class="fas fa-utensils me-2 text-gold"></i>Menu Management</span>
-        <div class="d-flex align-items-center gap-3">
-            <a href="/" class="btn btn-outline-light btn-sm rounded-pill" target="_blank">
-                <i class="fas fa-external-link-alt me-1"></i>View Website
-            </a>
-            <span class="text-white-50" id="adminName">Admin</span>
-            <button class="btn btn-outline-danger btn-sm rounded-pill" id="adminLogout">
-                <i class="fas fa-sign-out-alt me-1"></i>Logout
+<div class="admin-backdrop" id="adminBackdrop"></div>
+
+<!-- ===== TOPBAR ===== -->
+<header class="admin-topbar">
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-outline-light btn-sm d-lg-none rounded-circle" id="sidebarToggle" style="width:36px;height:36px;">
+            <i class="fas fa-bars"></i>
+        </button>
+        <span class="navbar-brand mb-0 h5 text-white fw-bold d-flex align-items-center gap-2">
+            <i class="fas fa-utensils text-warning"></i>
+            <span>Menu & Culinary Catalog</span>
+        </span>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <a href="/menu.html" class="btn btn-outline-light btn-sm rounded-pill px-3" target="_blank">
+            <i class="fas fa-external-link-alt me-1"></i> Public Menu
+        </a>
+        <div class="dropdown">
+            <button class="btn btn-outline-light btn-sm rounded-pill px-3 dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fas fa-user-shield me-1 text-warning"></i><span id="adminName">Admin</span>
             </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                <li><a class="dropdown-item" href="/admin/settings.html"><i class="fas fa-cog me-2 text-muted"></i>Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="#" id="adminLogout"><i class="fas fa-sign-out-alt me-2"></i>Sign Out</a></li>
+            </ul>
         </div>
     </div>
-</nav>
+</header>
 
 <!-- ===== SIDEBAR ===== -->
-<aside class="admin-sidebar">
-    <div class="px-4 py-3 mb-2" style="margin-top:70px;">
-        <div class="footer-brand" style="font-size:1.15rem; color:var(--fn-gold); display:flex; align-items:center;">
-            <img src="/images/footer_logo.png" alt="Kaveri" style="height:26px; margin-right:8px;" onerror="this.style.display='none'">
-            <span>KAVERI ADMIN</span>
+<aside class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar-brand">
+        <div class="admin-sidebar-brand-title">
+            <img src="/images/footer_logo.png" alt="Kaveri" style="height:28px;" onerror="this.style.display='none'">
+            <span>KAVERI</span>
         </div>
-        <small class="text-white-50">Ranchi, Jharkhand</small>
+        <div class="admin-sidebar-brand-subtitle">Restaurant Group Operations</div>
     </div>
-    <nav>
+    <nav class="admin-sidebar-nav">
+        <div class="admin-nav-header">Overview</div>
         <a href="/admin/dashboard.html" class="admin-nav-link">
-            <i class="fas fa-tachometer-alt fa-fw"></i> Dashboard
+            <i class="fas fa-tachometer-alt"></i> Dashboard
         </a>
-        <a href="/admin/orders.html" class="admin-nav-link">
-            <i class="fas fa-shopping-bag fa-fw"></i> Orders
+        <a href="/admin/reports.html" class="admin-nav-link">
+            <i class="fas fa-chart-pie"></i> Reports & Analytics
         </a>
+
+        <div class="admin-nav-header">Catalog & Menu</div>
         <a href="/admin/menu.html" class="admin-nav-link active">
-            <i class="fas fa-utensils fa-fw"></i> Menu
+            <i class="fas fa-utensils"></i> Menu Items
         </a>
         <a href="/admin/categories.html" class="admin-nav-link">
-            <i class="fas fa-tags fa-fw"></i> Categories
+            <i class="fas fa-tags"></i> Categories
         </a>
-        <a href="/admin/users.html" class="admin-nav-link">
-            <i class="fas fa-users fa-fw"></i> Customers
+
+        <div class="admin-nav-header">Hospitality & Sales</div>
+        <a href="/admin/orders.html" class="admin-nav-link">
+            <i class="fas fa-shopping-bag"></i> Orders
         </a>
         <a href="/admin/reservations.html" class="admin-nav-link">
-            <i class="fas fa-calendar-check fa-fw"></i> Reservations
+            <i class="fas fa-calendar-check"></i> Reservations
+        </a>
+
+        <div class="admin-nav-header">People & Feedback</div>
+        <a href="/admin/users.html" class="admin-nav-link">
+            <i class="fas fa-users"></i> Customers
         </a>
         <a href="/admin/reviews.html" class="admin-nav-link">
-            <i class="fas fa-star fa-fw"></i> Reviews
+            <i class="fas fa-star"></i> Reviews Moderation
+        </a>
+        <a href="/admin/messages.html" class="admin-nav-link">
+            <i class="fas fa-envelope"></i> Inquiries & Contact
+        </a>
+
+        <div class="admin-nav-header">Configuration</div>
+        <a href="/admin/settings.html" class="admin-nav-link">
+            <i class="fas fa-sliders-h"></i> System Settings
         </a>
     </nav>
 </aside>
 
 <!-- ===== MAIN CONTENT ===== -->
 <main class="admin-content">
-    <!-- Page Header -->
+    <!-- Header -->
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
-            <h2 class="mb-1 fw-bold" style="font-family:'Playfair Display',serif;">Menu Management</h2>
-            <p class="text-muted mb-0 small">Create dishes, adjust pricing, upload photos, and toggle item availability</p>
+            <h2 class="mb-1 fw-bold text-dark" style="font-family:'Playfair Display',serif;">Menu Management</h2>
+            <p class="text-muted mb-0 small">Add dishes, set pricing, upload or replace food photos, and manage item availability.</p>
         </div>
         <div class="d-flex gap-2">
             <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" id="refreshBtn">
                 <i class="fas fa-sync-alt me-1"></i> Refresh
             </button>
             <button class="btn btn-fn btn-sm rounded-pill px-3" id="openAddFoodModalBtn">
-                <i class="fas fa-plus me-1"></i> Add New Food Item
+                <i class="fas fa-plus me-1"></i> Add New Dish
             </button>
         </div>
     </div>
@@ -105,111 +179,126 @@
     <div class="card border-0 shadow-sm mb-4" style="border-radius:16px;">
         <div class="card-body p-3 p-md-4">
             <div class="row g-3 align-items-center">
-                <div class="col-md-5 col-lg-4">
+                <!-- Search -->
+                <div class="col-md-4 col-lg-3">
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
-                        <input type="text" class="form-control border-start-0 ps-0" id="menuSearchInput"
-                               placeholder="Search dish name or description...">
+                        <input type="text" class="form-control border-start-0 ps-0" id="menuSearchInput" placeholder="Search dish name...">
                     </div>
                 </div>
+                <!-- Category Filter -->
                 <div class="col-md-4 col-lg-3">
                     <select class="form-select" id="menuCatFilter">
                         <option value="">All Categories</option>
-                        <!-- Populated dynamically -->
                     </select>
                 </div>
-                <div class="col-md-3 col-lg-2">
+                <!-- Image Filter -->
+                <div class="col-md-4 col-lg-2">
+                    <select class="form-select" id="menuImageFilter">
+                        <option value="">All Images</option>
+                        <option value="true">📸 With Image</option>
+                        <option value="false">⚠️ Missing Image</option>
+                    </select>
+                </div>
+                <!-- Dietary Filter -->
+                <div class="col-md-6 col-lg-2">
                     <select class="form-select" id="menuDietFilter">
                         <option value="">All Dietary</option>
-                        <option value="veg">Veg Only</option>
-                        <option value="nonveg">Non-Veg Only</option>
+                        <option value="true">🟢 Veg Only</option>
+                        <option value="false">🔴 Non-Veg Only</option>
                     </select>
                 </div>
-                <div class="col-md-12 col-lg-3 text-lg-end text-muted small" id="totalFoodsCount">
-                    Loading items...
+                <!-- Availability Filter -->
+                <div class="col-md-6 col-lg-2">
+                    <select class="form-select" id="menuAvailFilter">
+                        <option value="">All Availability</option>
+                        <option value="true">✅ In Stock</option>
+                        <option value="false">❌ Out of Stock</option>
+                    </select>
                 </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                <div class="small text-muted" id="filterStatsText">Loading dishes...</div>
+                <button class="btn btn-link btn-sm text-decoration-none p-0 text-muted" id="clearFiltersBtn">
+                    <i class="fas fa-times-circle me-1"></i> Reset Filters
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Food Items Table -->
-    <div class="card border-0 shadow-sm" style="border-radius:16px; overflow:hidden;">
+    <!-- Food Table (Desktop View) -->
+    <div class="card border-0 shadow-sm d-none d-md-block" style="border-radius:16px; overflow:hidden;">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0" id="foodTable">
                 <thead class="table-light">
                     <tr>
-                        <th class="ps-4">Item</th>
+                        <th class="ps-4" style="width:80px;">Image</th>
+                        <th>Dish Details</th>
                         <th>Category</th>
                         <th>Price</th>
-                        <th>Prep Time</th>
                         <th>Dietary</th>
-                        <th>Available</th>
-                        <th>Rating</th>
-                        <th class="text-end pe-4">Actions</th>
+                        <th>In Stock</th>
+                        <th class="text-end pe-4" style="min-width:240px;">Image & Dish Actions</th>
                     </tr>
                 </thead>
                 <tbody id="foodTableBody">
                     <tr>
-                        <td colspan="8" class="text-center py-5">
+                        <td colspan="7" class="text-center py-5">
                             <div class="spinner-border text-danger" role="status"></div>
-                            <div class="mt-2 text-muted small">Loading food items...</div>
+                            <div class="mt-2 text-muted small">Loading menu items...</div>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- Table Footer / Pagination -->
+        <!-- Pagination -->
         <div class="card-footer bg-white border-0 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
-            <span class="text-muted small" id="paginationInfo">Showing 0 of 0</span>
+            <span class="text-muted small" id="paginationInfo">Showing 0 of 0 dishes</span>
             <nav>
-                <ul class="pagination pagination-sm mb-0" id="paginationControls">
-                    <!-- Populated dynamically -->
-                </ul>
+                <ul class="pagination pagination-sm mb-0" id="paginationControls"></ul>
             </nav>
         </div>
     </div>
+
+    <!-- Mobile View (Compact Responsive Cards) -->
+    <div class="d-md-none" id="mobileFoodCardsContainer">
+        <!-- Rendered dynamically for mobile -->
+    </div>
 </main>
 
-<!-- ===== MODAL: ADD / EDIT FOOD ITEM ===== -->
-<div class="modal fade" id="foodItemModal" tabindex="-1" aria-labelledby="foodItemModalLabel" aria-hidden="true">
+<!-- ===== MODAL: ADD / EDIT DISH ===== -->
+<div class="modal fade" id="foodItemModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow" style="border-radius:20px; overflow:hidden;">
-            <div class="modal-header text-white" style="background:var(--fn-darker);">
-                <h5 class="modal-title" id="foodItemModalLabel">
-                    <i class="fas fa-utensils me-2 text-warning"></i><span id="foodModalActionText">Add New Food Item</span>
+            <div class="modal-header text-white" style="background:var(--primary-dark);">
+                <h5 class="modal-title" id="foodModalTitle">
+                    <i class="fas fa-utensils me-2 text-warning"></i><span>Add New Food Item</span>
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form id="foodItemForm">
                 <div class="modal-body p-4">
                     <input type="hidden" id="foodItemId">
 
                     <div class="row g-3">
-                        <!-- Food Name -->
                         <div class="col-md-8">
-                            <label class="form-label fw-semibold">Food Name <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">Dish Name <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="foodName" placeholder="e.g. Paneer Butter Masala" required maxlength="150">
                         </div>
-
-                        <!-- Category -->
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Category <span class="text-danger">*</span></label>
                             <select class="form-select" id="foodCategoryId" required>
                                 <option value="">Select Category</option>
-                                <!-- Categories populated -->
                             </select>
                         </div>
-
-                        <!-- Price & Prep Time -->
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Price (₹) <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text">₹</span>
-                                <input type="number" step="0.01" min="0.01" max="99999.99" class="form-control" id="foodPrice" placeholder="299.00" required>
+                                <input type="number" step="0.01" min="0" max="99999" class="form-control" id="foodPrice" placeholder="280.00" required>
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Preparation Time (minutes)</label>
                             <div class="input-group">
@@ -217,47 +306,33 @@
                                 <input type="number" min="1" max="120" class="form-control" id="foodPrepTime" placeholder="20" value="20">
                             </div>
                         </div>
-
-                        <!-- Description -->
                         <div class="col-12">
                             <label class="form-label fw-semibold">Description</label>
-                            <textarea class="form-control" id="foodDescription" rows="3" placeholder="Brief tempting description of the dish..." maxlength="1000"></textarea>
+                            <textarea class="form-control" id="foodDescription" rows="3" placeholder="Flavourful description for the dish..." maxlength="1000"></textarea>
                         </div>
-
-                        <!-- Dietary Options -->
                         <div class="col-md-6">
                             <label class="form-label fw-semibold d-block">Dietary Type</label>
                             <div class="d-flex gap-4 mt-2">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="dietaryType" id="dietVeg" value="veg" checked>
-                                    <label class="form-check-label text-success fw-semibold" for="dietVeg">
-                                        🟢 Vegetarian
-                                    </label>
+                                    <label class="form-check-label text-success fw-semibold" for="dietVeg">🟢 Vegetarian</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="dietaryType" id="dietNonVeg" value="nonveg">
-                                    <label class="form-check-label text-danger fw-semibold" for="dietNonVeg">
-                                        🔴 Non-Vegetarian
-                                    </label>
+                                    <label class="form-check-label text-danger fw-semibold" for="dietNonVeg">🔴 Non-Vegetarian</label>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Spice & Availability Checkboxes -->
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold d-block">Preferences & Status</label>
+                            <label class="form-label fw-semibold d-block">Attributes & Status</label>
                             <div class="d-flex gap-4 mt-2">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="foodSpicy">
-                                    <label class="form-check-label text-warning-emphasis fw-semibold" for="foodSpicy">
-                                        🌶️ Spicy
-                                    </label>
+                                    <label class="form-check-label text-warning-emphasis fw-semibold" for="foodSpicy">🌶️ Spicy</label>
                                 </div>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="foodAvailable" checked>
-                                    <label class="form-check-label fw-semibold" for="foodAvailable">
-                                        Available in menu
-                                    </label>
+                                    <label class="form-check-label fw-semibold" for="foodAvailable">Available in Menu</label>
                                 </div>
                             </div>
                         </div>
@@ -274,26 +349,34 @@
     </div>
 </div>
 
-<!-- ===== MODAL: UPLOAD DISH IMAGE ===== -->
+<!-- ===== MODAL: ADD / CHANGE / PREVIEW IMAGE ===== -->
 <div class="modal fade" id="imageUploadModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 shadow" style="border-radius:16px; overflow:hidden;">
-            <div class="modal-header border-0 pb-0">
-                <h6 class="modal-title fw-bold"><i class="fas fa-camera me-2 text-danger"></i>Upload Dish Image</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="border-radius:20px; overflow:hidden;">
+            <div class="modal-header bg-dark text-white">
+                <h6 class="modal-title fw-bold" id="imageModalHeaderTitle">
+                    <i class="fas fa-camera me-2 text-warning"></i><span id="imageModalActionLabel">Upload Menu Image</span>
+                </h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body py-3">
+            <div class="modal-body p-4">
                 <div class="text-center mb-3">
-                    <img id="imageUploadPreview" src="/images/Thekaveris.jpg"
-                         class="rounded-3 shadow-sm" style="width:100%;height:150px;object-fit:cover;">
+                    <label class="form-label fw-semibold text-muted small d-block mb-2">Selected Image Preview</label>
+                    <div style="position:relative; width:100%; height:230px; border-radius:16px; overflow:hidden; background:#f4efe6; border:2px dashed #c59b27; display:flex; align-items:center; justify-content:center;">
+                        <img id="imageModalPreview" src="/images/Thekaveris.jpg" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='/images/Thekaveris.jpg'">
+                    </div>
                 </div>
-                <p class="small text-muted mb-2">Upload a high-quality picture for <strong id="uploadFoodTitle">Dish</strong>:</p>
-                <input type="file" class="form-control form-control-sm" id="foodImageFile" accept="image/png,image/jpeg,image/webp">
-                <small class="text-muted d-block mt-1">Accepted: JPG, PNG, WEBP (Max 5MB)</small>
+                <h5 class="fw-bold mb-1 text-center text-dark" id="imageModalDishName">Dish Name</h5>
+                <p class="text-muted small text-center mb-3" id="imageModalStatusText">Select a food image to upload</p>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Choose File (JPG, JPEG, PNG, WebP — Max 5 MB):</label>
+                    <input type="file" class="form-control" id="foodImageFileInput" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+                </div>
             </div>
-            <div class="modal-footer border-0 pt-0">
-                <button type="button" class="btn btn-light btn-sm rounded-pill" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-fn btn-sm rounded-pill px-3" id="submitImageUploadBtn">
+            <div class="modal-footer bg-light border-0 py-3 d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-secondary btn-sm rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-fn btn-sm rounded-pill px-4" id="uploadImageBtn" disabled>
                     <i class="fas fa-upload me-1"></i> Upload
                 </button>
             </div>
@@ -301,14 +384,31 @@
     </div>
 </div>
 
-<!-- ===== MODAL: DELETE CONFIRMATION ===== -->
+<!-- ===== MODAL: REMOVE IMAGE CONFIRMATION ===== -->
+<div class="modal fade" id="removeImageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow" style="border-radius:16px;">
+            <div class="modal-body p-4 text-center">
+                <i class="fas fa-image fa-3x text-warning mb-3"></i>
+                <h6 class="fw-bold mb-2">Remove this menu image?</h6>
+                <p class="small text-muted mb-4">Are you sure you want to remove the image for <strong id="removeImageDishName">this dish</strong>? The public menu will display its default placeholder.</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <button type="button" class="btn btn-light btn-sm rounded-pill px-3" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger btn-sm rounded-pill px-4" id="confirmRemoveImageBtn">Remove</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL: DELETE DISH ===== -->
 <div class="modal fade" id="deleteFoodModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content border-0 shadow" style="border-radius:16px;">
             <div class="modal-body p-4 text-center">
                 <i class="fas fa-trash-alt fa-3x text-danger mb-3"></i>
-                <h6 class="fw-bold mb-2">Delete Food Item?</h6>
-                <p class="small text-muted mb-4">Are you sure you want to remove <strong id="deleteFoodName">this dish</strong>? This action cannot be undone.</p>
+                <h6 class="fw-bold mb-2">Delete Dish?</h6>
+                <p class="small text-muted mb-4">Are you sure you want to delete <strong id="deleteFoodTitle">this dish</strong> from the menu? This action cannot be undone.</p>
                 <div class="d-flex justify-content-center gap-2">
                     <button type="button" class="btn btn-light btn-sm rounded-pill px-3" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-danger btn-sm rounded-pill px-4" id="confirmDeleteFoodBtn">Delete</button>
@@ -321,22 +421,25 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/main.js"></script>
 <script>
-// State
-let categoriesList = [];
-let allFoodItems = [];
-let filteredFoodItems = [];
+let categories = [];
 let currentPage = 0;
-let pageSize = 15;
-let activeFoodId = null;
+const pageSize = 15;
+let activeFoodItem = null;
+let selectedFile = null;
 
-let foodModalInstance = null;
-let imageModalInstance = null;
-let deleteModalInstance = null;
+let foodModal = null;
+let imageUploadModal = null;
+let removeImageModal = null;
+let deleteFoodModal = null;
+
+const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Guard check
+    // 1. Strict Security Guard: verify admin token and role
     if (!Auth.isLoggedIn() || !Auth.isAdmin()) {
-        alert('Admin access required');
+        alert('Access denied. Administrator privileges required.');
         window.location.href = '/login.html';
         return;
     }
@@ -345,448 +448,533 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('adminName').textContent = user?.name || 'Admin';
     document.getElementById('adminLogout').addEventListener('click', () => Auth.logout());
 
-    // 2. Initialize Modals
-    foodModalInstance = new bootstrap.Modal(document.getElementById('foodItemModal'));
-    imageModalInstance = new bootstrap.Modal(document.getElementById('imageUploadModal'));
-    deleteModalInstance = new bootstrap.Modal(document.getElementById('deleteFoodModal'));
-
-    // 3. Load Categories
-    await loadCategories();
-
-    // 4. Initial Load of Menu Items
-    await loadMenuItems();
-
-    // 5. Setup Listeners
-    setupListeners();
-});
-
-// Load Categories from /api/admin/categories (with fallback)
-async function loadCategories() {
-    try {
-        let res;
-        try {
-            res = await Api.get('/admin/categories');
-        } catch (_) {
-            res = await Api.get('/categories', false);
-        }
-        categoriesList = res.data || [];
-
-        // Populate Category Filter dropdown
-        const filterEl = document.getElementById('menuCatFilter');
-        filterEl.innerHTML = '<option value="">All Categories</option>';
-
-        // Populate Form Category dropdown
-        const formCatEl = document.getElementById('foodCategoryId');
-        formCatEl.innerHTML = '<option value="">Select Category</option>';
-
-        categoriesList.forEach(c => {
-            filterEl.innerHTML += `<option value="${c.id}">${escapeHtml(c.name)}</option>`;
-            formCatEl.innerHTML += `<option value="${c.id}">${escapeHtml(c.name)}</option>`;
+    // Mobile drawer toggle
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('adminSidebar');
+    const backdrop = document.getElementById('adminBackdrop');
+    if (toggleBtn && sidebar && backdrop) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('show');
+            backdrop.classList.toggle('show');
         });
-    } catch (err) {
-        Toast.error('Could not load categories: ' + err.message);
-    }
-}
-
-// Load Food Items
-async function loadMenuItems() {
-    const tbody = document.getElementById('foodTableBody');
-    tbody.innerHTML = `
-        <tr>
-            <td colspan="8" class="text-center py-5">
-                <div class="spinner-border text-danger" role="status"></div>
-                <div class="mt-2 text-muted small">Loading food items...</div>
-            </td>
-        </tr>`;
-
-    try {
-        let foods = [];
-        // First try admin or search endpoint
-        try {
-            const res = await Api.get('/menu/search?size=100', false);
-            foods = res.data?.content || [];
-        } catch (_) {
-            const res = await Api.get('/menu?size=100', false);
-            foods = res.data?.content || [];
-        }
-
-        allFoodItems = foods;
-        applyFilters();
-    } catch (err) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="8" class="text-center py-5 text-danger">
-                    <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
-                    <div>Failed to load food items: ${err.message}</div>
-                    <button class="btn btn-sm btn-outline-danger mt-2" onclick="loadMenuItems()">Retry</button>
-                </td>
-            </tr>`;
-        Toast.error('Failed to load menu: ' + err.message);
-    }
-}
-
-// Apply Filters & Search locally (or re-render)
-function applyFilters() {
-    const searchVal = document.getElementById('menuSearchInput').value.toLowerCase().trim();
-    const catVal = document.getElementById('menuCatFilter').value;
-    const dietVal = document.getElementById('menuDietFilter').value;
-
-    filteredFoodItems = allFoodItems.filter(item => {
-        // Keyword match
-        if (searchVal) {
-            const nameMatch = (item.name || '').toLowerCase().includes(searchVal);
-            const descMatch = (item.description || '').toLowerCase().includes(searchVal);
-            if (!nameMatch && !descMatch) return false;
-        }
-
-        // Category match
-        if (catVal && String(item.categoryId) !== String(catVal)) {
-            return false;
-        }
-
-        // Dietary match
-        if (dietVal === 'veg' && !item.vegetarian) return false;
-        if (dietVal === 'nonveg' && item.vegetarian) return false;
-
-        return true;
-    });
-
-    currentPage = 0;
-    renderTable();
-}
-
-// Render Food Items Table with Client-Side Pagination
-function renderTable() {
-    const tbody = document.getElementById('foodTableBody');
-    const total = filteredFoodItems.length;
-    document.getElementById('totalFoodsCount').textContent = `Total: ${total} items`;
-
-    if (total === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="8" class="text-center py-5 text-muted">
-                    <i class="fas fa-utensils fa-3x mb-3 text-secondary" style="opacity:0.4;"></i>
-                    <h6 class="fw-bold">No food items found</h6>
-                    <p class="small mb-0">Try changing your filters or add a new dish to the menu.</p>
-                </td>
-            </tr>`;
-        document.getElementById('paginationInfo').textContent = 'Showing 0 of 0';
-        document.getElementById('paginationControls').innerHTML = '';
-        return;
+        backdrop.addEventListener('click', () => {
+            sidebar.classList.remove('show');
+            backdrop.classList.remove('show');
+        });
     }
 
-    const totalPages = Math.ceil(total / pageSize);
-    const startIdx = currentPage * pageSize;
-    const endIdx = Math.min(startIdx + pageSize, total);
-    const pageItems = filteredFoodItems.slice(startIdx, endIdx);
+    foodModal = new bootstrap.Modal(document.getElementById('foodItemModal'));
+    imageUploadModal = new bootstrap.Modal(document.getElementById('imageUploadModal'));
+    removeImageModal = new bootstrap.Modal(document.getElementById('removeImageModal'));
+    deleteFoodModal = new bootstrap.Modal(document.getElementById('deleteFoodModal'));
 
-    document.getElementById('paginationInfo').textContent =
-        `Showing ${startIdx + 1} to ${endIdx} of ${total} items`;
+    await loadCategories();
+    await loadMenu();
 
-    let html = '';
-    pageItems.forEach(item => {
-        const imgSrc = item.imageUrl || '/images/Thekaveris.jpg';
-        const priceFmt = '₹' + parseFloat(item.price || 0).toLocaleString('en-IN', {minimumFractionDigits: 2});
-        const vegBadge = item.vegetarian
-            ? '<span class="badge badge-veg-subtle">🟢 Veg</span>'
-            : '<span class="badge badge-nonveg-subtle">🔴 Non-Veg</span>';
-        const spicyBadge = item.spicy
-            ? '<span class="badge badge-spicy-subtle ms-1">🌶️ Spicy</span>'
-            : '';
-        const rating = item.rating ? parseFloat(item.rating).toFixed(1) + ' ★' : '—';
-        const isChecked = item.available ? 'checked' : '';
-
-        html += `
-        <tr>
-            <td class="ps-4">
-                <div class="d-flex align-items-center gap-3">
-                    <img src="${imgSrc}" alt="${escapeHtml(item.name)}" class="food-thumb"
-                         onerror="this.src='/images/Thekaveris.jpg'">
-                    <div>
-                        <div class="fw-bold text-dark">${escapeHtml(item.name)}</div>
-                        <small class="text-muted text-truncate d-inline-block" style="max-width:260px;">
-                            ${escapeHtml(item.description || 'No description')}
-                        </small>
-                    </div>
-                </div>
-            </td>
-            <td>
-                <span class="badge bg-light text-dark border">${escapeHtml(item.categoryName || 'General')}</span>
-            </td>
-            <td>
-                <span class="fw-bold text-dark">${priceFmt}</span>
-            </td>
-            <td class="text-muted small">
-                <i class="fas fa-clock fa-xs me-1"></i>${item.preparationTime || 20} min
-            </td>
-            <td>
-                ${vegBadge}${spicyBadge}
-            </td>
-            <td>
-                <div class="form-check form-switch mb-0">
-                    <input class="form-check-input" type="checkbox" id="toggle-${item.id}" ${isChecked}
-                           onchange="toggleAvailability(${item.id}, this)">
-                </div>
-            </td>
-            <td>
-                <span class="text-warning fw-bold small">${rating}</span>
-                <small class="text-muted">(${item.reviewCount || 0})</small>
-            </td>
-            <td class="text-end pe-4">
-                <div class="btn-group btn-group-sm">
-                    <button class="btn btn-outline-secondary rounded-pill me-1" title="Upload Photo"
-                            onclick="openImageModal(${item.id}, '${escapeHtml(item.name)}', '${imgSrc}')">
-                        <i class="fas fa-camera"></i>
-                    </button>
-                    <button class="btn btn-outline-primary rounded-pill me-1" title="Edit Item"
-                            onclick="openEditFoodModal(${item.id})">
-                        <i class="fas fa-pencil-alt"></i>
-                    </button>
-                    <button class="btn btn-outline-danger rounded-pill" title="Delete Item"
-                            onclick="openDeleteFoodModal(${item.id}, '${escapeHtml(item.name)}')">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>`;
-    });
-
-    tbody.innerHTML = html;
-    renderPagination(totalPages);
-}
-
-// Render Pagination
-function renderPagination(totalPages) {
-    const container = document.getElementById('paginationControls');
-    if (totalPages <= 1) {
-        container.innerHTML = '';
-        return;
-    }
-
-    let html = `
-        <li class="page-item ${currentPage === 0 ? 'disabled' : ''}">
-            <button class="page-link" onclick="goToPage(${currentPage - 1})"><i class="fas fa-chevron-left"></i></button>
-        </li>
-    `;
-
-    for (let p = 0; p < totalPages; p++) {
-        html += `
-            <li class="page-item ${p === currentPage ? 'active' : ''}">
-                <button class="page-link" onclick="goToPage(${p})">${p + 1}</button>
-            </li>
-        `;
-    }
-
-    html += `
-        <li class="page-item ${currentPage >= totalPages - 1 ? 'disabled' : ''}">
-            <button class="page-link" onclick="goToPage(${currentPage + 1})"><i class="fas fa-chevron-right"></i></button>
-        </li>
-    `;
-
-    container.innerHTML = html;
-}
-
-function goToPage(page) {
-    currentPage = page;
-    renderTable();
-}
-
-// Setup Event Listeners
-function setupListeners() {
-    let debounceTimer = null;
+    // Filters Event Listeners
+    let debounceTimer;
     document.getElementById('menuSearchInput').addEventListener('input', () => {
         clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(applyFilters, 300);
+        debounceTimer = setTimeout(() => { currentPage = 0; loadMenu(); }, 300);
     });
 
-    document.getElementById('menuCatFilter').addEventListener('change', applyFilters);
-    document.getElementById('menuDietFilter').addEventListener('change', applyFilters);
+    document.getElementById('menuCatFilter').addEventListener('change', () => { currentPage = 0; loadMenu(); });
+    document.getElementById('menuImageFilter').addEventListener('change', () => { currentPage = 0; loadMenu(); });
+    document.getElementById('menuDietFilter').addEventListener('change', () => { currentPage = 0; loadMenu(); });
+    document.getElementById('menuAvailFilter').addEventListener('change', () => { currentPage = 0; loadMenu(); });
 
-    document.getElementById('refreshBtn').addEventListener('click', async () => {
-        await loadMenuItems();
+    document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+        document.getElementById('menuSearchInput').value = '';
+        document.getElementById('menuCatFilter').value = '';
+        document.getElementById('menuImageFilter').value = '';
+        document.getElementById('menuDietFilter').value = '';
+        document.getElementById('menuAvailFilter').value = '';
+        currentPage = 0;
+        loadMenu();
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+        loadMenu();
         Toast.info('Menu reloaded');
     });
 
-    // Add Food Button
-    document.getElementById('openAddFoodModalBtn').addEventListener('click', () => {
-        activeFoodId = null;
-        document.getElementById('foodModalActionText').textContent = 'Add New Food Item';
-        document.getElementById('foodItemForm').reset();
-        document.getElementById('foodItemId').value = '';
-        document.getElementById('dietVeg').checked = true;
-        document.getElementById('foodAvailable').checked = true;
-        document.getElementById('foodSpicy').checked = false;
-        foodModalInstance.show();
-    });
+    document.getElementById('openAddFoodModalBtn').addEventListener('click', openAddDishModal);
+    document.getElementById('foodItemForm').addEventListener('submit', handleSaveDish);
 
-    // Form Submit (Add or Edit)
-    document.getElementById('foodItemForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await saveFoodItem();
-    });
-
-    // Image Upload input preview
-    document.getElementById('foodImageFile').addEventListener('change', (e) => {
+    // File input validation & client-side preview
+    const fileInput = document.getElementById('foodImageFileInput');
+    fileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (re) => {
-                document.getElementById('imageUploadPreview').src = re.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    // Image Upload Submit
-    document.getElementById('submitImageUploadBtn').addEventListener('click', async () => {
-        const fileInput = document.getElementById('foodImageFile');
-        if (!fileInput.files || fileInput.files.length === 0) {
-            Toast.warning('Please select an image file first');
+        if (!file) {
+            selectedFile = null;
+            document.getElementById('uploadImageBtn').disabled = true;
             return;
         }
 
-        const formData = new FormData();
-        formData.append('file', fileInput.files[0]);
-
-        try {
-            await Api.uploadFile(`/admin/menu/${activeFoodId}/image`, formData);
-            Toast.success('Image uploaded successfully!');
-            imageModalInstance.hide();
-            await loadMenuItems();
-        } catch (err) {
-            Toast.error('Upload failed: ' + err.message);
+        // Format validation
+        const ext = file.name.split('.').pop().toLowerCase();
+        const type = (file.type || '').toLowerCase();
+        if (!ALLOWED_EXTENSIONS.includes(ext) && !ALLOWED_MIME_TYPES.includes(type)) {
+            Toast.error('Please upload a JPG, PNG, or WebP image.');
+            fileInput.value = '';
+            selectedFile = null;
+            document.getElementById('uploadImageBtn').disabled = true;
+            return;
         }
+
+        // File size validation (Max 5 MB)
+        if (file.size > MAX_FILE_SIZE) {
+            Toast.error('Image size must be less than 5 MB.');
+            fileInput.value = '';
+            selectedFile = null;
+            document.getElementById('uploadImageBtn').disabled = true;
+            return;
+        }
+
+        selectedFile = file;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            document.getElementById('imageModalPreview').src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+        document.getElementById('uploadImageBtn').disabled = false;
     });
 
-    // Confirm Delete
-    document.getElementById('confirmDeleteFoodBtn').addEventListener('click', async () => {
-        if (!activeFoodId) return;
-        try {
-            await Api.delete(`/admin/menu/${activeFoodId}`);
-            Toast.success('Food item deleted');
-            deleteModalInstance.hide();
-            await loadMenuItems();
-        } catch (err) {
-            Toast.error('Failed to delete: ' + err.message);
-        }
-    });
+    document.getElementById('uploadImageBtn').addEventListener('click', handleUploadImage);
+    document.getElementById('confirmRemoveImageBtn').addEventListener('click', handleConfirmRemoveImage);
+    document.getElementById('confirmDeleteFoodBtn').addEventListener('click', handleDeleteDish);
+});
+
+async function loadCategories() {
+    try {
+        const res = await Api.get('/admin/categories');
+        categories = res.data || [];
+        
+        const filterSelect = document.getElementById('menuCatFilter');
+        const modalSelect = document.getElementById('foodCategoryId');
+
+        let filterHtml = '<option value="">All Categories</option>';
+        let modalHtml = '<option value="">Select Category</option>';
+
+        categories.forEach(c => {
+            filterHtml += `<option value="${c.id}">${c.name}</option>`;
+            modalHtml += `<option value="${c.id}">${c.name}</option>`;
+        });
+
+        filterSelect.innerHTML = filterHtml;
+        modalSelect.innerHTML = modalHtml;
+    } catch (err) {
+        console.error('Error loading categories', err);
+    }
 }
 
-// Open Edit Food Modal
-function openEditFoodModal(id) {
-    const item = allFoodItems.find(f => f.id === id);
-    if (!item) return;
+async function loadMenu() {
+    const tbody = document.getElementById('foodTableBody');
+    const mobileContainer = document.getElementById('mobileFoodCardsContainer');
 
-    activeFoodId = id;
-    document.getElementById('foodModalActionText').textContent = 'Edit Food Item';
-    document.getElementById('foodItemId').value = item.id;
-    document.getElementById('foodName').value = item.name || '';
-    document.getElementById('foodCategoryId').value = item.categoryId || '';
-    document.getElementById('foodPrice').value = item.price || '';
-    document.getElementById('foodPrepTime').value = item.preparationTime || 20;
-    document.getElementById('foodDescription').value = item.description || '';
-
-    if (item.vegetarian) {
-        document.getElementById('dietVeg').checked = true;
-    } else {
-        document.getElementById('dietNonVeg').checked = true;
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="7" class="text-center py-5">
+                <div class="spinner-border text-danger" role="status"></div>
+                <div class="mt-2 text-muted small">Loading menu items...</div>
+            </td>
+        </tr>
+    `;
+    if (mobileContainer) {
+        mobileContainer.innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-danger" role="status"></div>
+                <div class="mt-2 text-muted small">Loading menu items...</div>
+            </div>
+        `;
     }
 
-    document.getElementById('foodSpicy').checked = !!item.spicy;
-    document.getElementById('foodAvailable').checked = !!item.available;
+    const keyword = document.getElementById('menuSearchInput').value.trim();
+    const catId = document.getElementById('menuCatFilter').value;
+    const hasImage = document.getElementById('menuImageFilter').value;
+    const diet = document.getElementById('menuDietFilter').value;
+    const avail = document.getElementById('menuAvailFilter').value;
 
-    foodModalInstance.show();
+    let params = `?page=${currentPage}&size=${pageSize}&sortBy=id&sortDir=desc`;
+    if (keyword) params += `&keyword=${encodeURIComponent(keyword)}`;
+    if (catId) params += `&categoryId=${catId}`;
+    if (hasImage) params += `&hasImage=${hasImage}`;
+    if (diet) params += `&vegetarian=${diet}`;
+    if (avail) params += `&available=${avail}`;
+
+    try {
+        const res = await Api.get(`/admin/menu${params}`);
+        const pageData = res.data;
+        renderMenuTable(pageData);
+    } catch (err) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center py-4 text-danger">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                    <div>Unable to load menu: ${err.message}</div>
+                </td>
+            </tr>
+        `;
+        if (mobileContainer) {
+            mobileContainer.innerHTML = `<div class="alert alert-danger text-center">Unable to load menu: ${err.message}</div>`;
+        }
+    }
 }
 
-// Save Food Item (POST or PUT)
-async function saveFoodItem() {
-    const name = document.getElementById('foodName').value.trim();
-    const categoryId = parseInt(document.getElementById('foodCategoryId').value);
-    const price = parseFloat(document.getElementById('foodPrice').value);
-    const preparationTime = parseInt(document.getElementById('foodPrepTime').value) || 20;
-    const description = document.getElementById('foodDescription').value.trim();
-    const vegetarian = document.getElementById('dietVeg').checked;
-    const spicy = document.getElementById('foodSpicy').checked;
-    const available = document.getElementById('foodAvailable').checked;
+function renderMenuTable(pageData) {
+    const tbody = document.getElementById('foodTableBody');
+    const mobileContainer = document.getElementById('mobileFoodCardsContainer');
+    const items = pageData.content || [];
 
-    if (!name || isNaN(categoryId) || isNaN(price)) {
-        Toast.warning('Please fill in all required fields');
+    document.getElementById('filterStatsText').textContent = `Total matching: ${pageData.totalElements || 0} dishes (Page ${pageData.number + 1} of ${pageData.totalPages || 1})`;
+    document.getElementById('paginationInfo').textContent = `Showing ${items.length} of ${pageData.totalElements} dishes`;
+
+    if (items.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center py-5 text-muted">
+                    <i class="fas fa-search fa-2x mb-2 opacity-50"></i>
+                    <div>No food items found matching your filters.</div>
+                </td>
+            </tr>
+        `;
+        if (mobileContainer) {
+            mobileContainer.innerHTML = `
+                <div class="text-center py-5 text-muted">
+                    <i class="fas fa-search fa-2x mb-2 opacity-50"></i>
+                    <div>No food items found matching your filters.</div>
+                </div>
+            `;
+        }
+        renderPagination(pageData);
         return;
     }
 
-    const payload = {
-        name,
-        categoryId,
-        price,
-        preparationTime,
-        description,
-        vegetarian,
-        spicy,
-        available
+    let desktopHtml = '';
+    let mobileHtml = '';
+
+    items.forEach(item => {
+        const hasImg = !!item.imageUrl && item.imageUrl.trim() !== '';
+        const imgUrl = hasImg ? item.imageUrl : '/images/Thekaveris.jpg';
+
+        // Desktop Table Row
+        desktopHtml += `
+            <tr>
+                <td class="ps-4">
+                    ${hasImg ? `
+                        <div class="food-thumb-box" onclick="openImageModal(${item.id})" title="Click to view or change image">
+                            <img src="${imgUrl}" alt="${item.name}" onerror="this.src='/images/Thekaveris.jpg'">
+                        </div>
+                    ` : `
+                        <div class="no-img-box" onclick="openImageModal(${item.id})" title="No image assigned. Click to add.">
+                            <i class="fas fa-camera"></i>
+                            <span>No image</span>
+                        </div>
+                    `}
+                </td>
+                <td>
+                    <div class="fw-bold text-dark">${item.name}</div>
+                    <small class="text-muted text-truncate d-inline-block" style="max-width:260px;">${item.description || 'No description provided'}</small>
+                </td>
+                <td><span class="badge bg-light text-dark border px-2 py-1">${item.categoryName || 'General'}</span></td>
+                <td class="fw-bold text-primary font-serif">₹${parseFloat(item.price).toFixed(2)}</td>
+                <td>
+                    ${item.vegetarian ? 
+                        '<span class="badge badge-veg-subtle px-2 py-1">🟢 Veg</span>' : 
+                        '<span class="badge badge-nonveg-subtle px-2 py-1">🔴 Non-Veg</span>'
+                    }
+                    ${item.spicy ? '<span class="badge badge-spicy-subtle px-2 py-1 ms-1">🌶️ Spicy</span>' : ''}
+                </td>
+                <td>
+                    <div class="form-check form-switch m-0">
+                        <input class="form-check-input" type="checkbox" role="switch" ${item.available ? 'checked' : ''} onchange="toggleAvailability(${item.id}, this)">
+                    </div>
+                </td>
+                <td class="text-end pe-4">
+                    <div class="d-inline-flex flex-wrap gap-1 justify-content-end">
+                        ${hasImg ? `
+                            <button class="btn btn-outline-primary btn-sm rounded-pill px-2" onclick="openImageModal(${item.id})" title="Change Image">
+                                <i class="fas fa-image me-1"></i> Change Image
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm rounded-pill px-2" onclick="openRemoveImageModal(${item.id}, '${item.name.replace(/'/g, "\\'")}')" title="Remove Image">
+                                <i class="fas fa-times me-1"></i> Remove Image
+                            </button>
+                        ` : `
+                            <button class="btn btn-outline-success btn-sm rounded-pill px-2" onclick="openImageModal(${item.id})" title="Add Image">
+                                <i class="fas fa-plus me-1"></i> + Add Image
+                            </button>
+                        `}
+                        <button class="btn btn-outline-secondary btn-sm rounded-circle" style="width:30px;height:30px;padding:0;" onclick="openEditDishModal(${item.id})" title="Edit Dish Details">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm rounded-circle" style="width:30px;height:30px;padding:0;" onclick="openDeleteDishModal(${item.id}, '${item.name.replace(/'/g, "\\'")}')" title="Delete Dish">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+
+        // Mobile Responsive Card
+        mobileHtml += `
+            <div class="mobile-dish-card">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    ${hasImg ? `
+                        <div class="food-thumb-box" onclick="openImageModal(${item.id})">
+                            <img src="${imgUrl}" alt="${item.name}" onerror="this.src='/images/Thekaveris.jpg'">
+                        </div>
+                    ` : `
+                        <div class="no-img-box" onclick="openImageModal(${item.id})">
+                            <i class="fas fa-camera"></i>
+                            <span>No image</span>
+                        </div>
+                    `}
+                    <div class="flex-grow-1">
+                        <div class="fw-bold text-dark fs-6">${item.name}</div>
+                        <div class="d-flex align-items-center gap-2 mt-1">
+                            <span class="badge bg-light text-dark border">${item.categoryName || 'General'}</span>
+                            <span class="fw-bold text-primary font-serif">₹${parseFloat(item.price).toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center pt-2 border-top mt-2">
+                    <div>
+                        ${item.vegetarian ? '<span class="badge badge-veg-subtle">🟢 Veg</span>' : '<span class="badge badge-nonveg-subtle">🔴 Non-Veg</span>'}
+                    </div>
+                    <div class="d-flex gap-1">
+                        ${hasImg ? `
+                            <button class="btn btn-outline-primary btn-sm rounded-pill px-2 py-1" onclick="openImageModal(${item.id})">
+                                <i class="fas fa-image me-1"></i> Change
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm rounded-pill px-2 py-1" onclick="openRemoveImageModal(${item.id}, '${item.name.replace(/'/g, "\\'")}')">
+                                <i class="fas fa-times me-1"></i> Remove
+                            </button>
+                        ` : `
+                            <button class="btn btn-outline-success btn-sm rounded-pill px-2 py-1" onclick="openImageModal(${item.id})">
+                                <i class="fas fa-plus me-1"></i> + Add Image
+                            </button>
+                        `}
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    tbody.innerHTML = desktopHtml;
+    if (mobileContainer) mobileContainer.innerHTML = mobileHtml;
+    renderPagination(pageData);
+}
+
+function renderPagination(pageData) {
+    const ul = document.getElementById('paginationControls');
+    const totalPages = pageData.totalPages || 1;
+    const cur = pageData.number || 0;
+
+    let html = '';
+    html += `<li class="page-item ${cur === 0 ? 'disabled' : ''}"><a class="page-link" href="#" onclick="changePage(${cur - 1})">&laquo;</a></li>`;
+
+    for (let i = 0; i < totalPages; i++) {
+        if (i === 0 || i === totalPages - 1 || (i >= cur - 1 && i <= cur + 1)) {
+            html += `<li class="page-item ${i === cur ? 'active' : ''}"><a class="page-link" href="#" onclick="changePage(${i})">${i + 1}</a></li>`;
+        } else if (i === cur - 2 || i === cur + 2) {
+            html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+        }
+    }
+
+    html += `<li class="page-item ${cur >= totalPages - 1 ? 'disabled' : ''}"><a class="page-link" href="#" onclick="changePage(${cur + 1})">&raquo;</a></li>`;
+    ul.innerHTML = html;
+}
+
+function changePage(page) {
+    currentPage = page;
+    loadMenu();
+}
+
+async function toggleAvailability(id, switchEl) {
+    try {
+        await Api.patch(`/admin/menu/${id}/toggle-availability`);
+        Toast.success('Availability updated');
+    } catch (err) {
+        Toast.error('Failed to toggle: ' + err.message);
+        switchEl.checked = !switchEl.checked;
+    }
+}
+
+// ===== IMAGE MANAGEMENT MODALS =====
+async function openImageModal(id) {
+    try {
+        const res = await Api.get(`/menu/${id}`, false);
+        activeFoodItem = res.data;
+
+        document.getElementById('imageModalDishName').textContent = activeFoodItem.name;
+        document.getElementById('foodImageFileInput').value = '';
+        selectedFile = null;
+        document.getElementById('uploadImageBtn').disabled = true;
+
+        const previewImg = document.getElementById('imageModalPreview');
+        const statusText = document.getElementById('imageModalStatusText');
+        const actionLabel = document.getElementById('imageModalActionLabel');
+
+        if (activeFoodItem.imageUrl && activeFoodItem.imageUrl.trim() !== '') {
+            previewImg.src = activeFoodItem.imageUrl;
+            actionLabel.textContent = 'Change Menu Image';
+            statusText.innerHTML = '<span class="text-success"><i class="fas fa-check-circle me-1"></i>Current Image Assigned. Select new photo to replace.</span>';
+        } else {
+            previewImg.src = '/images/Thekaveris.jpg';
+            actionLabel.textContent = 'Add Menu Image';
+            statusText.innerHTML = '<span class="text-muted"><i class="fas fa-info-circle me-1"></i>No image currently assigned. Select a photo to upload.</span>';
+        }
+
+        imageUploadModal.show();
+    } catch (err) {
+        Toast.error('Failed to load item: ' + err.message);
+    }
+}
+
+async function handleUploadImage() {
+    if (!selectedFile || !activeFoodItem) return;
+
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    const btn = document.getElementById('uploadImageBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Uploading...';
+
+    try {
+        await Api.uploadFile(`/admin/menu/${activeFoodItem.id}/image`, formData);
+        Toast.success('Menu image updated successfully.');
+        imageUploadModal.hide();
+        loadMenu();
+    } catch (err) {
+        Toast.error('Unable to upload image. Please try again.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-upload me-1"></i> Upload';
+    }
+}
+
+function openRemoveImageModal(id, name) {
+    activeFoodItem = { id, name };
+    document.getElementById('removeImageDishName').textContent = name;
+    removeImageModal.show();
+}
+
+async function handleConfirmRemoveImage() {
+    if (!activeFoodItem) return;
+    const btn = document.getElementById('confirmRemoveImageBtn');
+    btn.disabled = true;
+
+    try {
+        await Api.delete(`/admin/menu/${activeFoodItem.id}/image`);
+        Toast.success('Menu image updated successfully.');
+        removeImageModal.hide();
+        loadMenu();
+    } catch (err) {
+        Toast.error('Unable to upload image. Please try again.');
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+// ===== DISH CRUD =====
+function openAddDishModal() {
+    document.getElementById('foodModalTitle').innerHTML = '<i class="fas fa-plus-circle me-2 text-warning"></i>Add New Food Item';
+    document.getElementById('foodItemId').value = '';
+    document.getElementById('foodName').value = '';
+    document.getElementById('foodCategoryId').value = '';
+    document.getElementById('foodPrice').value = '';
+    document.getElementById('foodPrepTime').value = '20';
+    document.getElementById('foodDescription').value = '';
+    document.getElementById('dietVeg').checked = true;
+    document.getElementById('foodSpicy').checked = false;
+    document.getElementById('foodAvailable').checked = true;
+    foodModal.show();
+}
+
+async function openEditDishModal(id) {
+    try {
+        const res = await Api.get(`/menu/${id}`, false);
+        const item = res.data;
+
+        document.getElementById('foodModalTitle').innerHTML = '<i class="fas fa-edit me-2 text-warning"></i>Edit Food Item';
+        document.getElementById('foodItemId').value = item.id;
+        document.getElementById('foodName').value = item.name;
+        document.getElementById('foodCategoryId').value = item.categoryId;
+        document.getElementById('foodPrice').value = item.price;
+        document.getElementById('foodPrepTime').value = item.preparationTime || 20;
+        document.getElementById('foodDescription').value = item.description || '';
+        
+        if (item.vegetarian) {
+            document.getElementById('dietVeg').checked = true;
+        } else {
+            document.getElementById('dietNonVeg').checked = true;
+        }
+
+        document.getElementById('foodSpicy').checked = !!item.spicy;
+        document.getElementById('foodAvailable').checked = !!item.available;
+
+        foodModal.show();
+    } catch (err) {
+        Toast.error('Failed to fetch dish: ' + err.message);
+    }
+}
+
+async function handleSaveDish(e) {
+    e.preventDefault();
+    const id = document.getElementById('foodItemId').value;
+    const body = {
+        name: document.getElementById('foodName').value.trim(),
+        categoryId: parseInt(document.getElementById('foodCategoryId').value),
+        price: parseFloat(document.getElementById('foodPrice').value),
+        preparationTime: parseInt(document.getElementById('foodPrepTime').value) || 20,
+        description: document.getElementById('foodDescription').value.trim(),
+        vegetarian: document.getElementById('dietVeg').checked,
+        spicy: document.getElementById('foodSpicy').checked,
+        available: document.getElementById('foodAvailable').checked
     };
 
     const saveBtn = document.getElementById('saveFoodBtn');
     saveBtn.disabled = true;
-    saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Saving...';
 
     try {
-        if (activeFoodId) {
-            // PUT /api/admin/menu/{id}
-            await Api.put(`/admin/menu/${activeFoodId}`, payload);
-            Toast.success(`"${name}" updated successfully!`);
+        if (id) {
+            await Api.put(`/admin/menu/${id}`, body);
+            Toast.success('Dish updated successfully');
         } else {
-            // POST /api/admin/menu
-            await Api.post('/admin/menu', payload);
-            Toast.success(`"${name}" added to menu!`);
+            await Api.post('/admin/menu', body);
+            Toast.success('Dish created successfully');
         }
-        foodModalInstance.hide();
-        await loadMenuItems();
+        foodModal.hide();
+        loadMenu();
     } catch (err) {
         Toast.error('Save failed: ' + err.message);
     } finally {
         saveBtn.disabled = false;
-        saveBtn.innerHTML = '<i class="fas fa-save me-1"></i> Save Dish';
     }
 }
 
-// Toggle Availability (PATCH /api/admin/menu/{id}/toggle-availability)
-async function toggleAvailability(id, checkboxEl) {
+function openDeleteDishModal(id, name) {
+    activeFoodItem = { id, name };
+    document.getElementById('deleteFoodTitle').textContent = name;
+    deleteFoodModal.show();
+}
+
+async function handleDeleteDish() {
+    if (!activeFoodItem) return;
+    const btn = document.getElementById('confirmDeleteFoodBtn');
+    btn.disabled = true;
+
     try {
-        await Api.patch(`/admin/menu/${id}/toggle-availability`);
-        Toast.success('Availability updated');
-        // Update local state
-        const item = allFoodItems.find(f => f.id === id);
-        if (item) item.available = checkboxEl.checked;
+        await Api.delete(`/admin/menu/${activeFoodItem.id}`);
+        Toast.success('Dish removed successfully');
+        deleteFoodModal.hide();
+        loadMenu();
     } catch (err) {
-        checkboxEl.checked = !checkboxEl.checked;
-        Toast.error('Toggle failed: ' + err.message);
+        Toast.error('Delete failed: ' + err.message);
+    } finally {
+        btn.disabled = false;
     }
-}
-
-// Open Image Modal
-function openImageModal(id, name, currentImg) {
-    activeFoodId = id;
-    document.getElementById('uploadFoodTitle').textContent = name;
-    document.getElementById('imageUploadPreview').src = currentImg;
-    document.getElementById('foodImageFile').value = '';
-    imageModalInstance.show();
-}
-
-// Open Delete Modal
-function openDeleteFoodModal(id, name) {
-    activeFoodId = id;
-    document.getElementById('deleteFoodName').textContent = name;
-    deleteModalInstance.show();
-}
-
-function escapeHtml(text) {
-    if (!text) return '';
-    return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
 }
 </script>
 </body>

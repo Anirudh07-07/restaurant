@@ -23,4 +23,11 @@ public interface AdminService {
     Category updateCategory(Long id, CategoryRequest request);
 
     void deleteCategory(Long id);
+
+    // Contact messages
+    Page<com.kaveri.entity.ContactMessage> getAllContactMessages(String keyword, Boolean isRead, int page, int size);
+
+    com.kaveri.entity.ContactMessage toggleContactReadStatus(Long id);
+
+    void deleteContactMessage(Long id);
 }

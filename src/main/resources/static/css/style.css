@@ -1791,3 +1791,227 @@ a {
   object-fit: cover;
 }
 
+/* ==========================================================================
+   Admin Management Console Styling
+   ========================================================================== */
+.admin-body {
+  background-color: #f1f4f8;
+  min-height: 100vh;
+  color: #2c3e50;
+  font-family: var(--font-sans);
+}
+
+.admin-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  z-index: 1030;
+  background: #1e1517;
+  border-bottom: 1px solid rgba(197, 155, 39, 0.25);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+  padding: 0 1.25rem 0 calc(270px + 1.25rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: padding-left 0.3s ease;
+}
+
+.admin-sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 270px;
+  background: #170f11;
+  color: #fff;
+  z-index: 1040;
+  overflow-y: auto;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.22);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+}
+
+.admin-sidebar-brand {
+  padding: 1.25rem 1.25rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: #130a0c;
+}
+
+.admin-sidebar-brand-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--gold-light);
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-sidebar-brand-subtitle {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.admin-sidebar-nav {
+  padding: 1rem 0.75rem;
+  flex-grow: 1;
+}
+
+.admin-nav-header {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: rgba(255,255,255,0.38);
+  padding: 0.75rem 0.85rem 0.35rem;
+}
+
+.admin-nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0.65rem 0.95rem;
+  color: rgba(255,255,255,0.72);
+  border-radius: 10px;
+  margin-bottom: 0.25rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.admin-nav-link i {
+  width: 20px;
+  margin-right: 0.75rem;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.45);
+  transition: color 0.2s;
+}
+
+.admin-nav-link:hover {
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+}
+
+.admin-nav-link:hover i {
+  color: var(--gold-light);
+}
+
+.admin-nav-link.active {
+  background: linear-gradient(135deg, rgba(148, 34, 43, 0.9) 0%, rgba(80, 16, 21, 0.95) 100%);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(80,16,21,0.35);
+  border: 1px solid rgba(197, 155, 39, 0.3);
+}
+
+.admin-nav-link.active i {
+  color: var(--gold-light);
+}
+
+.admin-nav-badge {
+  margin-left: auto;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.admin-content {
+  margin-left: 270px;
+  padding: calc(64px + 1.75rem) 1.75rem 2.5rem;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+}
+
+/* Stats Cards */
+.stats-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.35rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02);
+  border: 1px solid #e9edf3;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+}
+
+.stats-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.stats-card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  margin-right: 1.1rem;
+  flex-shrink: 0;
+}
+
+.stats-card-num {
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1a202c;
+  font-family: var(--font-serif);
+}
+
+.stats-card-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.15rem;
+}
+
+.stats-card-sub {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 0.2rem;
+}
+
+/* Mobile responsive sidebar */
+@media (max-width: 991.98px) {
+  .admin-topbar {
+    padding-left: 1rem;
+  }
+  .admin-sidebar {
+    transform: translateX(-100%);
+  }
+  .admin-sidebar.show {
+    transform: translateX(0);
+  }
+  .admin-content {
+    margin-left: 0;
+    padding: calc(64px + 1.25rem) 1rem 2rem;
+  }
+}
+
+.admin-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1035;
+  display: none;
+}
+
+.admin-backdrop.show {
+  display: block;
+}
+
+

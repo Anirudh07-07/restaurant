@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/admin/
+Disallow: /profile.html
+Disallow: /checkout.html
+
+Sitemap: https://thekaveri.com/sitemap.xml

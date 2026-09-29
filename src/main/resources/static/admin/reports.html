@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Analytics — Kaveri Restaurant Group Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="admin-body">
+
+<div class="admin-backdrop" id="adminBackdrop"></div>
+
+<!-- ===== TOPBAR ===== -->
+<header class="admin-topbar">
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-outline-light btn-sm d-lg-none rounded-circle" id="sidebarToggle" style="width:36px;height:36px;">
+            <i class="fas fa-bars"></i>
+        </button>
+        <span class="navbar-brand mb-0 h5 text-white fw-bold d-flex align-items-center gap-2">
+            <i class="fas fa-chart-pie text-warning"></i>
+            <span>Reports & Analytics</span>
+        </span>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <a href="/" class="btn btn-outline-light btn-sm rounded-pill px-3" target="_blank">
+            <i class="fas fa-external-link-alt me-1"></i> Public Website
+        </a>
+        <div class="dropdown">
+            <button class="btn btn-outline-light btn-sm rounded-pill px-3 dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fas fa-user-shield me-1 text-warning"></i><span id="adminName">Admin</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                <li><a class="dropdown-item" href="/admin/settings.html"><i class="fas fa-cog me-2 text-muted"></i>Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="#" id="adminLogout"><i class="fas fa-sign-out-alt me-2"></i>Sign Out</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar-brand">
+        <div class="admin-sidebar-brand-title">
+            <img src="/images/footer_logo.png" alt="Kaveri" style="height:28px;" onerror="this.style.display='none'">
+            <span>KAVERI</span>
+        </div>
+        <div class="admin-sidebar-brand-subtitle">Restaurant Group Operations</div>
+    </div>
+    <nav class="admin-sidebar-nav">
+        <div class="admin-nav-header">Overview</div>
+        <a href="/admin/dashboard.html" class="admin-nav-link">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <a href="/admin/reports.html" class="admin-nav-link active">
+            <i class="fas fa-chart-pie"></i> Reports & Analytics
+        </a>
+
+        <div class="admin-nav-header">Catalog & Menu</div>
+        <a href="/admin/menu.html" class="admin-nav-link">
+            <i class="fas fa-utensils"></i> Menu Items
+        </a>
+        <a href="/admin/categories.html" class="admin-nav-link">
+            <i class="fas fa-tags"></i> Categories
+        </a>
+
+        <div class="admin-nav-header">Hospitality & Sales</div>
+        <a href="/admin/orders.html" class="admin-nav-link">
+            <i class="fas fa-shopping-bag"></i> Orders
+        </a>
+        <a href="/admin/reservations.html" class="admin-nav-link">
+            <i class="fas fa-calendar-check"></i> Reservations
+        </a>
+
+        <div class="admin-nav-header">People & Feedback</div>
+        <a href="/admin/users.html" class="admin-nav-link">
+            <i class="fas fa-users"></i> Customers
+        </a>
+        <a href="/admin/reviews.html" class="admin-nav-link">
+            <i class="fas fa-star"></i> Reviews Moderation
+        </a>
+        <a href="/admin/messages.html" class="admin-nav-link">
+            <i class="fas fa-envelope"></i> Inquiries & Contact
+        </a>
+
+        <div class="admin-nav-header">Configuration</div>
+        <a href="/admin/settings.html" class="admin-nav-link">
+            <i class="fas fa-sliders-h"></i> System Settings
+        </a>
+    </nav>
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="admin-content">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h2 class="mb-1 fw-bold text-dark" style="font-family:'Playfair Display',serif;">Operations & Sales Reports</h2>
+            <p class="text-muted mb-0 small">Performance metrics summary across menu, culinary items, orders, and reservations.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="window.print()">
+                <i class="fas fa-print me-1"></i> Print / Export Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Overview Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 text-center" style="border-radius:16px;">
+                <div class="text-muted small uppercase fw-bold mb-1">Total Gross Revenue</div>
+                <h2 class="fw-bold text-success font-serif mb-0" id="repTotalRev">₹0</h2>
+                <small class="text-muted mt-2">Recorded through platform</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 text-center" style="border-radius:16px;">
+                <div class="text-muted small uppercase fw-bold mb-1">Total Completed Orders</div>
+                <h2 class="fw-bold text-primary font-serif mb-0" id="repTotalOrders">0</h2>
+                <small class="text-muted mt-2">Dining & Takeaway</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 text-center" style="border-radius:16px;">
+                <div class="text-muted small uppercase fw-bold mb-1">Active Customer Base</div>
+                <h2 class="fw-bold text-warning font-serif mb-0" id="repTotalCustomers">0</h2>
+                <small class="text-muted mt-2">Registered client accounts</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Details Table -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius:16px;">
+        <div class="card-header bg-white border-0 pt-4 px-4">
+            <h5 class="fw-bold mb-0" style="font-family:'Playfair Display',serif;">Operational Metrics Breakdown</h5>
+        </div>
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Performance Category</th>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Status Indicator</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="2" class="fw-bold bg-light">Menu & Assets</td>
+                            <td>Total Menu Items</td>
+                            <td class="fw-bold" id="metricTotalMenu">0</td>
+                            <td><span class="badge bg-success">Active Catalog</span></td>
+                        </tr>
+                        <tr>
+                            <td>Dishes with High-Res Images</td>
+                            <td class="fw-bold" id="metricMenuImages">0 / 0</td>
+                            <td id="metricImageRatioBadge"><span class="badge bg-info">Calculating...</span></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2" class="fw-bold bg-light">Hospitality & Dining</td>
+                            <td>Total Table Reservations</td>
+                            <td class="fw-bold" id="metricReservations">0</td>
+                            <td><span class="badge bg-primary">Dining Capacity</span></td>
+                        </tr>
+                        <tr>
+                            <td>Average Guest Rating</td>
+                            <td class="fw-bold" id="metricAvgRating">5.0 ★</td>
+                            <td><span class="badge bg-warning text-dark">Customer Satisfaction</span></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2" class="fw-bold bg-light">Communications</td>
+                            <td>Total Verified Reviews</td>
+                            <td class="fw-bold" id="metricReviews">0</td>
+                            <td><span class="badge bg-secondary">Moderated</span></td>
+                        </tr>
+                        <tr>
+                            <td>Unread Inquiries</td>
+                            <td class="fw-bold text-danger" id="metricUnreadMsg">0</td>
+                            <td><span class="badge bg-danger">Requires Attention</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    if (!Auth.isLoggedIn() || !Auth.isAdmin()) {
+        alert('Admin access required');
+        window.location.href = '/login.html';
+        return;
+    }
+
+    const user = Auth.getUser();
+    document.getElementById('adminName').textContent = user?.name || 'Admin';
+    document.getElementById('adminLogout').addEventListener('click', () => Auth.logout());
+
+    // Mobile drawer toggle
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('adminSidebar');
+    const backdrop = document.getElementById('adminBackdrop');
+    if (toggleBtn && sidebar && backdrop) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('show');
+            backdrop.classList.toggle('show');
+        });
+        backdrop.addEventListener('click', () => {
+            sidebar.classList.remove('show');
+            backdrop.classList.remove('show');
+        });
+    }
+
+    loadReportData();
+});
+
+async function loadReportData() {
+    try {
+        const res = await Api.get('/admin/dashboard');
+        const d = res.data;
+
+        const rev = parseFloat(d.totalRevenue || 0);
+        document.getElementById('repTotalRev').textContent = '₹' + rev.toLocaleString('en-IN', {minimumFractionDigits: 0});
+        document.getElementById('repTotalOrders').textContent = (d.totalOrders || 0).toLocaleString();
+        document.getElementById('repTotalCustomers').textContent = (d.totalCustomers || 0).toLocaleString();
+
+        document.getElementById('metricTotalMenu').textContent = (d.totalMenuItems || 0).toLocaleString();
+        
+        const withImg = d.itemsWithImages || 0;
+        const totalMenu = d.totalMenuItems || 0;
+        document.getElementById('metricMenuImages').textContent = `${withImg} of ${totalMenu} (${totalMenu > 0 ? Math.round((withImg/totalMenu)*100) : 0}%)`;
+        
+        const ratioBadge = document.getElementById('metricImageRatioBadge');
+        if (totalMenu > 0 && withImg === totalMenu) {
+            ratioBadge.innerHTML = '<span class="badge bg-success">100% Image Coverage</span>';
+        } else {
+            ratioBadge.innerHTML = `<span class="badge bg-warning text-dark">${totalMenu - withImg} Photos Needed</span>`;
+        }
+
+        document.getElementById('metricReservations').textContent = (d.totalReservations || 0).toLocaleString();
+        document.getElementById('metricAvgRating').textContent = d.averageRating ? parseFloat(d.averageRating).toFixed(1) + ' ★' : '5.0 ★';
+        document.getElementById('metricReviews').textContent = (d.totalReviews || 0).toLocaleString();
+        document.getElementById('metricUnreadMsg').textContent = (d.unreadContactMessages || 0).toLocaleString();
+    } catch (err) {
+        Toast.error('Failed to load report data: ' + err.message);
+    }
+}
+</script>
+</body>
+</html>

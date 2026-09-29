@@ -29,5 +29,13 @@ public interface MenuService {
 
     FoodItemResponse updateImageUrl(Long id, String imageUrl);
 
+    FoodItemResponse removeImageUrl(Long id);
+
     FoodItemResponse toggleAvailability(Long id);
+
+    Page<FoodItemResponse> searchAdminMenu(
+            String keyword, Long categoryId, Boolean vegetarian,
+            Boolean available, Boolean hasImage, int page, int size,
+            String sortBy, String sortDir
+    );
 }

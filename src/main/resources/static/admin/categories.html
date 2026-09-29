@@ -6,13 +6,9 @@
     <title>Categories Management — Kaveri Restaurant Group Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        .admin-body { background: #f0f2f5; }
-        @media (max-width: 991.98px) {
-            .fn-navbar { padding-left: 15px !important; }
-        }
         .cat-icon-badge {
             width: 44px;
             height: 44px;
@@ -21,115 +17,128 @@
             align-items: center;
             justify-content: center;
             background: rgba(117, 23, 30, 0.1);
-            color: var(--fn-burgundy);
+            color: var(--primary);
             font-size: 1.25rem;
             font-weight: bold;
         }
-        .table th { font-weight: 600; color: #495057; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .table td { font-size: 0.92rem; vertical-align: middle; }
+        .table th { font-weight: 600; color: #495057; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .table td { font-size: 0.9rem; vertical-align: middle; }
     </style>
 </head>
 <body class="admin-body">
 
-<!-- ===== TOP NAV ===== -->
-<nav class="navbar navbar-dark fn-navbar" style="position:fixed;top:0;left:0;right:0;z-index:200;padding-left:260px;">
-    <div class="container-fluid">
-        <span class="navbar-brand fn-brand mb-0 h1"><i class="fas fa-tags me-2 text-gold"></i>Categories Management</span>
-        <div class="d-flex align-items-center gap-3">
-            <a href="/" class="btn btn-outline-light btn-sm rounded-pill" target="_blank">
-                <i class="fas fa-external-link-alt me-1"></i>View Website
-            </a>
-            <span class="text-white-50" id="adminName">Admin</span>
-            <button class="btn btn-outline-danger btn-sm rounded-pill" id="adminLogout">
-                <i class="fas fa-sign-out-alt me-1"></i>Logout
+<div class="admin-backdrop" id="adminBackdrop"></div>
+
+<!-- ===== TOPBAR ===== -->
+<header class="admin-topbar">
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-outline-light btn-sm d-lg-none rounded-circle" id="sidebarToggle" style="width:36px;height:36px;">
+            <i class="fas fa-bars"></i>
+        </button>
+        <span class="navbar-brand mb-0 h5 text-white fw-bold d-flex align-items-center gap-2">
+            <i class="fas fa-tags text-warning"></i>
+            <span>Menu Categories</span>
+        </span>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <a href="/menu.html" class="btn btn-outline-light btn-sm rounded-pill px-3" target="_blank">
+            <i class="fas fa-external-link-alt me-1"></i> Public Menu
+        </a>
+        <div class="dropdown">
+            <button class="btn btn-outline-light btn-sm rounded-pill px-3 dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fas fa-user-shield me-1 text-warning"></i><span id="adminName">Admin</span>
             </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                <li><a class="dropdown-item" href="/admin/settings.html"><i class="fas fa-cog me-2 text-muted"></i>Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="#" id="adminLogout"><i class="fas fa-sign-out-alt me-2"></i>Sign Out</a></li>
+            </ul>
         </div>
     </div>
-</nav>
+</header>
 
 <!-- ===== SIDEBAR ===== -->
-<aside class="admin-sidebar">
-    <div class="px-4 py-3 mb-2" style="margin-top:70px;">
-        <div class="footer-brand" style="font-size:1.15rem; color:var(--fn-gold); display:flex; align-items:center;">
-            <img src="/images/footer_logo.png" alt="Kaveri" style="height:26px; margin-right:8px;" onerror="this.style.display='none'">
-            <span>KAVERI ADMIN</span>
+<aside class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar-brand">
+        <div class="admin-sidebar-brand-title">
+            <img src="/images/footer_logo.png" alt="Kaveri" style="height:28px;" onerror="this.style.display='none'">
+            <span>KAVERI</span>
         </div>
-        <small class="text-white-50">Ranchi, Jharkhand</small>
+        <div class="admin-sidebar-brand-subtitle">Restaurant Group Operations</div>
     </div>
-    <nav>
+    <nav class="admin-sidebar-nav">
+        <div class="admin-nav-header">Overview</div>
         <a href="/admin/dashboard.html" class="admin-nav-link">
-            <i class="fas fa-tachometer-alt fa-fw"></i> Dashboard
+            <i class="fas fa-tachometer-alt"></i> Dashboard
         </a>
-        <a href="/admin/orders.html" class="admin-nav-link">
-            <i class="fas fa-shopping-bag fa-fw"></i> Orders
+        <a href="/admin/reports.html" class="admin-nav-link">
+            <i class="fas fa-chart-pie"></i> Reports & Analytics
         </a>
+
+        <div class="admin-nav-header">Catalog & Menu</div>
         <a href="/admin/menu.html" class="admin-nav-link">
-            <i class="fas fa-utensils fa-fw"></i> Menu
+            <i class="fas fa-utensils"></i> Menu Items
         </a>
         <a href="/admin/categories.html" class="admin-nav-link active">
-            <i class="fas fa-tags fa-fw"></i> Categories
+            <i class="fas fa-tags"></i> Categories
         </a>
-        <a href="/admin/users.html" class="admin-nav-link">
-            <i class="fas fa-users fa-fw"></i> Customers
+
+        <div class="admin-nav-header">Hospitality & Sales</div>
+        <a href="/admin/orders.html" class="admin-nav-link">
+            <i class="fas fa-shopping-bag"></i> Orders
         </a>
         <a href="/admin/reservations.html" class="admin-nav-link">
-            <i class="fas fa-calendar-check fa-fw"></i> Reservations
+            <i class="fas fa-calendar-check"></i> Reservations
+        </a>
+
+        <div class="admin-nav-header">People & Feedback</div>
+        <a href="/admin/users.html" class="admin-nav-link">
+            <i class="fas fa-users"></i> Customers
         </a>
         <a href="/admin/reviews.html" class="admin-nav-link">
-            <i class="fas fa-star fa-fw"></i> Reviews
+            <i class="fas fa-star"></i> Reviews Moderation
+        </a>
+        <a href="/admin/messages.html" class="admin-nav-link">
+            <i class="fas fa-envelope"></i> Inquiries & Contact
+        </a>
+
+        <div class="admin-nav-header">Configuration</div>
+        <a href="/admin/settings.html" class="admin-nav-link">
+            <i class="fas fa-sliders-h"></i> System Settings
         </a>
     </nav>
 </aside>
 
 <!-- ===== MAIN CONTENT ===== -->
 <main class="admin-content">
-    <!-- Page Header -->
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
-            <h2 class="mb-1 fw-bold" style="font-family:'Playfair Display',serif;">Categories Management</h2>
-            <p class="text-muted mb-0 small">Organize your restaurant menu items into logical culinary categories</p>
+            <h2 class="mb-1 fw-bold text-dark" style="font-family:'Playfair Display',serif;">Menu Categories</h2>
+            <p class="text-muted mb-0 small">Organize and group restaurant culinary offerings into distinct menu sections.</p>
         </div>
         <div class="d-flex gap-2">
             <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" id="refreshBtn">
                 <i class="fas fa-sync-alt me-1"></i> Refresh
             </button>
             <button class="btn btn-fn btn-sm rounded-pill px-3" id="openAddCategoryBtn">
-                <i class="fas fa-plus me-1"></i> Add New Category
+                <i class="fas fa-plus me-1"></i> Add Category
             </button>
         </div>
     </div>
 
-    <!-- Search & Stats Card -->
-    <div class="card border-0 shadow-sm mb-4" style="border-radius:16px;">
-        <div class="card-body p-3 p-md-4">
-            <div class="row g-3 align-items-center">
-                <div class="col-md-6 col-lg-5">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
-                        <input type="text" class="form-control border-start-0 ps-0" id="categorySearchInput"
-                               placeholder="Search category name or description...">
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-7 text-md-end text-muted small" id="categoryCountSummary">
-                    Loading categories...
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Categories Table Card -->
+    <!-- Category List Card -->
     <div class="card border-0 shadow-sm" style="border-radius:16px; overflow:hidden;">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" id="categoriesTable">
+            <table class="table table-hover align-middle mb-0" id="categoryTable">
                 <thead class="table-light">
                     <tr>
-                        <th class="ps-4" style="width: 90px;">ID</th>
-                        <th>Category</th>
+                        <th class="ps-4">ID</th>
+                        <th>Category Name</th>
                         <th>Description</th>
-                        <th class="text-end pe-4" style="width: 160px;">Actions</th>
+                        <th class="text-end pe-4">Actions</th>
                     </tr>
                 </thead>
-                <tbody id="categoriesTableBody">
+                <tbody id="categoryTableBody">
                     <tr>
                         <td colspan="4" class="text-center py-5">
                             <div class="spinner-border text-danger" role="status"></div>
@@ -143,33 +152,30 @@
 </main>
 
 <!-- ===== MODAL: ADD / EDIT CATEGORY ===== -->
-<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+<div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow" style="border-radius:20px; overflow:hidden;">
-            <div class="modal-header text-white" style="background:var(--fn-darker);">
-                <h5 class="modal-title" id="categoryModalLabel">
-                    <i class="fas fa-tags me-2 text-warning"></i><span id="categoryModalTitle">Add New Category</span>
+            <div class="modal-header text-white" style="background:var(--primary-dark);">
+                <h5 class="modal-title" id="catModalTitle">
+                    <i class="fas fa-tags me-2 text-warning"></i><span>Add New Category</span>
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form id="categoryForm">
                 <div class="modal-body p-4">
                     <input type="hidden" id="categoryId">
-
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Category Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="categoryName" placeholder="e.g. Starters, Main Course, Desserts" required maxlength="50">
-                        <div class="form-text">Keep it clear and appetizing (max 50 chars).</div>
+                        <input type="text" class="form-control" id="catName" placeholder="e.g. Traditional Starters" required maxlength="100">
                     </div>
-
-                    <div class="mb-2">
+                    <div class="mb-3">
                         <label class="form-label fw-semibold">Description</label>
-                        <textarea class="form-control" id="categoryDescription" rows="3" placeholder="Brief description of dishes in this section..." maxlength="500"></textarea>
+                        <textarea class="form-control" id="catDescription" rows="3" placeholder="Brief category description..." maxlength="500"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer bg-light border-0 py-3">
-                    <button type="button" class="btn btn-secondary btn-sm rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-fn btn-sm rounded-pill px-4" id="saveCategoryBtn">
+                    <button type="button" class="btn btn-secondary btn-sm rounded-pill px-3" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-fn btn-sm rounded-pill px-4" id="saveCatBtn">
                         <i class="fas fa-save me-1"></i> Save Category
                     </button>
                 </div>
@@ -178,17 +184,17 @@
     </div>
 </div>
 
-<!-- ===== MODAL: DELETE CATEGORY CONFIRMATION ===== -->
-<div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-hidden="true">
+<!-- ===== MODAL: DELETE CATEGORY ===== -->
+<div class="modal fade" id="deleteCatModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content border-0 shadow" style="border-radius:16px;">
             <div class="modal-body p-4 text-center">
-                <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
                 <h6 class="fw-bold mb-2">Delete Category?</h6>
-                <p class="small text-muted mb-4">Are you sure you want to delete <strong id="deleteCategoryName">this category</strong>? If food items belong to it, you may need to reassign them first.</p>
+                <p class="small text-muted mb-4">Are you sure you want to remove <strong id="deleteCatName">this category</strong>? Dishes linked to this category must be reassigned or deleted first.</p>
                 <div class="d-flex justify-content-center gap-2">
                     <button type="button" class="btn btn-light btn-sm rounded-pill px-3" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger btn-sm rounded-pill px-4" id="confirmDeleteCategoryBtn">Delete</button>
+                    <button type="button" class="btn btn-danger btn-sm rounded-pill px-4" id="confirmDeleteCatBtn">Delete</button>
                 </div>
             </div>
         </div>
@@ -198,13 +204,11 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/main.js"></script>
 <script>
-let allCategories = [];
-let activeCategoryId = null;
-let categoryModalInstance = null;
-let deleteModalInstance = null;
+let catModal = null;
+let deleteCatModal = null;
+let activeCategory = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Guard check
     if (!Auth.isLoggedIn() || !Auth.isAdmin()) {
         alert('Admin access required');
         window.location.href = '/login.html';
@@ -215,206 +219,159 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('adminName').textContent = user?.name || 'Admin';
     document.getElementById('adminLogout').addEventListener('click', () => Auth.logout());
 
-    // 2. Initialize Modals
-    categoryModalInstance = new bootstrap.Modal(document.getElementById('categoryModal'));
-    deleteModalInstance = new bootstrap.Modal(document.getElementById('deleteCategoryModal'));
+    // Mobile drawer toggle
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('adminSidebar');
+    const backdrop = document.getElementById('adminBackdrop');
+    if (toggleBtn && sidebar && backdrop) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('show');
+            backdrop.classList.toggle('show');
+        });
+        backdrop.addEventListener('click', () => {
+            sidebar.classList.remove('show');
+            backdrop.classList.remove('show');
+        });
+    }
 
-    // 3. Event Listeners
+    catModal = new bootstrap.Modal(document.getElementById('categoryModal'));
+    deleteCatModal = new bootstrap.Modal(document.getElementById('deleteCatModal'));
+
+    loadCategories();
+
+    document.getElementById('openAddCategoryBtn').addEventListener('click', () => {
+        document.getElementById('catModalTitle').innerHTML = '<i class="fas fa-plus-circle me-2 text-warning"></i>Add New Category';
+        document.getElementById('categoryId').value = '';
+        document.getElementById('catName').value = '';
+        document.getElementById('catDescription').value = '';
+        catModal.show();
+    });
+
+    document.getElementById('categoryForm').addEventListener('submit', handleSaveCategory);
+    document.getElementById('confirmDeleteCatBtn').addEventListener('click', handleDeleteCategory);
     document.getElementById('refreshBtn').addEventListener('click', () => {
         loadCategories();
-        Toast.info('Refreshing categories...');
+        Toast.info('Categories reloaded');
     });
-
-    document.getElementById('categorySearchInput').addEventListener('input', () => {
-        renderTable();
-    });
-
-    // Add button
-    document.getElementById('openAddCategoryBtn').addEventListener('click', () => {
-        activeCategoryId = null;
-        document.getElementById('categoryModalTitle').textContent = 'Add New Category';
-        document.getElementById('categoryForm').reset();
-        document.getElementById('categoryId').value = '';
-        categoryModalInstance.show();
-    });
-
-    // Form submit (Add or Edit)
-    document.getElementById('categoryForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await saveCategory();
-    });
-
-    // Delete confirmation
-    document.getElementById('confirmDeleteCategoryBtn').addEventListener('click', async () => {
-        if (!activeCategoryId) return;
-        try {
-            await Api.delete(`/admin/categories/${activeCategoryId}`);
-            Toast.success('Category deleted successfully');
-            deleteModalInstance.hide();
-            await loadCategories();
-        } catch (err) {
-            Toast.error('Delete failed: ' + err.message);
-        }
-    });
-
-    // 4. Initial Load
-    await loadCategories();
 });
 
-// Load Categories
 async function loadCategories() {
-    const tbody = document.getElementById('categoriesTableBody');
-    tbody.innerHTML = `
-        <tr>
-            <td colspan="4" class="text-center py-5">
-                <div class="spinner-border text-danger" role="status"></div>
-                <div class="mt-2 text-muted small">Loading categories...</div>
-            </td>
-        </tr>`;
-
+    const tbody = document.getElementById('categoryTableBody');
     try {
         const res = await Api.get('/admin/categories');
-        allCategories = res.data || [];
-        renderTable();
+        const list = res.data || [];
+
+        if (list.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center py-5 text-muted">
+                        <i class="fas fa-folder-open fa-2x mb-2 opacity-50"></i>
+                        <div>No categories registered yet.</div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        let html = '';
+        list.forEach(c => {
+            const firstLetter = c.name ? c.name.charAt(0).toUpperCase() : 'C';
+            html += `
+                <tr>
+                    <td class="ps-4 fw-bold text-muted" style="width:60px;">#${c.id}</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="cat-icon-badge">${firstLetter}</div>
+                            <div>
+                                <div class="fw-bold text-dark">${c.name}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="text-muted small">${c.description || '—'}</span></td>
+                    <td class="text-end pe-4">
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary" onclick="openEditCategory(${c.id}, '${c.name.replace(/'/g, "\\'")}', '${(c.description || '').replace(/'/g, "\\'")}')" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="openDeleteCatModal(${c.id}, '${c.name.replace(/'/g, "\\'")}')" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+
+        tbody.innerHTML = html;
     } catch (err) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="4" class="text-center py-5 text-danger">
+                <td colspan="4" class="text-center py-4 text-danger">
                     <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
                     <div>Failed to load categories: ${err.message}</div>
-                    <button class="btn btn-sm btn-outline-danger mt-2" onclick="loadCategories()">Retry</button>
                 </td>
-            </tr>`;
-        Toast.error('Failed to load categories: ' + err.message);
+            </tr>
+        `;
     }
 }
 
-// Render Table with Search
-function renderTable() {
-    const tbody = document.getElementById('categoriesTableBody');
-    const searchVal = document.getElementById('categorySearchInput').value.toLowerCase().trim();
-
-    const filtered = allCategories.filter(c => {
-        if (!searchVal) return true;
-        return (c.name || '').toLowerCase().includes(searchVal) ||
-               (c.description || '').toLowerCase().includes(searchVal);
-    });
-
-    document.getElementById('categoryCountSummary').textContent =
-        `Showing ${filtered.length} of ${allCategories.length} categories`;
-
-    if (filtered.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="4" class="text-center py-5 text-muted">
-                    <i class="fas fa-tags fa-3x mb-3 text-secondary" style="opacity:0.4;"></i>
-                    <h6 class="fw-bold">No categories found</h6>
-                    <p class="small mb-0">Click "Add New Category" to create your first menu category.</p>
-                </td>
-            </tr>`;
-        return;
-    }
-
-    let html = '';
-    filtered.forEach(cat => {
-        const iconChar = (cat.name || 'C').charAt(0).toUpperCase();
-        html += `
-        <tr>
-            <td class="ps-4">
-                <span class="badge bg-light text-secondary border font-monospace">#${cat.id}</span>
-            </td>
-            <td>
-                <div class="d-flex align-items-center gap-3">
-                    <div class="cat-icon-badge">${iconChar}</div>
-                    <div>
-                        <div class="fw-bold text-dark">${escapeHtml(cat.name)}</div>
-                    </div>
-                </div>
-            </td>
-            <td class="text-muted">
-                ${escapeHtml(cat.description || '—')}
-            </td>
-            <td class="text-end pe-4">
-                <div class="btn-group btn-group-sm">
-                    <button class="btn btn-outline-primary rounded-pill me-1" title="Edit Category"
-                            onclick="openEditCategoryModal(${cat.id})">
-                        <i class="fas fa-pencil-alt me-1"></i>Edit
-                    </button>
-                    <button class="btn btn-outline-danger rounded-pill" title="Delete Category"
-                            onclick="openDeleteCategoryModal(${cat.id}, '${escapeHtml(cat.name)}')">
-                        <i class="fas fa-trash-alt me-1"></i>Delete
-                    </button>
-                </div>
-            </td>
-        </tr>`;
-    });
-
-    tbody.innerHTML = html;
+function openEditCategory(id, name, desc) {
+    document.getElementById('catModalTitle').innerHTML = '<i class="fas fa-edit me-2 text-warning"></i>Edit Category';
+    document.getElementById('categoryId').value = id;
+    document.getElementById('catName').value = name;
+    document.getElementById('catDescription').value = desc;
+    catModal.show();
 }
 
-// Open Edit Modal
-function openEditCategoryModal(id) {
-    const cat = allCategories.find(c => c.id === id);
-    if (!cat) return;
+async function handleSaveCategory(e) {
+    e.preventDefault();
+    const id = document.getElementById('categoryId').value;
+    const body = {
+        name: document.getElementById('catName').value.trim(),
+        description: document.getElementById('catDescription').value.trim()
+    };
 
-    activeCategoryId = id;
-    document.getElementById('categoryModalTitle').textContent = 'Edit Category';
-    document.getElementById('categoryId').value = cat.id;
-    document.getElementById('categoryName').value = cat.name || '';
-    document.getElementById('categoryDescription').value = cat.description || '';
-    categoryModalInstance.show();
-}
-
-// Open Delete Modal
-function openDeleteCategoryModal(id, name) {
-    activeCategoryId = id;
-    document.getElementById('deleteCategoryName').textContent = name;
-    deleteModalInstance.show();
-}
-
-// Save Category (POST or PUT)
-async function saveCategory() {
-    const name = document.getElementById('categoryName').value.trim();
-    const description = document.getElementById('categoryDescription').value.trim();
-
-    if (!name) {
-        Toast.warning('Category name is required');
-        return;
-    }
-
-    const payload = { name, description };
-    const saveBtn = document.getElementById('saveCategoryBtn');
-    saveBtn.disabled = true;
-    saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Saving...';
+    const btn = document.getElementById('saveCatBtn');
+    btn.disabled = true;
 
     try {
-        if (activeCategoryId) {
-            // PUT /api/admin/categories/{id}
-            await Api.put(`/admin/categories/${activeCategoryId}`, payload);
-            Toast.success(`"${name}" updated successfully!`);
+        if (id) {
+            await Api.put(`/admin/categories/${id}`, body);
+            Toast.success('Category updated');
         } else {
-            // POST /api/admin/categories
-            await Api.post('/admin/categories', payload);
-            Toast.success(`"${name}" category created!`);
+            await Api.post('/admin/categories', body);
+            Toast.success('Category created');
         }
-        categoryModalInstance.hide();
-        await loadCategories();
+        catModal.hide();
+        loadCategories();
     } catch (err) {
         Toast.error('Save failed: ' + err.message);
     } finally {
-        saveBtn.disabled = false;
-        saveBtn.innerHTML = '<i class="fas fa-save me-1"></i> Save Category';
+        btn.disabled = false;
     }
 }
 
-function escapeHtml(text) {
-    if (!text) return '';
-    return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+function openDeleteCatModal(id, name) {
+    activeCategory = { id, name };
+    document.getElementById('deleteCatName').textContent = name;
+    deleteCatModal.show();
+}
+
+async function handleDeleteCategory() {
+    if (!activeCategory) return;
+    const btn = document.getElementById('confirmDeleteCatBtn');
+    btn.disabled = true;
+
+    try {
+        await Api.delete(`/admin/categories/${activeCategory.id}`);
+        Toast.success('Category removed');
+        deleteCatModal.hide();
+        loadCategories();
+    } catch (err) {
+        Toast.error('Delete failed: ' + err.message);
+    } finally {
+        btn.disabled = false;
+    }
 }
 </script>
 </body>

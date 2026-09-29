@@ -1,5 +1,8 @@
 package com.kaveri.config;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kaveri.entity.Category;
 import com.kaveri.entity.FoodItem;
 import com.kaveri.entity.Role;
@@ -11,16 +14,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
 public class DataSeeder {
+
+    private final ObjectMapper objectMapper;
+    private final ResourceLoader resourceLoader;
 
     @Bean
     public CommandLineRunner seedDatabase(
@@ -31,19 +39,19 @@ public class DataSeeder {
             PasswordEncoder passwordEncoder) {
 
         return args -> {
-            // ---- Seed Roles ----
+            // ---- 1. Seed Roles ----
             if (roleRepository.count() == 0) {
                 roleRepository.saveAll(List.of(
                         Role.builder().name(RoleName.ROLE_CUSTOMER).build(),
                         Role.builder().name(RoleName.ROLE_ADMIN).build()
                 ));
-                log.info("Roles seeded.");
+                log.info("Roles seeded successfully.");
             }
 
             Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN).orElseThrow();
             Role customerRole = roleRepository.findByName(RoleName.ROLE_CUSTOMER).orElseThrow();
 
-            // ---- Seed Admin User ----
+            // ---- 2. Seed Admin User ----
             if (!userRepository.existsByEmail("admin@thekaveri.com")) {
                 User admin = User.builder()
                         .name("Kaveri Management")
@@ -68,7 +76,7 @@ public class DataSeeder {
                 userRepository.save(legacyAdmin);
             }
 
-            // ---- Seed Sample Customer ----
+            // ---- 3. Seed Sample Customer ----
             if (!userRepository.existsByEmail("customer@thekaveri.com")) {
                 User customer = User.builder()
                         .name("Rohan Verma")
@@ -93,90 +101,139 @@ public class DataSeeder {
                 userRepository.save(legacyCustomer);
             }
 
-            // ---- Seed Categories ----
-            if (categoryRepository.count() == 0) {
-                List<Category> categories = categoryRepository.saveAll(List.of(
-                        Category.builder().name("Kaveri Specials & Thalis").description("Signature multi-course royal thalis and chef specials").imageUrl("/images/vegthali.jpg").build(),
-                        Category.builder().name("South Indian").description("Crispy authentic dosas, uttapams and idlis").imageUrl("/images/fastfood.jpg").build(),
-                        Category.builder().name("North Indian Curries").description("Rich rich paneer gravies and slow-simmered dals").imageUrl("/img/home1-main-image-1.jpg").build(),
-                        Category.builder().name("Tandoor & Starters").description("Charcoal roasted kebabs, paneer tikka and hot starters").imageUrl("/img/home1-main-image-4.jpg").build(),
-                        Category.builder().name("Punjab Sweet House").description("Heritage Indian mithai and confections since 1947").imageUrl("/images/punjaabsweethouse.jpg").build(),
-                        Category.builder().name("Breads & Biryani").description("Tandoori naans, rotis and fragrant dum biryani").imageUrl("/img/home1-main-image-5.jpg").build(),
-                        Category.builder().name("Chinese Delicacies").description("Wok-tossed noodles, chilli paneer and fried rice").imageUrl("/img/main-home-slide3.jpg").build(),
-                        Category.builder().name("Beverages & Shakes").description("Kaveri special thick lassi, shakes and coolers").imageUrl("/images/ice4.jpg").build()
-                ));
-                log.info("Kaveri Categories seeded.");
+            // ---- 4. Seed Verified Kaveri Categories & Menu Items (242 items across 17 categories) ----
+            Map<String, Category> categoryMap = new HashMap<>();
+            
+            // Map of default metadata for the 17 verified Kaveri categories
+            Map<String, String[]> categoryMeta = Map.ofEntries(
+                    Map.entry("Refreshers", new String[]{"Refreshing coolers, mojitos, and mocktails", "/images/menu/virgin-mojito.jpg"}),
+                    Map.entry("Thick Shake", new String[]{"Rich, creamy handcrafted thick shakes", "/images/menu/mango-shake.jpg"}),
+                    Map.entry("Tea, Snacks & Breakfast", new String[]{"Heritage snacks, pakodas, toasts, and hot tea", "/images/menu/paneer-pakoda.jpg"}),
+                    Map.entry("Chat", new String[]{"Authentic Indian street food & tangy chaats", "/images/menu/pani-puri.jpg"}),
+                    Map.entry("Soup", new String[]{"Hot and comforting chef-crafted soups", "/images/menu/tomato-soup.jpg"}),
+                    Map.entry("Kebab", new String[]{"Tandoor char-grilled kebabs and paneer tikkas", "/images/menu/paneer-tikka.jpg"}),
+                    Map.entry("Indian Main Course", new String[]{"Rich paneer curries, koftas, and seasonal specials", "/images/menu/paneer-butter-masala.jpg"}),
+                    Map.entry("Lentils", new String[]{"Slow-simmered Dal Makhani and Yellow Dal Tadka", "/images/menu/dal-makhani.jpg"}),
+                    Map.entry("Rice/Pulao", new String[]{"Aromatic dum biryanis, pulaos, and jeera rice", "/images/menu/hyderabadi-biryani.jpg"}),
+                    Map.entry("Indian Breads", new String[]{"Tandoori naans, rotis, kulchas, and parathas", "/images/menu/butter-naan.jpg"}),
+                    Map.entry("Condiments", new String[]{"Crisp papads, raitas, and house chutneys", "/images/menu/mixed-veg-raita.jpg"}),
+                    Map.entry("Salad", new String[]{"Fresh green salads, Russian salads, and tossed greens", "/images/menu/green-salad.jpg"}),
+                    Map.entry("Thali", new String[]{"Grand multi-course Kaveri Royal and Executive Thalis", "/images/vegthali.jpg"}),
+                    Map.entry("South Indian", new String[]{"Crispy golden dosas, uttapams, idlis, and vadas", "/images/menu/butter-masala-dosa.jpg"}),
+                    Map.entry("Chinese", new String[]{"Wok-tossed noodles, fried rice, manchurian, and paneer", "/images/menu/veg-chowmein.jpg"}),
+                    Map.entry("Pizza", new String[]{"Stone-baked pizzas loaded with mozzarella and veggies", "/images/menu/cheese-pizza.jpg"}),
+                    Map.entry("Desserts", new String[]{"Punjab Sweet House gulab jamuns, rasmalai, and ice creams", "/images/menu/gulab-jamun.jpg"})
+            );
 
-                // ---- Seed Food Items ----
-                if (foodItemRepository.count() == 0) {
-                    Category thalis = categories.get(0);
-                    Category southIndian = categories.get(1);
-                    Category northIndian = categories.get(2);
-                    Category tandoor = categories.get(3);
-                    Category sweets = categories.get(4);
-                    Category breadsRice = categories.get(5);
-                    Category chinese = categories.get(6);
-                    Category beverages = categories.get(7);
+            // Pre-seed or fetch all categories
+            for (Map.Entry<String, String[]> entry : categoryMeta.entrySet()) {
+                String catName = entry.getKey();
+                String desc = entry.getValue()[0];
+                String img = entry.getValue()[1];
 
-                    foodItemRepository.saveAll(List.of(
-                        // Thalis & Specials
-                        FoodItem.builder().name("Kaveri Royal Executive Thali").description("Special Paneer Butter Masala, Dal Makhani, Seasonal Veg, Jeera Rice, 2 Butter Naan, Sweet, Raita, Salad & Papad")
-                            .price(new BigDecimal("349")).category(thalis).vegetarian(true).spicy(false).preparationTime(20).available(true).imageUrl("/images/vegthali.jpg").build(),
-                        FoodItem.builder().name("Kaveri Special Veg Thali").description("Paneer Gravy, Yellow Dal Tadka, Mixed Vegetable, Steamed Basmati Rice, 3 Phulkas, Pickle & Gulab Jamun")
-                            .price(new BigDecimal("269")).category(thalis).vegetarian(true).spicy(false).preparationTime(15).available(true).imageUrl("/images/vegthali.jpg").build(),
+                Category cat = categoryRepository.findByNameIgnoreCase(catName)
+                        .orElseGet(() -> categoryRepository.save(
+                                Category.builder()
+                                        .name(catName)
+                                        .description(desc)
+                                        .imageUrl(img)
+                                        .build()
+                        ));
+                categoryMap.put(catName.toLowerCase(), cat);
+            }
 
-                        // South Indian
-                        FoodItem.builder().name("Kaveri Special Butter Masala Dosa").description("Crispy golden crepe roasted in pure butter, stuffed with spiced potato masala, served with 3 chutneys & sambar")
-                            .price(new BigDecimal("179")).category(southIndian).vegetarian(true).spicy(false).preparationTime(12).available(true).imageUrl("/images/menu/butter-masala-dosa.jpg").build(),
-                        FoodItem.builder().name("Mysore Cheese Masala Dosa").description("Crispy dosa smeared with red garlic chutney, loaded with processed cheese and aloo masala")
-                            .price(new BigDecimal("219")).category(southIndian).vegetarian(true).spicy(true).preparationTime(15).available(true).imageUrl("/images/menu/mysore-masala-dosa.jpg").build(),
-                        FoodItem.builder().name("Steamed Button Idli Sambar").description("Feather-soft steamed rice cakes submerged in piping hot piping sambar with coconut chutney")
-                            .price(new BigDecimal("119")).category(southIndian).vegetarian(true).spicy(false).preparationTime(8).available(true).imageUrl("/images/menu/idli-sambhar.jpg").build(),
+            // Ensure any existing categories in DB are also in categoryMap
+            categoryRepository.findAll().forEach(c -> categoryMap.putIfAbsent(c.getName().toLowerCase(), c));
 
-                        // North Indian Curries
-                        FoodItem.builder().name("Paneer Butter Masala").description("Fresh cottage cheese cubes simmered in velvety butter-tomato gravy with rich cashew paste and kasuri methi")
-                            .price(new BigDecimal("299")).category(northIndian).vegetarian(true).spicy(false).preparationTime(18).available(true).imageUrl("/images/menu/paneer-butter-masala.jpg").build(),
-                        FoodItem.builder().name("Dal Makhani (Kaveri Signature)").description("Black lentils and kidney beans slow-cooked overnight with churned butter and fresh cream")
-                            .price(new BigDecimal("249")).category(northIndian).vegetarian(true).spicy(false).preparationTime(15).available(true).imageUrl("/images/menu/dal-makhani.jpg").build(),
-                        FoodItem.builder().name("Kadhai Paneer").description("Paneer tossed with crunchy bell peppers, whole coriander seeds, and crushed Kashmiri red chillies")
-                            .price(new BigDecimal("289")).category(northIndian).vegetarian(true).spicy(true).preparationTime(18).available(true).imageUrl("/images/menu/kadai-paneer.jpg").build(),
-                        FoodItem.builder().name("Malai Kofta").description("Melt-in-mouth cottage cheese and khoya dumplings served in a rich royal white cashew gravy")
-                            .price(new BigDecimal("319")).category(northIndian).vegetarian(true).spicy(false).preparationTime(20).available(true).imageUrl("/images/menu/malai-kofta.jpg").build(),
+            // Load and seed items from kaveri-menu.json if DB has less than 240 items
+            if (foodItemRepository.count() < 240) {
+                log.info("Current DB food item count is {}. Seeding full Kaveri Menu (242 items)...", foodItemRepository.count());
+                
+                InputStream is = null;
+                try {
+                    Resource resource = resourceLoader.getResource("classpath:kaveri-menu.json");
+                    if (resource.exists()) {
+                        is = resource.getInputStream();
+                    } else {
+                        is = getClass().getResourceAsStream("/kaveri-menu.json");
+                    }
 
-                        // Tandoor & Starters
-                        FoodItem.builder().name("Tandoori Paneer Tikka").description("Marinated cottage cheese char-grilled in clay tandoor with onions and capsicum, served with mint chutney")
-                            .price(new BigDecimal("279")).category(tandoor).vegetarian(true).spicy(true).preparationTime(20).available(true).imageUrl("/images/menu/paneer-tikka.jpg").build(),
-                        FoodItem.builder().name("Hara Bhara Kebab").description("Pan-fried spinach, green pea and potato patties spiced with cardamom and royal cumin")
-                            .price(new BigDecimal("219")).category(tandoor).vegetarian(true).spicy(false).preparationTime(15).available(true).imageUrl("/images/menu/vegetable-kebab.jpg").build(),
+                    if (is != null) {
+                        List<JsonNode> rawItems = objectMapper.readValue(is, new TypeReference<List<JsonNode>>() {});
+                        int seededCount = 0;
 
-                        // Punjab Sweet House
-                        FoodItem.builder().name("Punjab Sweet House Gulab Jamun (2 Pcs)").description("Iconic heritage recipe: melt-in-mouth golden khoya dumplings soaked in saffron-cardamom syrup")
-                            .price(new BigDecimal("99")).category(sweets).vegetarian(true).spicy(false).preparationTime(5).available(true).imageUrl("/images/menu/gulab-jamun.jpg").build(),
-                        FoodItem.builder().name("Kesar Rasmalai (2 Pcs)").description("Spongy cottage cheese patties immersed in chilled condensed milk infused with Kashmiri saffron and pistachios")
-                            .price(new BigDecimal("129")).category(sweets).vegetarian(true).spicy(false).preparationTime(5).available(true).imageUrl("/images/menu/rasmalai.jpg").build(),
-                        FoodItem.builder().name("Special Motichoor Ladoo (250g Box)").description("Pure desi ghee tiny pearl boondi laddus made fresh daily")
-                            .price(new BigDecimal("169")).category(sweets).vegetarian(true).spicy(false).preparationTime(5).available(true).imageUrl("/images/punjaabsweethouse.jpg").build(),
+                        for (JsonNode node : rawItems) {
+                            String name = node.has("name") ? node.get("name").asText().trim() : null;
+                            if (name == null || name.isEmpty()) continue;
 
-                        // Breads & Biryani
-                        FoodItem.builder().name("Kaveri Special Veg Dum Biryani").description("Slow-cooked aromatic basmati rice layered with garden vegetables, saffron and royal spices, served with raita")
-                            .price(new BigDecimal("289")).category(breadsRice).vegetarian(true).spicy(true).preparationTime(25).available(true).imageUrl("/images/menu/hyderabadi-biryani.jpg").build(),
-                        FoodItem.builder().name("Butter Naan").description("Clay oven baked refined flour bread brushed with generous dollop of butter")
-                            .price(new BigDecimal("59")).category(breadsRice).vegetarian(true).spicy(false).preparationTime(8).available(true).imageUrl("/images/menu/butter-naan.jpg").build(),
+                            String catName = node.has("category") ? node.get("category").asText().trim() : "Indian Main Course";
+                            Category category = categoryMap.get(catName.toLowerCase());
+                            if (category == null) {
+                                category = categoryRepository.findByNameIgnoreCase(catName)
+                                        .orElseGet(() -> categoryRepository.save(
+                                                Category.builder().name(catName).description(catName).build()
+                                        ));
+                                categoryMap.put(catName.toLowerCase(), category);
+                            }
 
-                        // Chinese
-                        FoodItem.builder().name("Chilli Paneer Dry").description("Crispy paneer cubes wok-tossed with green chillies, garlic, capsicum and soya glaze")
-                            .price(new BigDecimal("259")).category(chinese).vegetarian(true).spicy(true).preparationTime(15).available(true).imageUrl("/images/menu/chilli-paneer.jpg").build(),
-                        FoodItem.builder().name("Veg Hakka Noodles").description("Thin wok-tossed noodles with julienned vegetables and mild Chinese spices")
-                            .price(new BigDecimal("189")).category(chinese).vegetarian(true).spicy(false).preparationTime(12).available(true).imageUrl("/images/menu/veg-chowmein.jpg").build(),
+                            BigDecimal price = new BigDecimal("20.00");
+                            if (node.hasNonNull("price")) {
+                                try {
+                                    price = new BigDecimal(node.get("price").asText().trim());
+                                } catch (Exception ignored) {
+                                    price = new BigDecimal("20.00");
+                                }
+                            }
+                            String imageUrl = node.has("imageUrl") && !node.get("imageUrl").isNull() ? node.get("imageUrl").asText().trim() : null;
+                            if (imageUrl != null && imageUrl.isEmpty()) imageUrl = null;
 
-                        // Beverages
-                        FoodItem.builder().name("Kaveri Royal Sweet Lassi").description("Traditional thick churned Punjabi yogurt lassi topped with malai, saffron, and crushed almonds")
-                            .price(new BigDecimal("99")).category(beverages).vegetarian(true).spicy(false).preparationTime(5).available(true).imageUrl("/images/menu/punjabi-lassi.jpg").build(),
-                        FoodItem.builder().name("Fresh Mint Lime Soda").description("Refreshing sparkling cooler with fresh lime juice, crushed mint sprigs, and roasted cumin salt")
-                            .price(new BigDecimal("79")).category(beverages).vegetarian(true).spicy(false).preparationTime(3).available(true).imageUrl("/images/menu/fresh-lime-soda.jpg").build()
-                    ));
-                    log.info("Kaveri Food items seeded (19 iconic items).");
+                            String description = node.has("description") && !node.get("description").isNull() ? node.get("description").asText().trim() : "";
+                            boolean isVegetarian = !node.has("isVegetarian") || node.get("isVegetarian").asBoolean(true);
+                            boolean isSpicy = name.toLowerCase().contains("chilli") || name.toLowerCase().contains("spicy") || name.toLowerCase().contains("kadai") || name.toLowerCase().contains("schezwan");
+
+                            Optional<FoodItem> existingOpt = foodItemRepository.findByNameIgnoreCase(name);
+                            if (existingOpt.isPresent()) {
+                                FoodItem existing = existingOpt.get();
+                                existing.setCategory(category);
+                                existing.setPrice(price);
+                                if (imageUrl != null && (existing.getImageUrl() == null || existing.getImageUrl().isBlank())) {
+                                    existing.setImageUrl(imageUrl);
+                                }
+                                if (existing.getDescription() == null || existing.getDescription().isBlank()) {
+                                    existing.setDescription(description);
+                                }
+                                foodItemRepository.save(existing);
+                            } else {
+                                FoodItem newItem = FoodItem.builder()
+                                        .name(name)
+                                        .description(description)
+                                        .price(price)
+                                        .category(category)
+                                        .vegetarian(isVegetarian)
+                                        .spicy(isSpicy)
+                                        .preparationTime(15)
+                                        .available(true)
+                                        .imageUrl(imageUrl)
+                                        .rating(BigDecimal.valueOf(4.5))
+                                        .reviewCount(12)
+                                        .build();
+                                foodItemRepository.save(newItem);
+                                seededCount++;
+                            }
+                        }
+                        log.info("Kaveri Menu database seeding finished. Total items in DB: {}", foodItemRepository.count());
+                    } else {
+                        log.warn("kaveri-menu.json resource could not be found for database seeding.");
+                    }
+                } catch (Exception e) {
+                    log.error("Error seeding kaveri-menu.json into database", e);
+                } finally {
+                    if (is != null) {
+                        try { is.close(); } catch (Exception ignored) {}
+                    }
                 }
+            } else {
+                log.info("Kaveri Menu database already contains {} items.", foodItemRepository.count());
             }
         };
     }

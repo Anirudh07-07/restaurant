@@ -48,6 +48,22 @@ public class AdminController {
 
     // ---- Menu Management ----
 
+    @GetMapping("/menu")
+    @Operation(summary = "Get menu items for admin with full filters (keyword, category, availability, hasImage)")
+    public ResponseEntity<ApiResponse<Page<FoodItemResponse>>> getAdminMenu(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Boolean vegetarian,
+            @RequestParam(required = false) Boolean available,
+            @RequestParam(required = false) Boolean hasImage,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
+        return ResponseEntity.ok(ApiResponse.success(
+                menuService.searchAdminMenu(keyword, categoryId, vegetarian, available, hasImage, page, size, sortBy, sortDir)));
+    }
+
     @PostMapping("/menu")
     @Operation(summary = "Add a new food item")
     public ResponseEntity<ApiResponse<FoodItemResponse>> addFood(
@@ -78,6 +94,13 @@ public class AdminController {
         String imageUrl = imageUploadService.uploadImage(file);
         return ResponseEntity.ok(ApiResponse.success(
                 menuService.updateImageUrl(id, imageUrl), "Image uploaded"));
+    }
+
+    @DeleteMapping("/menu/{id}/image")
+    @Operation(summary = "Remove food image")
+    public ResponseEntity<ApiResponse<FoodItemResponse>> removeImage(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(
+                menuService.removeImageUrl(id), "Image removed"));
     }
 
     @PatchMapping("/menu/{id}/toggle-availability")
@@ -184,10 +207,30 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.success(reviewService.getAllReviews(page, size)));
     }
 
-    @DeleteMapping("/reviews/{id}")
-    @Operation(summary = "Delete a review (moderation)")
-    public ResponseEntity<ApiResponse<Void>> deleteReview(@PathVariable Long id) {
-        reviewService.deleteReview(id);
-        return ResponseEntity.ok(ApiResponse.success(null, "Review removed"));
+    // ---- Contact Messages Management ----
+
+    @GetMapping("/contacts")
+    @Operation(summary = "Get contact messages with keyword and isRead filter")
+    public ResponseEntity<ApiResponse<Page<com.kaveri.entity.ContactMessage>>> getContactMessages(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Boolean isRead,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        return ResponseEntity.ok(ApiResponse.success(
+                adminService.getAllContactMessages(keyword, isRead, page, size)));
+    }
+
+    @PatchMapping("/contacts/{id}/read")
+    @Operation(summary = "Toggle contact message read/unread status")
+    public ResponseEntity<ApiResponse<com.kaveri.entity.ContactMessage>> toggleContactRead(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(
+                adminService.toggleContactReadStatus(id)));
+    }
+
+    @DeleteMapping("/contacts/{id}")
+    @Operation(summary = "Delete contact message")
+    public ResponseEntity<ApiResponse<Void>> deleteContactMessage(@PathVariable Long id) {
+        adminService.deleteContactMessage(id);
+        return ResponseEntity.ok(ApiResponse.success(null, "Contact message deleted"));
     }
 }

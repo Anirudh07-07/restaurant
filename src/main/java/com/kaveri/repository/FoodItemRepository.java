@@ -42,4 +42,35 @@ public interface FoodItemRepository extends JpaRepository<FoodItem, Long>, JpaSp
 
     @Query("SELECT f FROM FoodItem f WHERE f.available = true AND f.category.id = :categoryId ORDER BY f.rating DESC")
     List<FoodItem> findTopRatedByCategory(@Param("categoryId") Long categoryId, Pageable pageable);
+
+    boolean existsByCategoryId(Long categoryId);
+
+    long countByImageUrl(String imageUrl);
+
+    @Query("SELECT COUNT(f) FROM FoodItem f WHERE f.imageUrl IS NOT NULL AND TRIM(f.imageUrl) != ''")
+    long countWithImages();
+
+    @Query("SELECT COUNT(f) FROM FoodItem f WHERE f.imageUrl IS NULL OR TRIM(f.imageUrl) = ''")
+    long countWithoutImages();
+
+    @Query("SELECT f FROM FoodItem f WHERE " +
+           "(:keyword IS NULL OR LOWER(f.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+           "     OR LOWER(f.description) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+           "AND (:categoryId IS NULL OR f.category.id = :categoryId) " +
+           "AND (:vegetarian IS NULL OR f.vegetarian = :vegetarian) " +
+           "AND (:available IS NULL OR f.available = :available) " +
+           "AND (:hasImage IS NULL OR (:hasImage = true AND f.imageUrl IS NOT NULL AND TRIM(f.imageUrl) != '') " +
+           "     OR (:hasImage = false AND (f.imageUrl IS NULL OR TRIM(f.imageUrl) = '')))")
+    Page<FoodItem> searchAdminMenu(
+        @Param("keyword") String keyword,
+        @Param("categoryId") Long categoryId,
+        @Param("vegetarian") Boolean vegetarian,
+        @Param("available") Boolean available,
+        @Param("hasImage") Boolean hasImage,
+        Pageable pageable
+    );
+
+    java.util.Optional<FoodItem> findByNameIgnoreCase(String name);
+
+    boolean existsByNameIgnoreCase(String name);
 }

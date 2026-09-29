@@ -47,15 +47,20 @@ public class ImageUploadServiceImpl implements ImageUploadService {
             Files.createDirectories(uploadPath);
 
             String extension = getExtension(file.getOriginalFilename());
+            if (!Set.of("jpg", "jpeg", "png", "webp").contains(extension)) {
+                throw new BadRequestException("Invalid file extension. Only JPG, PNG, and WebP are allowed");
+            }
             String filename = UUID.randomUUID() + "." + extension;
             Path targetPath = uploadPath.resolve(filename);
 
             Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
 
             String imageUrl = "/uploads/" + filename;
-            log.info("Image uploaded: {}", imageUrl);
+            log.info("Image uploaded successfully: {}", imageUrl);
             return imageUrl;
 
+        } catch (BadRequestException e) {
+            throw e;
         } catch (IOException e) {
             log.error("Failed to upload image: {}", e.getMessage());
             throw new BadRequestException("Failed to upload image. Please try again.");

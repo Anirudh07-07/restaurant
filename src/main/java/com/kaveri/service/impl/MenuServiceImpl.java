@@ -15,10 +15,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +33,9 @@ public class MenuServiceImpl implements MenuService {
 
     private final FoodItemRepository foodItemRepository;
     private final CategoryRepository categoryRepository;
+
+    @Value("${app.upload.dir:uploads}")
+    private String uploadDir;
 
     @Override
     @Transactional(readOnly = true)
@@ -138,8 +145,48 @@ public class MenuServiceImpl implements MenuService {
     public FoodItemResponse updateImageUrl(Long id, String imageUrl) {
         FoodItem item = foodItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("FoodItem", "id", id));
+        String oldImageUrl = item.getImageUrl();
         item.setImageUrl(imageUrl);
-        return toResponse(foodItemRepository.save(item));
+        FoodItem saved = foodItemRepository.save(item);
+
+        // Safe cleanup: If the old image was an uploaded file, delete it only if no other items reference it
+        if (oldImageUrl != null && !oldImageUrl.equals(imageUrl)) {
+            cleanupUploadedImageIfUnused(oldImageUrl);
+        }
+
+        return toResponse(saved);
+    }
+
+    @Override
+    @Transactional
+    public FoodItemResponse removeImageUrl(Long id) {
+        FoodItem item = foodItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("FoodItem", "id", id));
+        String oldImageUrl = item.getImageUrl();
+        item.setImageUrl(null);
+        FoodItem saved = foodItemRepository.save(item);
+
+        if (oldImageUrl != null) {
+            cleanupUploadedImageIfUnused(oldImageUrl);
+        }
+
+        return toResponse(saved);
+    }
+
+    private void cleanupUploadedImageIfUnused(String oldImageUrl) {
+        if (oldImageUrl != null && oldImageUrl.startsWith("/uploads/")) {
+            try {
+                long count = foodItemRepository.countByImageUrl(oldImageUrl);
+                if (count == 0) {
+                    String filename = oldImageUrl.replaceFirst("^/uploads/", "");
+                    Path filePath = Paths.get(uploadDir, filename).toAbsolutePath().normalize();
+                    Files.deleteIfExists(filePath);
+                    log.info("Deleted orphaned uploaded image file: {}", filePath);
+                }
+            } catch (Exception e) {
+                log.warn("Failed to delete unused uploaded image file {}: {}", oldImageUrl, e.getMessage());
+            }
+        }
     }
 
     @Override
@@ -149,6 +196,28 @@ public class MenuServiceImpl implements MenuService {
                 .orElseThrow(() -> new ResourceNotFoundException("FoodItem", "id", id));
         item.setAvailable(!item.isAvailable());
         return toResponse(foodItemRepository.save(item));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<FoodItemResponse> searchAdminMenu(
+            String keyword, Long categoryId, Boolean vegetarian,
+            Boolean available, Boolean hasImage, int page, int size,
+            String sortBy, String sortDir) {
+
+        Sort sort = sortDir.equalsIgnoreCase("desc")
+                ? Sort.by(sanitizeSortField(sortBy)).descending()
+                : Sort.by(sanitizeSortField(sortBy)).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return foodItemRepository.searchAdminMenu(
+                keyword != null && !keyword.trim().isEmpty() ? keyword.trim() : null,
+                categoryId,
+                vegetarian,
+                available,
+                hasImage,
+                pageable
+        ).map(this::toResponse);
     }
 
     public FoodItemResponse toResponse(FoodItem item) {

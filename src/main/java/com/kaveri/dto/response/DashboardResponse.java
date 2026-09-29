@@ -16,7 +16,18 @@ public class DashboardResponse {
     private BigDecimal totalRevenue;
     private long totalCustomers;
     private long pendingOrders;
+    private long todaysReservations;
     private long pendingReservations;
     private double averageRating;
     private long totalReviews;
+
+    // Menu & Image stats
+    private long totalMenuItems;
+    private long itemsWithImages;
+    private long itemsWithoutImages;
+    private long totalCategories;
+
+    // Contact messages
+    private long unreadMessages;
+    private long totalMessages;
 }

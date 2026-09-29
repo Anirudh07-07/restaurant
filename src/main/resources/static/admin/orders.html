@@ -6,18 +6,14 @@
     <title>Orders Management — Kaveri Restaurant Group Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        .admin-body { background: #f0f2f5; }
-        @media (max-width: 991.98px) {
-            .fn-navbar { padding-left: 15px !important; }
-        }
         .status-badge {
-            font-size: 0.78rem;
-            font-weight: 600;
-            padding: 5px 10px;
-            border-radius: 50rem;
+            font-size: 0.76rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 999px;
             display: inline-flex;
             align-items: center;
             gap: 4px;
@@ -33,73 +29,102 @@
         .payment-PAID { background: #d4edda; color: #155724; }
         .payment-PENDING { background: #fff3cd; color: #856404; }
         .payment-FAILED { background: #f8d7da; color: #721c24; }
-        .payment-REFUNDED { background: #e2e3e5; color: #383d41; }
         .payment-COD { background: #e7f1ff; color: #084298; }
 
-        .order-row:hover { background-color: rgba(232, 69, 69, 0.02); }
-        .table th { font-weight: 600; color: #495057; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .table td { font-size: 0.92rem; vertical-align: middle; }
+        .table th { font-weight: 600; color: #495057; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .table td { font-size: 0.9rem; vertical-align: middle; }
     </style>
 </head>
 <body class="admin-body">
 
-<!-- ===== TOP NAV ===== -->
-<nav class="navbar navbar-dark fn-navbar" style="position:fixed;top:0;left:0;right:0;z-index:200;padding-left:260px;">
-    <div class="container-fluid">
-        <span class="navbar-brand fn-brand mb-0 h1"><i class="fas fa-shopping-bag me-2 text-gold"></i>Orders Management</span>
-        <div class="d-flex align-items-center gap-3">
-            <a href="/" class="btn btn-outline-light btn-sm rounded-pill" target="_blank">
-                <i class="fas fa-external-link-alt me-1"></i>View Website
-            </a>
-            <span class="text-white-50" id="adminName">Admin</span>
-            <button class="btn btn-outline-danger btn-sm rounded-pill" id="adminLogout">
-                <i class="fas fa-sign-out-alt me-1"></i>Logout
+<div class="admin-backdrop" id="adminBackdrop"></div>
+
+<!-- ===== TOPBAR ===== -->
+<header class="admin-topbar">
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-outline-light btn-sm d-lg-none rounded-circle" id="sidebarToggle" style="width:36px;height:36px;">
+            <i class="fas fa-bars"></i>
+        </button>
+        <span class="navbar-brand mb-0 h5 text-white fw-bold d-flex align-items-center gap-2">
+            <i class="fas fa-shopping-bag text-warning"></i>
+            <span>Orders & Kitchen Operations</span>
+        </span>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <a href="/" class="btn btn-outline-light btn-sm rounded-pill px-3" target="_blank">
+            <i class="fas fa-external-link-alt me-1"></i> Public Website
+        </a>
+        <div class="dropdown">
+            <button class="btn btn-outline-light btn-sm rounded-pill px-3 dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fas fa-user-shield me-1 text-warning"></i><span id="adminName">Admin</span>
             </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                <li><a class="dropdown-item" href="/admin/settings.html"><i class="fas fa-cog me-2 text-muted"></i>Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="#" id="adminLogout"><i class="fas fa-sign-out-alt me-2"></i>Sign Out</a></li>
+            </ul>
         </div>
     </div>
-</nav>
+</header>
 
 <!-- ===== SIDEBAR ===== -->
-<aside class="admin-sidebar">
-    <div class="px-4 py-3 mb-2" style="margin-top:70px;">
-        <div class="footer-brand" style="font-size:1.15rem; color:var(--fn-gold); display:flex; align-items:center;">
-            <img src="/images/footer_logo.png" alt="Kaveri" style="height:26px; margin-right:8px;" onerror="this.style.display='none'">
-            <span>KAVERI ADMIN</span>
+<aside class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar-brand">
+        <div class="admin-sidebar-brand-title">
+            <img src="/images/footer_logo.png" alt="Kaveri" style="height:28px;" onerror="this.style.display='none'">
+            <span>KAVERI</span>
         </div>
-        <small class="text-white-50">Ranchi, Jharkhand</small>
+        <div class="admin-sidebar-brand-subtitle">Restaurant Group Operations</div>
     </div>
-    <nav>
+    <nav class="admin-sidebar-nav">
+        <div class="admin-nav-header">Overview</div>
         <a href="/admin/dashboard.html" class="admin-nav-link">
-            <i class="fas fa-tachometer-alt fa-fw"></i> Dashboard
+            <i class="fas fa-tachometer-alt"></i> Dashboard
         </a>
-        <a href="/admin/orders.html" class="admin-nav-link active">
-            <i class="fas fa-shopping-bag fa-fw"></i> Orders
+        <a href="/admin/reports.html" class="admin-nav-link">
+            <i class="fas fa-chart-pie"></i> Reports & Analytics
         </a>
+
+        <div class="admin-nav-header">Catalog & Menu</div>
         <a href="/admin/menu.html" class="admin-nav-link">
-            <i class="fas fa-utensils fa-fw"></i> Menu
+            <i class="fas fa-utensils"></i> Menu Items
         </a>
         <a href="/admin/categories.html" class="admin-nav-link">
-            <i class="fas fa-tags fa-fw"></i> Categories
+            <i class="fas fa-tags"></i> Categories
         </a>
-        <a href="/admin/users.html" class="admin-nav-link">
-            <i class="fas fa-users fa-fw"></i> Customers
+
+        <div class="admin-nav-header">Hospitality & Sales</div>
+        <a href="/admin/orders.html" class="admin-nav-link active">
+            <i class="fas fa-shopping-bag"></i> Orders
         </a>
         <a href="/admin/reservations.html" class="admin-nav-link">
-            <i class="fas fa-calendar-check fa-fw"></i> Reservations
+            <i class="fas fa-calendar-check"></i> Reservations
+        </a>
+
+        <div class="admin-nav-header">People & Feedback</div>
+        <a href="/admin/users.html" class="admin-nav-link">
+            <i class="fas fa-users"></i> Customers
         </a>
         <a href="/admin/reviews.html" class="admin-nav-link">
-            <i class="fas fa-star fa-fw"></i> Reviews
+            <i class="fas fa-star"></i> Reviews Moderation
+        </a>
+        <a href="/admin/messages.html" class="admin-nav-link">
+            <i class="fas fa-envelope"></i> Inquiries & Contact
+        </a>
+
+        <div class="admin-nav-header">Configuration</div>
+        <a href="/admin/settings.html" class="admin-nav-link">
+            <i class="fas fa-sliders-h"></i> System Settings
         </a>
     </nav>
 </aside>
 
 <!-- ===== MAIN CONTENT ===== -->
 <main class="admin-content">
-    <!-- Page Header -->
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
-            <h2 class="mb-1 fw-bold" style="font-family:'Playfair Display',serif;">Orders Management</h2>
-            <p class="text-muted mb-0 small">Monitor incoming orders, track delivery stages, and update statuses</p>
+            <h2 class="mb-1 fw-bold text-dark" style="font-family:'Playfair Display',serif;">Orders Management</h2>
+            <p class="text-muted mb-0 small">Track dining and delivery orders, manage kitchen status, and inspect customer bills.</p>
         </div>
         <div class="d-flex gap-2">
             <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" id="refreshBtn">
@@ -108,44 +133,36 @@
         </div>
     </div>
 
-    <!-- Filters & Search Card -->
+    <!-- Filters Bar -->
     <div class="card border-0 shadow-sm mb-4" style="border-radius:16px;">
         <div class="card-body p-3 p-md-4">
             <div class="row g-3 align-items-center">
                 <div class="col-md-5 col-lg-4">
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
-                        <input type="text" class="form-control border-start-0 ps-0" id="orderSearchInput"
-                               placeholder="Search customer, phone, order ID...">
+                        <input type="text" class="form-control border-start-0 ps-0" id="orderSearchInput" placeholder="Search order ID, customer name or phone...">
                     </div>
                 </div>
                 <div class="col-md-4 col-lg-3">
                     <select class="form-select" id="orderStatusFilter">
-                        <option value="">All Statuses</option>
+                        <option value="">All Order Statuses</option>
                         <option value="PLACED">Placed</option>
                         <option value="CONFIRMED">Confirmed</option>
                         <option value="PREPARING">Preparing</option>
-                        <option value="READY">Ready</option>
+                        <option value="READY">Ready for Pickup/Dispatch</option>
                         <option value="OUT_FOR_DELIVERY">Out for Delivery</option>
                         <option value="DELIVERED">Delivered</option>
                         <option value="CANCELLED">Cancelled</option>
                     </select>
                 </div>
-                <div class="col-md-3 col-lg-2">
-                    <select class="form-select" id="pageSizeSelect">
-                        <option value="10">10 per page</option>
-                        <option value="20" selected>20 per page</option>
-                        <option value="50">50 per page</option>
-                    </select>
-                </div>
-                <div class="col-md-12 col-lg-3 text-lg-end text-muted small" id="totalOrdersCount">
+                <div class="col-md-3 col-lg-5 text-md-end text-muted small" id="ordersCountText">
                     Loading orders...
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Orders Table Card -->
+    <!-- Orders Table -->
     <div class="card border-0 shadow-sm" style="border-radius:16px; overflow:hidden;">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0" id="ordersTable">
@@ -153,17 +170,16 @@
                     <tr>
                         <th class="ps-4">Order ID</th>
                         <th>Customer</th>
-                        <th>Items</th>
-                        <th>Total</th>
+                        <th>Amount</th>
                         <th>Payment</th>
-                        <th>Status</th>
-                        <th>Created At</th>
+                        <th>Order Status</th>
+                        <th>Placed Time</th>
                         <th class="text-end pe-4">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="ordersTableBody">
                     <tr>
-                        <td colspan="8" class="text-center py-5">
+                        <td colspan="7" class="text-center py-5">
                             <div class="spinner-border text-danger" role="status"></div>
                             <div class="mt-2 text-muted small">Loading orders...</div>
                         </td>
@@ -172,38 +188,32 @@
             </table>
         </div>
 
-        <!-- Pagination Footer -->
         <div class="card-footer bg-white border-0 py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
-            <span class="text-muted small" id="paginationInfo">Showing 0 of 0</span>
+            <span class="text-muted small" id="paginationInfo">Showing 0 orders</span>
             <nav>
-                <ul class="pagination pagination-sm mb-0" id="paginationControls">
-                    <!-- Dynamic pagination links -->
-                </ul>
+                <ul class="pagination pagination-sm mb-0" id="paginationControls"></ul>
             </nav>
         </div>
     </div>
 </main>
 
-<!-- ===== MODAL: ORDER DETAILS SNAPSHOT ===== -->
-<div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+<!-- ===== MODAL: ORDER DETAILS ===== -->
+<div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow" style="border-radius:20px; overflow:hidden;">
-            <div class="modal-header text-white" style="background:var(--fn-darker);">
-                <div>
-                    <h5 class="modal-title mb-0" id="orderDetailsModalLabel">
-                        <i class="fas fa-receipt me-2 text-warning"></i>Order Snapshot
-                    </h5>
-                    <small class="text-white-50" id="modalOrderIdSubtitle">Order details & delivery receipt</small>
-                </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header text-white" style="background:var(--primary-dark);">
+                <h5 class="modal-title" id="orderModalTitle">
+                    <i class="fas fa-receipt me-2 text-warning"></i><span>Order Details</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body p-4" id="orderDetailsModalBody">
-                <!-- Rendered dynamically -->
+            <div class="modal-body p-4" id="orderDetailsContent">
+                <div class="text-center py-4"><div class="spinner-border text-danger"></div></div>
             </div>
             <div class="modal-footer bg-light border-0 py-3 d-flex justify-content-between">
                 <div class="d-flex align-items-center gap-2">
-                    <span class="text-muted small">Change status:</span>
-                    <select class="form-select form-select-sm" id="modalStatusSelect" style="width:auto;">
+                    <label class="form-label mb-0 small fw-bold">Update Status:</label>
+                    <select class="form-select form-select-sm" id="modalOrderStatusSelect" style="width:180px;">
                         <option value="PLACED">PLACED</option>
                         <option value="CONFIRMED">CONFIRMED</option>
                         <option value="PREPARING">PREPARING</option>
@@ -212,39 +222,9 @@
                         <option value="DELIVERED">DELIVERED</option>
                         <option value="CANCELLED">CANCELLED</option>
                     </select>
-                    <button class="btn btn-primary btn-sm rounded-pill px-3" id="modalUpdateStatusBtn">
-                        Update
-                    </button>
+                    <button class="btn btn-fn btn-sm rounded-pill px-3" id="saveOrderStatusBtn">Update</button>
                 </div>
                 <button type="button" class="btn btn-secondary btn-sm rounded-pill px-4" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ===== MODAL: UPDATE STATUS CONFIRMATION ===== -->
-<div class="modal fade" id="updateStatusModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 shadow" style="border-radius:16px;">
-            <div class="modal-header border-0 pb-0">
-                <h6 class="modal-title fw-bold">Update Order Status</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body py-3">
-                <p class="small text-muted mb-2">Select new status for <strong id="quickModalOrderId">#0</strong>:</p>
-                <select class="form-select" id="quickStatusSelect">
-                    <option value="PLACED">Placed</option>
-                    <option value="CONFIRMED">Confirmed</option>
-                    <option value="PREPARING">Preparing</option>
-                    <option value="READY">Ready</option>
-                    <option value="OUT_FOR_DELIVERY">Out for Delivery</option>
-                    <option value="DELIVERED">Delivered</option>
-                    <option value="CANCELLED">Cancelled</option>
-                </select>
-            </div>
-            <div class="modal-footer border-0 pt-0">
-                <button type="button" class="btn btn-light btn-sm rounded-pill" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-fn btn-sm rounded-pill px-3" id="confirmQuickStatusBtn">Save</button>
             </div>
         </div>
     </div>
@@ -253,19 +233,12 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/main.js"></script>
 <script>
-// Global State
 let currentPage = 0;
-let pageSize = 20;
-let currentSearch = '';
-let currentStatus = '';
-let ordersCache = {};
-let activeModalOrderId = null;
+const pageSize = 15;
+let detailsModal = null;
+let activeOrder = null;
 
-let detailsModalInstance = null;
-let statusModalInstance = null;
-
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Guard check
+document.addEventListener('DOMContentLoaded', async () => {
     if (!Auth.isLoggedIn() || !Auth.isAdmin()) {
         alert('Admin access required');
         window.location.href = '/login.html';
@@ -276,407 +249,237 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('adminName').textContent = user?.name || 'Admin';
     document.getElementById('adminLogout').addEventListener('click', () => Auth.logout());
 
-    // 2. Initialize Modals
-    detailsModalInstance = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
-    statusModalInstance = new bootstrap.Modal(document.getElementById('updateStatusModal'));
+    // Mobile drawer toggle
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('adminSidebar');
+    const backdrop = document.getElementById('adminBackdrop');
+    if (toggleBtn && sidebar && backdrop) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('show');
+            backdrop.classList.toggle('show');
+        });
+        backdrop.addEventListener('click', () => {
+            sidebar.classList.remove('show');
+            backdrop.classList.remove('show');
+        });
+    }
 
-    // 3. Event Listeners
-    let debounceTimer = null;
-    document.getElementById('orderSearchInput').addEventListener('input', (e) => {
+    detailsModal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+
+    loadOrders();
+
+    let debounceTimer;
+    document.getElementById('orderSearchInput').addEventListener('input', () => {
         clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-            currentSearch = e.target.value.trim();
-            currentPage = 0;
-            loadOrders();
-        }, 350);
+        debounceTimer = setTimeout(() => { currentPage = 0; loadOrders(); }, 300);
     });
 
-    document.getElementById('orderStatusFilter').addEventListener('change', (e) => {
-        currentStatus = e.target.value;
-        currentPage = 0;
-        loadOrders();
-    });
-
-    document.getElementById('pageSizeSelect').addEventListener('change', (e) => {
-        pageSize = parseInt(e.target.value) || 20;
+    document.getElementById('orderStatusFilter').addEventListener('change', () => {
         currentPage = 0;
         loadOrders();
     });
 
     document.getElementById('refreshBtn').addEventListener('click', () => {
         loadOrders();
-        Toast.info('Refreshing orders...');
+        Toast.info('Orders reloaded');
     });
 
-    document.getElementById('modalUpdateStatusBtn').addEventListener('click', async () => {
-        if (!activeModalOrderId) return;
-        const newStatus = document.getElementById('modalStatusSelect').value;
-        await updateOrderStatus(activeModalOrderId, newStatus);
-        detailsModalInstance.hide();
-    });
-
-    document.getElementById('confirmQuickStatusBtn').addEventListener('click', async () => {
-        if (!activeModalOrderId) return;
-        const newStatus = document.getElementById('quickStatusSelect').value;
-        await updateOrderStatus(activeModalOrderId, newStatus);
-        statusModalInstance.hide();
-    });
-
-    // 4. Initial Load
-    loadOrders();
+    document.getElementById('saveOrderStatusBtn').addEventListener('click', handleUpdateModalStatus);
 });
 
-// Load Orders from /api/admin/orders
 async function loadOrders() {
     const tbody = document.getElementById('ordersTableBody');
     tbody.innerHTML = `
         <tr>
-            <td colspan="8" class="text-center py-5">
+            <td colspan="7" class="text-center py-5">
                 <div class="spinner-border text-danger" role="status"></div>
                 <div class="mt-2 text-muted small">Loading orders...</div>
             </td>
-        </tr>`;
+        </tr>
+    `;
 
-    const query = new URLSearchParams();
-    if (currentSearch) query.set('keyword', currentSearch);
-    if (currentStatus) query.set('status', currentStatus);
-    query.set('page', currentPage);
-    query.set('size', pageSize);
+    const keyword = document.getElementById('orderSearchInput').value.trim();
+    const status = document.getElementById('orderStatusFilter').value;
+
+    let params = `?page=${currentPage}&size=${pageSize}`;
+    if (keyword) params += `&keyword=${encodeURIComponent(keyword)}`;
+    if (status) params += `&status=${status}`;
 
     try {
-        const res = await Api.get(`/admin/orders?${query.toString()}`);
+        const res = await Api.get(`/admin/orders${params}`);
         const pageData = res.data;
-        const orders = pageData.content || [];
-
-        // Save to cache
-        ordersCache = {};
-        orders.forEach(o => ordersCache[o.id] = o);
-
-        document.getElementById('totalOrdersCount').textContent =
-            `Total: ${pageData.totalElements || 0} orders found`;
-
-        renderOrdersTable(orders);
-        renderPagination(pageData);
+        renderOrders(pageData);
     } catch (err) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="8" class="text-center py-5 text-danger">
+                <td colspan="7" class="text-center py-4 text-danger">
                     <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
                     <div>Failed to load orders: ${err.message}</div>
-                    <button class="btn btn-sm btn-outline-danger mt-2" onclick="loadOrders()">Retry</button>
                 </td>
-            </tr>`;
-        Toast.error('Failed to load orders: ' + err.message);
+            </tr>
+        `;
     }
 }
 
-// Render Orders Table
-function renderOrdersTable(orders) {
+function renderOrders(pageData) {
     const tbody = document.getElementById('ordersTableBody');
-    if (!orders || orders.length === 0) {
+    const items = pageData.content || [];
+
+    document.getElementById('ordersCountText').textContent = `Total Orders: ${pageData.totalElements || 0}`;
+    document.getElementById('paginationInfo').textContent = `Showing ${items.length} of ${pageData.totalElements} orders`;
+
+    if (items.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="8" class="text-center py-5 text-muted">
-                    <i class="fas fa-inbox fa-3x mb-3 text-secondary" style="opacity:0.5;"></i>
-                    <h6 class="fw-bold">No orders found</h6>
-                    <p class="small mb-0">Try changing your search filter or status selection.</p>
+                <td colspan="7" class="text-center py-5 text-muted">
+                    <i class="fas fa-shopping-bag fa-2x mb-2 opacity-50"></i>
+                    <div>No orders found.</div>
                 </td>
-            </tr>`;
+            </tr>
+        `;
+        renderPagination(pageData);
         return;
     }
 
     let html = '';
-    orders.forEach(o => {
-        const totalFormatted = '₹' + parseFloat(o.totalAmount || 0).toLocaleString('en-IN', {minimumFractionDigits: 2});
-        const itemCount = (o.items && o.items.length) || 0;
-        const dateFormatted = formatDateTime(o.createdAt);
-        const statusBadge = getStatusBadge(o.orderStatus);
-        const paymentBadge = getPaymentBadge(o.paymentMethod, o.paymentStatus);
+    items.forEach(o => {
+        const formattedDate = o.createdAt ? new Date(o.createdAt).toLocaleString('en-IN', {
+            dateStyle: 'medium', timeStyle: 'short'
+        }) : '—';
 
         html += `
-        <tr class="order-row">
-            <td class="ps-4">
-                <span class="fw-bold text-dark">#${o.id}</span>
-            </td>
-            <td>
-                <div class="fw-semibold text-dark">${escapeHtml(o.userName || 'Customer')}</div>
-                <small class="text-muted"><i class="fas fa-phone fa-xs me-1"></i>${escapeHtml(o.deliveryPhone || '—')}</small>
-            </td>
-            <td>
-                <span class="badge bg-light text-dark border">${itemCount} item${itemCount !== 1 ? 's' : ''}</span>
-            </td>
-            <td>
-                <span class="fw-bold text-dark">${totalFormatted}</span>
-            </td>
-            <td>
-                ${paymentBadge}
-            </td>
-            <td>
-                ${statusBadge}
-            </td>
-            <td class="text-muted small">
-                ${dateFormatted}
-            </td>
-            <td class="text-end pe-4">
-                <div class="btn-group btn-group-sm">
-                    <button class="btn btn-outline-secondary rounded-pill me-1" title="View Snapshot"
-                            onclick="openOrderDetails(${o.id})">
-                        <i class="fas fa-eye me-1"></i>View
-                    </button>
-                    <button class="btn btn-outline-primary rounded-pill" title="Update Status"
-                            onclick="openQuickStatusModal(${o.id})">
-                        <i class="fas fa-edit me-1"></i>Status
-                    </button>
-                </div>
-            </td>
-        </tr>`;
-    });
-
-    tbody.innerHTML = html;
-}
-
-// Render Pagination
-function renderPagination(pageData) {
-    const totalPages = pageData.totalPages || 0;
-    const pageNum = pageData.number || 0;
-    const totalElements = pageData.totalElements || 0;
-
-    const start = totalElements === 0 ? 0 : (pageNum * pageSize) + 1;
-    const end = Math.min((pageNum + 1) * pageSize, totalElements);
-    document.getElementById('paginationInfo').textContent =
-        `Showing ${start} to ${end} of ${totalElements} orders`;
-
-    const container = document.getElementById('paginationControls');
-    if (totalPages <= 1) {
-        container.innerHTML = '';
-        return;
-    }
-
-    let html = `
-        <li class="page-item ${pageNum === 0 ? 'disabled' : ''}">
-            <button class="page-link" onclick="goToPage(${pageNum - 1})"><i class="fas fa-chevron-left"></i></button>
-        </li>
-    `;
-
-    // Dynamic pages with bounds
-    const maxButtons = 5;
-    let startPage = Math.max(0, pageNum - Math.floor(maxButtons / 2));
-    let endPage = Math.min(totalPages - 1, startPage + maxButtons - 1);
-    if (endPage - startPage < maxButtons - 1) {
-        startPage = Math.max(0, endPage - maxButtons + 1);
-    }
-
-    for (let p = startPage; p <= endPage; p++) {
-        html += `
-            <li class="page-item ${p === pageNum ? 'active' : ''}">
-                <button class="page-link" onclick="goToPage(${p})">${p + 1}</button>
-            </li>
-        `;
-    }
-
-    html += `
-        <li class="page-item ${pageNum >= totalPages - 1 ? 'disabled' : ''}">
-            <button class="page-link" onclick="goToPage(${pageNum + 1})"><i class="fas fa-chevron-right"></i></button>
-        </li>
-    `;
-
-    container.innerHTML = html;
-}
-
-function goToPage(page) {
-    currentPage = page;
-    loadOrders();
-}
-
-// Open Order Details Modal
-function openOrderDetails(orderId) {
-    const o = ordersCache[orderId];
-    if (!o) return;
-
-    activeModalOrderId = orderId;
-    document.getElementById('modalOrderIdSubtitle').textContent = `Order #${o.id} • Placed on ${formatDateTime(o.createdAt)}`;
-    document.getElementById('modalStatusSelect').value = o.orderStatus || 'PLACED';
-
-    let itemsHtml = '';
-    (o.items || []).forEach(it => {
-        const itemImg = it.foodImageUrl || '/images/Thekaveris.jpg';
-        const subtotalFormatted = '₹' + parseFloat(it.subtotal || (it.foodPrice * it.quantity)).toLocaleString('en-IN', {minimumFractionDigits: 2});
-        const unitPrice = '₹' + parseFloat(it.foodPrice || 0).toLocaleString('en-IN', {minimumFractionDigits: 2});
-
-        itemsHtml += `
             <tr>
-                <td style="width:50px;">
-                    <img src="${itemImg}" alt="${escapeHtml(it.foodName)}" class="rounded" style="width:46px;height:46px;object-fit:cover;"
-                         onerror="this.src='/images/Thekaveris.jpg'">
+                <td class="ps-4 fw-bold text-dark font-monospace">#${o.id}</td>
+                <td>
+                    <div class="fw-semibold">${o.customerName || 'Customer'}</div>
+                    <small class="text-muted"><i class="fas fa-phone me-1"></i>${o.customerPhone || 'N/A'}</small>
+                </td>
+                <td class="fw-bold text-primary font-serif">₹${parseFloat(o.totalAmount || 0).toFixed(2)}</td>
+                <td>
+                    <span class="badge ${o.paymentMethod === 'COD' ? 'payment-COD' : 'payment-PAID'} px-2 py-1">
+                        ${o.paymentMethod || 'ONLINE'} - ${o.paymentStatus || 'PAID'}
+                    </span>
                 </td>
                 <td>
-                    <div class="fw-bold">${escapeHtml(it.foodName)}</div>
-                    <small class="text-muted">${unitPrice} × ${it.quantity}</small>
+                    <span class="status-badge status-${o.status}">${o.status}</span>
                 </td>
-                <td class="text-end fw-semibold">${subtotalFormatted}</td>
+                <td><small class="text-muted">${formattedDate}</small></td>
+                <td class="text-end pe-4">
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="viewOrderDetails(${o.id})">
+                        <i class="fas fa-eye me-1"></i> View Bill
+                    </button>
+                </td>
             </tr>
         `;
     });
 
-    const subtotal = '₹' + parseFloat(o.subtotal || 0).toLocaleString('en-IN', {minimumFractionDigits: 2});
-    const tax = '₹' + parseFloat(o.tax || 0).toLocaleString('en-IN', {minimumFractionDigits: 2});
-    const deliveryFee = '₹' + parseFloat(o.deliveryFee || 0).toLocaleString('en-IN', {minimumFractionDigits: 2});
-    const total = '₹' + parseFloat(o.totalAmount || 0).toLocaleString('en-IN', {minimumFractionDigits: 2});
-
-    const bodyHtml = `
-        <div class="row g-4 mb-4">
-            <!-- Customer & Delivery -->
-            <div class="col-md-6">
-                <div class="p-3 bg-light rounded-4 h-100">
-                    <h6 class="fw-bold text-secondary mb-3"><i class="fas fa-map-marker-alt me-2 text-danger"></i>Delivery Details</h6>
-                    <div class="mb-1"><strong>Customer:</strong> ${escapeHtml(o.userName || 'N/A')}</div>
-                    <div class="mb-1"><strong>Phone:</strong> <a href="tel:${escapeHtml(o.deliveryPhone || '')}" class="text-decoration-none">${escapeHtml(o.deliveryPhone || 'N/A')}</a></div>
-                    <div class="mb-1"><strong>Address:</strong> ${escapeHtml(o.deliveryAddress || 'N/A')}</div>
-                    <div class="text-muted small">${escapeHtml(o.deliveryCity || '')} ${escapeHtml(o.deliveryPincode ? '- ' + o.deliveryPincode : '')}</div>
-                </div>
-            </div>
-            <!-- Order Meta & Payment -->
-            <div class="col-md-6">
-                <div class="p-3 bg-light rounded-4 h-100">
-                    <h6 class="fw-bold text-secondary mb-3"><i class="fas fa-credit-card me-2 text-primary"></i>Payment & Status</h6>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Order Status:</span>
-                        <span>${getStatusBadge(o.orderStatus)}</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Payment Method:</span>
-                        <span class="fw-semibold">${formatPaymentMethod(o.paymentMethod)}</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Payment Status:</span>
-                        <span>${getPaymentBadge(o.paymentMethod, o.paymentStatus)}</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span class="text-muted">Last Updated:</span>
-                        <span class="small text-muted">${formatDateTime(o.updatedAt || o.createdAt)}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Items Table -->
-        <h6 class="fw-bold mb-3"><i class="fas fa-utensils me-2 text-secondary"></i>Ordered Items</h6>
-        <div class="table-responsive mb-3 border rounded-3">
-            <table class="table align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th colspan="2">Item</th>
-                        <th class="text-end">Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${itemsHtml || '<tr><td colspan="3" class="text-center text-muted">No items recorded</td></tr>'}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Calculation Summary -->
-        <div class="d-flex justify-content-end">
-            <div style="min-width: 260px;">
-                <div class="d-flex justify-content-between py-1 text-muted small">
-                    <span>Subtotal:</span>
-                    <span>${subtotal}</span>
-                </div>
-                <div class="d-flex justify-content-between py-1 text-muted small">
-                    <span>Tax (GST 5%):</span>
-                    <span>${tax}</span>
-                </div>
-                <div class="d-flex justify-content-between py-1 text-muted small">
-                    <span>Delivery Fee:</span>
-                    <span>${deliveryFee}</span>
-                </div>
-                <hr class="my-2">
-                <div class="d-flex justify-content-between py-1 fw-bold fs-6 text-dark">
-                    <span>Total Amount:</span>
-                    <span class="text-danger">${total}</span>
-                </div>
-            </div>
-        </div>
-    `;
-
-    document.getElementById('orderDetailsModalBody').innerHTML = bodyHtml;
-    detailsModalInstance.show();
+    tbody.innerHTML = html;
+    renderPagination(pageData);
 }
 
-// Open Quick Status Update Modal
-function openQuickStatusModal(orderId) {
-    const o = ordersCache[orderId];
-    if (!o) return;
+function renderPagination(pageData) {
+    const ul = document.getElementById('paginationControls');
+    const totalPages = pageData.totalPages || 1;
+    const cur = pageData.number || 0;
 
-    activeModalOrderId = orderId;
-    document.getElementById('quickModalOrderId').textContent = `#${o.id} (${o.userName || 'Customer'})`;
-    document.getElementById('quickStatusSelect').value = o.orderStatus || 'PLACED';
-    statusModalInstance.show();
+    let html = '';
+    html += `<li class="page-item ${cur === 0 ? 'disabled' : ''}"><a class="page-link" href="#" onclick="changePage(${cur - 1})">&laquo;</a></li>`;
+
+    for (let i = 0; i < totalPages; i++) {
+        if (i === 0 || i === totalPages - 1 || (i >= cur - 1 && i <= cur + 1)) {
+            html += `<li class="page-item ${i === cur ? 'active' : ''}"><a class="page-link" href="#" onclick="changePage(${i})">${i + 1}</a></li>`;
+        } else if (i === cur - 2 || i === cur + 2) {
+            html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+        }
+    }
+
+    html += `<li class="page-item ${cur >= totalPages - 1 ? 'disabled' : ''}"><a class="page-link" href="#" onclick="changePage(${cur + 1})">&raquo;</a></li>`;
+    ul.innerHTML = html;
 }
 
-// Update Order Status API call
-async function updateOrderStatus(orderId, newStatus) {
+function changePage(page) {
+    currentPage = page;
+    loadOrders();
+}
+
+async function viewOrderDetails(id) {
+    const modalContent = document.getElementById('orderDetailsContent');
+    modalContent.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-danger"></div></div>';
+    detailsModal.show();
+
     try {
-        const res = await Api.patch(`/admin/orders/${orderId}/status?status=${newStatus}`);
-        Toast.success(`Order #${orderId} updated to ${newStatus}`);
+        const res = await Api.get(`/orders/${id}`);
+        activeOrder = res.data;
+        document.getElementById('orderModalTitle').innerHTML = `<i class="fas fa-receipt me-2 text-warning"></i>Order #${activeOrder.id}`;
+        document.getElementById('modalOrderStatusSelect').value = activeOrder.status;
+
+        let itemsHtml = '';
+        (activeOrder.items || []).forEach(item => {
+            itemsHtml += `
+                <tr>
+                    <td>
+                        <div class="fw-semibold">${item.foodName}</div>
+                        <small class="text-muted">₹${item.price} x ${item.quantity}</small>
+                    </td>
+                    <td class="text-end fw-bold font-serif">₹${(item.price * item.quantity).toFixed(2)}</td>
+                </tr>
+            `;
+        });
+
+        modalContent.innerHTML = `
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="p-3 bg-light rounded-3 h-100">
+                        <h6 class="fw-bold mb-2 text-dark"><i class="fas fa-user me-2 text-primary"></i>Customer Information</h6>
+                        <p class="mb-1"><strong>Name:</strong> ${activeOrder.customerName || 'N/A'}</p>
+                        <p class="mb-1"><strong>Phone:</strong> ${activeOrder.customerPhone || 'N/A'}</p>
+                        <p class="mb-0"><strong>Address:</strong> ${activeOrder.deliveryAddress || 'Dine-In / Direct Pickup'}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 bg-light rounded-3 h-100">
+                        <h6 class="fw-bold mb-2 text-dark"><i class="fas fa-info-circle me-2 text-success"></i>Billing Summary</h6>
+                        <div class="d-flex justify-content-between mb-1"><span>Subtotal:</span><span>₹${(activeOrder.subtotal || 0).toFixed(2)}</span></div>
+                        <div class="d-flex justify-content-between mb-1"><span>Tax (5% GST):</span><span>₹${(activeOrder.tax || 0).toFixed(2)}</span></div>
+                        <div class="d-flex justify-content-between mb-1"><span>Delivery Fee:</span><span>₹${(activeOrder.deliveryFee || 0).toFixed(2)}</span></div>
+                        <hr class="my-2">
+                        <div class="d-flex justify-content-between fw-bold text-primary font-serif fs-5">
+                            <span>Total:</span>
+                            <span>₹${(activeOrder.totalAmount || 0).toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <h6 class="fw-bold mb-2 text-dark">Ordered Items</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <tbody>${itemsHtml}</tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (err) {
+        modalContent.innerHTML = `<div class="text-danger text-center py-3">Failed to load order: ${err.message}</div>`;
+    }
+}
+
+async function handleUpdateModalStatus() {
+    if (!activeOrder) return;
+    const newStatus = document.getElementById('modalOrderStatusSelect').value;
+    const btn = document.getElementById('saveOrderStatusBtn');
+    btn.disabled = true;
+
+    try {
+        await Api.patch(`/admin/orders/${activeOrder.id}/status?status=${newStatus}`);
+        Toast.success('Order status updated to ' + newStatus);
+        detailsModal.hide();
         loadOrders();
     } catch (err) {
         Toast.error('Failed to update status: ' + err.message);
+    } finally {
+        btn.disabled = false;
     }
-}
-
-// Helpers
-function getStatusBadge(status) {
-    if (!status) return '<span class="badge bg-secondary">UNKNOWN</span>';
-    const s = status.toUpperCase();
-    const icons = {
-        'PLACED': '<i class="fas fa-clock fa-xs"></i>',
-        'CONFIRMED': '<i class="fas fa-check fa-xs"></i>',
-        'PREPARING': '<i class="fas fa-fire fa-xs"></i>',
-        'READY': '<i class="fas fa-box fa-xs"></i>',
-        'OUT_FOR_DELIVERY': '<i class="fas fa-motorcycle fa-xs"></i>',
-        'DELIVERED': '<i class="fas fa-check-double fa-xs"></i>',
-        'CANCELLED': '<i class="fas fa-times fa-xs"></i>'
-    };
-    const icon = icons[s] || '';
-    const label = s.replace(/_/g, ' ');
-    return `<span class="status-badge status-${s}">${icon} ${label}</span>`;
-}
-
-function getPaymentBadge(method, status) {
-    const s = (status || 'PENDING').toUpperCase();
-    const m = (method || '').toUpperCase();
-    let displayMethod = m === 'CASH_ON_DELIVERY' ? 'COD' : 'ONLINE';
-    return `<span class="badge payment-${s} border me-1">${s}</span><small class="text-muted">(${displayMethod})</small>`;
-}
-
-function formatPaymentMethod(m) {
-    if (m === 'CASH_ON_DELIVERY') return 'Cash on Delivery (COD)';
-    if (m === 'ONLINE') return 'Online Payment';
-    return m || 'N/A';
-}
-
-function formatDateTime(isoString) {
-    if (!isoString) return '—';
-    try {
-        const d = new Date(isoString);
-        return d.toLocaleDateString('en-IN', {
-            day: '2-digit', month: 'short', year: 'numeric',
-            hour: '2-digit', minute: '2-digit'
-        });
-    } catch (_) {
-        return isoString;
-    }
-}
-
-function escapeHtml(text) {
-    if (!text) return '';
-    return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
 }
 </script>
 </body>

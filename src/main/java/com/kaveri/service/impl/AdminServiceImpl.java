@@ -4,6 +4,7 @@ import com.kaveri.dto.request.CategoryRequest;
 import com.kaveri.dto.response.DashboardResponse;
 import com.kaveri.dto.response.UserResponse;
 import com.kaveri.entity.Category;
+import com.kaveri.entity.ContactMessage;
 import com.kaveri.enums.OrderStatus;
 import com.kaveri.enums.ReservationStatus;
 import com.kaveri.exception.BadRequestException;
@@ -17,8 +18,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,21 +32,34 @@ public class AdminServiceImpl implements AdminService {
     private final ReservationRepository reservationRepository;
     private final ReviewRepository reviewRepository;
     private final CategoryRepository categoryRepository;
+    private final FoodItemRepository foodItemRepository;
+    private final ContactMessageRepository contactMessageRepository;
 
     @Override
     @Transactional(readOnly = true)
     public DashboardResponse getDashboard() {
         LocalDateTime startOfDay = LocalDateTime.now().with(LocalTime.MIDNIGHT);
         LocalDateTime endOfDay = startOfDay.plusDays(1);
+        LocalDate today = LocalDate.now();
 
         long totalOrders = orderRepository.count();
         long todaysOrders = orderRepository.countTodaysOrders(startOfDay, endOfDay);
         var totalRevenue = orderRepository.getTotalRevenue();
         long totalCustomers = userRepository.count();
         long pendingOrders = orderRepository.countByOrderStatus(OrderStatus.PLACED);
+        
+        long todaysReservations = reservationRepository.findByReservationDate(today, PageRequest.of(0, 1)).getTotalElements();
         long pendingReservations = reservationRepository.countByStatus(ReservationStatus.PENDING);
         Double avgRating = reviewRepository.getRestaurantAverageRating();
         long totalReviews = reviewRepository.countRestaurantReviews();
+
+        long totalMenuItems = foodItemRepository.count();
+        long itemsWithImages = foodItemRepository.countWithImages();
+        long itemsWithoutImages = foodItemRepository.countWithoutImages();
+        long totalCategories = categoryRepository.count();
+
+        long unreadMessages = contactMessageRepository.countByIsReadFalse();
+        long totalMessages = contactMessageRepository.count();
 
         return DashboardResponse.builder()
                 .totalOrders(totalOrders)
@@ -51,9 +67,16 @@ public class AdminServiceImpl implements AdminService {
                 .totalRevenue(totalRevenue)
                 .totalCustomers(totalCustomers)
                 .pendingOrders(pendingOrders)
+                .todaysReservations(todaysReservations)
                 .pendingReservations(pendingReservations)
                 .averageRating(avgRating != null ? avgRating : 0.0)
                 .totalReviews(totalReviews)
+                .totalMenuItems(totalMenuItems)
+                .itemsWithImages(itemsWithImages)
+                .itemsWithoutImages(itemsWithoutImages)
+                .totalCategories(totalCategories)
+                .unreadMessages(unreadMessages)
+                .totalMessages(totalMessages)
                 .build();
     }
 
@@ -100,7 +123,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional(readOnly = true)
-    public java.util.List<Category> getAllCategories() {
+    public List<Category> getAllCategories() {
         return categoryRepository.findAll(Sort.by("name"));
     }
 
@@ -133,6 +156,37 @@ public class AdminServiceImpl implements AdminService {
         if (!categoryRepository.existsById(id)) {
             throw new ResourceNotFoundException("Category", "id", id);
         }
+        if (foodItemRepository.existsByCategoryId(id)) {
+            throw new BadRequestException("Cannot delete category because active menu items are assigned to it. Please reassign or delete those food items first.");
+        }
         categoryRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ContactMessage> getAllContactMessages(String keyword, Boolean isRead, int page, int size) {
+        return contactMessageRepository.searchMessages(
+                keyword != null && !keyword.trim().isEmpty() ? keyword.trim() : null,
+                isRead,
+                PageRequest.of(page, size, Sort.by("createdAt").descending())
+        );
+    }
+
+    @Override
+    @Transactional
+    public ContactMessage toggleContactReadStatus(Long id) {
+        ContactMessage msg = contactMessageRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("ContactMessage", "id", id));
+        msg.setRead(!msg.isRead());
+        return contactMessageRepository.save(msg);
+    }
+
+    @Override
+    @Transactional
+    public void deleteContactMessage(Long id) {
+        if (!contactMessageRepository.existsById(id)) {
+            throw new ResourceNotFoundException("ContactMessage", "id", id);
+        }
+        contactMessageRepository.deleteById(id);
     }
 }

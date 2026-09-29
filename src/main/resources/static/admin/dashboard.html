@@ -6,69 +6,114 @@
     <title>Admin Dashboard — Kaveri Restaurant Group</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-    <style>
-        .admin-body { background: #f0f2f5; }
-    </style>
 </head>
 <body class="admin-body">
 
-<!-- ===== TOP NAV ===== -->
-<nav class="navbar navbar-dark fn-navbar" style="position:fixed;top:0;left:0;right:0;z-index:200;padding-left:260px;">
-    <div class="container-fluid">
-        <span class="navbar-brand fn-brand mb-0 h1"><i class="fas fa-tachometer-alt me-2 text-gold"></i>Kaveri Admin Console</span>
-        <div class="d-flex align-items-center gap-3">
-            <a href="/" class="btn btn-outline-light btn-sm rounded-pill" target="_blank">
-                <i class="fas fa-external-link-alt me-1"></i>View Website
-            </a>
-            <span class="text-white-50" id="adminName">Admin</span>
-            <button class="btn btn-outline-danger btn-sm rounded-pill" id="adminLogout">
-                <i class="fas fa-sign-out-alt me-1"></i>Logout
+<div class="admin-backdrop" id="adminBackdrop"></div>
+
+<!-- ===== TOPBAR ===== -->
+<header class="admin-topbar">
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-outline-light btn-sm d-lg-none rounded-circle" id="sidebarToggle" style="width:36px;height:36px;">
+            <i class="fas fa-bars"></i>
+        </button>
+        <span class="navbar-brand mb-0 h5 text-white fw-bold d-flex align-items-center gap-2">
+            <i class="fas fa-chart-line text-warning"></i>
+            <span>Executive Dashboard</span>
+        </span>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <a href="/" class="btn btn-outline-light btn-sm rounded-pill px-3" target="_blank">
+            <i class="fas fa-external-link-alt me-1"></i> Public Website
+        </a>
+        <div class="dropdown">
+            <button class="btn btn-outline-light btn-sm rounded-pill px-3 dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fas fa-user-shield me-1 text-warning"></i><span id="adminName">Admin</span>
             </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                <li><a class="dropdown-item" href="/admin/settings.html"><i class="fas fa-cog me-2 text-muted"></i>Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="#" id="adminLogout"><i class="fas fa-sign-out-alt me-2"></i>Sign Out</a></li>
+            </ul>
         </div>
     </div>
-</nav>
+</header>
 
 <!-- ===== SIDEBAR ===== -->
-<aside class="admin-sidebar">
-    <div class="px-4 py-3 mb-2" style="margin-top:70px;">
-        <div class="footer-brand" style="font-size:1.15rem; color:var(--fn-gold); display:flex; align-items:center;">
-            <img src="/images/footer_logo.png" alt="Kaveri" style="height:26px; margin-right:8px;" onerror="this.style.display='none'">
-            <span>KAVERI ADMIN</span>
+<aside class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar-brand">
+        <div class="admin-sidebar-brand-title">
+            <img src="/images/footer_logo.png" alt="Kaveri" style="height:28px;" onerror="this.style.display='none'">
+            <span>KAVERI</span>
         </div>
-        <small class="text-white-50">Ranchi, Jharkhand</small>
+        <div class="admin-sidebar-brand-subtitle">Restaurant Group Operations</div>
     </div>
-    <nav>
+    <nav class="admin-sidebar-nav">
+        <div class="admin-nav-header">Overview</div>
         <a href="/admin/dashboard.html" class="admin-nav-link active">
-            <i class="fas fa-tachometer-alt fa-fw"></i> Dashboard
+            <i class="fas fa-tachometer-alt"></i> Dashboard
         </a>
-        <a href="/admin/orders.html" class="admin-nav-link">
-            <i class="fas fa-shopping-bag fa-fw"></i> Orders
+        <a href="/admin/reports.html" class="admin-nav-link">
+            <i class="fas fa-chart-pie"></i> Reports & Analytics
         </a>
+
+        <div class="admin-nav-header">Catalog & Menu</div>
         <a href="/admin/menu.html" class="admin-nav-link">
-            <i class="fas fa-utensils fa-fw"></i> Menu
+            <i class="fas fa-utensils"></i> Menu Items
         </a>
         <a href="/admin/categories.html" class="admin-nav-link">
-            <i class="fas fa-tags fa-fw"></i> Categories
+            <i class="fas fa-tags"></i> Categories
         </a>
-        <a href="/admin/users.html" class="admin-nav-link">
-            <i class="fas fa-users fa-fw"></i> Customers
+
+        <div class="admin-nav-header">Hospitality & Sales</div>
+        <a href="/admin/orders.html" class="admin-nav-link">
+            <i class="fas fa-shopping-bag"></i> Orders
         </a>
         <a href="/admin/reservations.html" class="admin-nav-link">
-            <i class="fas fa-calendar-check fa-fw"></i> Reservations
+            <i class="fas fa-calendar-check"></i> Reservations
+        </a>
+
+        <div class="admin-nav-header">People & Feedback</div>
+        <a href="/admin/users.html" class="admin-nav-link">
+            <i class="fas fa-users"></i> Customers
         </a>
         <a href="/admin/reviews.html" class="admin-nav-link">
-            <i class="fas fa-star fa-fw"></i> Reviews
+            <i class="fas fa-star"></i> Reviews Moderation
+        </a>
+        <a href="/admin/messages.html" class="admin-nav-link">
+            <i class="fas fa-envelope"></i> Inquiries & Contact
+            <span class="badge bg-danger admin-nav-badge" id="unreadMsgBadge" style="display:none;">0</span>
+        </a>
+
+        <div class="admin-nav-header">Configuration</div>
+        <a href="/admin/settings.html" class="admin-nav-link">
+            <i class="fas fa-sliders-h"></i> System Settings
         </a>
     </nav>
 </aside>
 
 <!-- ===== MAIN CONTENT ===== -->
 <main class="admin-content">
-    <!-- Stats Cards Row -->
-    <div class="row g-4 mb-4">
-        <div class="col-xl-3 col-md-6">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h2 class="mb-1 fw-bold text-dark" style="font-family:'Playfair Display',serif;">Welcome to Kaveri Operations</h2>
+            <p class="text-muted mb-0 small">Real-time status of orders, dining reservations, menu catalog, and client feedback.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" id="refreshBtn">
+                <i class="fas fa-sync-alt me-1"></i> Refresh Data
+            </button>
+            <a href="/admin/menu.html" class="btn btn-fn btn-sm rounded-pill px-3">
+                <i class="fas fa-plus me-1"></i> Add Menu Item
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Row 1: Core Metrics -->
+    <div class="row g-3 mb-4">
+        <div class="col-xl-3 col-sm-6">
             <div class="stats-card">
                 <div class="stats-card-icon" style="background:rgba(232,69,69,0.1);color:#e84545;">
                     <i class="fas fa-shopping-bag"></i>
@@ -76,111 +121,186 @@
                 <div>
                     <div class="stats-card-num" id="totalOrders">—</div>
                     <div class="stats-card-label">Total Orders</div>
+                    <div class="stats-card-sub"><span id="todaysOrders" class="fw-bold text-dark">0</span> orders placed today</div>
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-3 col-sm-6">
             <div class="stats-card">
                 <div class="stats-card-icon" style="background:rgba(40,167,69,0.1);color:#28a745;">
                     <i class="fas fa-rupee-sign"></i>
                 </div>
                 <div>
                     <div class="stats-card-num" id="totalRevenue">—</div>
-                    <div class="stats-card-label">Total Revenue</div>
+                    <div class="stats-card-label">Gross Revenue</div>
+                    <div class="stats-card-sub">Today: <span id="todayRevenue" class="fw-bold text-success">₹0</span></div>
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-3 col-sm-6">
             <div class="stats-card">
-                <div class="stats-card-icon" style="background:rgba(0,123,255,0.1);color:#007bff;">
-                    <i class="fas fa-users"></i>
+                <div class="stats-card-icon" style="background:rgba(13,110,253,0.1);color:#0d6efd;">
+                    <i class="fas fa-calendar-check"></i>
                 </div>
                 <div>
-                    <div class="stats-card-num" id="totalCustomers">—</div>
-                    <div class="stats-card-label">Total Customers</div>
+                    <div class="stats-card-num" id="totalReservations">—</div>
+                    <div class="stats-card-label">Reservations</div>
+                    <div class="stats-card-sub"><span id="todaysReservations" class="fw-bold text-primary">0</span> scheduled today</div>
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-3 col-sm-6">
             <div class="stats-card">
-                <div class="stats-card-icon" style="background:rgba(245,166,35,0.1);color:#f5a623;">
+                <div class="stats-card-icon" style="background:rgba(255,193,7,0.15);color:#d39e00;">
                     <i class="fas fa-star"></i>
                 </div>
                 <div>
                     <div class="stats-card-num" id="avgRating">—</div>
-                    <div class="stats-card-label">Avg. Rating</div>
+                    <div class="stats-card-label">Customer Rating</div>
+                    <div class="stats-card-sub">Across <span id="totalReviews" class="fw-bold text-dark">0</span> verified reviews</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Second Row Stats -->
-    <div class="row g-4 mb-4">
-        <div class="col-md-4">
-            <div class="stats-card">
-                <div class="stats-card-icon" style="background:rgba(253,126,20,0.1);color:#fd7e14;">
-                    <i class="fas fa-clock"></i>
+    <!-- Stats Row 2: Operational Action Required -->
+    <div class="row g-3 mb-4">
+        <div class="col-xl-3 col-sm-6">
+            <div class="stats-card border-warning-subtle">
+                <div class="stats-card-icon" style="background:rgba(253,126,20,0.12);color:#fd7e14;">
+                    <i class="fas fa-utensils"></i>
                 </div>
                 <div>
-                    <div class="stats-card-num" id="todaysOrders">—</div>
-                    <div class="stats-card-label">Today's Orders</div>
+                    <div class="stats-card-num" id="totalMenuItems">—</div>
+                    <div class="stats-card-label">Menu Dishes</div>
+                    <div class="stats-card-sub"><span id="itemsWithImages" class="text-success fw-bold">0</span> with photo, <span id="itemsWithoutImages" class="text-danger fw-bold">0</span> missing</div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-xl-3 col-sm-6">
             <div class="stats-card">
                 <div class="stats-card-icon" style="background:rgba(220,53,69,0.1);color:#dc3545;">
-                    <i class="fas fa-exclamation-circle"></i>
+                    <i class="fas fa-bell"></i>
                 </div>
                 <div>
                     <div class="stats-card-num" id="pendingOrders">—</div>
                     <div class="stats-card-label">Pending Orders</div>
+                    <div class="stats-card-sub"><a href="/admin/orders.html" class="text-danger text-decoration-none fw-semibold">Take action &rarr;</a></div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-xl-3 col-sm-6">
             <div class="stats-card">
                 <div class="stats-card-icon" style="background:rgba(102,16,242,0.1);color:#6610f2;">
-                    <i class="fas fa-calendar-check"></i>
+                    <i class="fas fa-clock"></i>
                 </div>
                 <div>
                     <div class="stats-card-num" id="pendingReservations">—</div>
-                    <div class="stats-card-label">Pending Reservations</div>
+                    <div class="stats-card-label">Pending Bookings</div>
+                    <div class="stats-card-sub"><a href="/admin/reservations.html" class="text-primary text-decoration-none fw-semibold">Review table seats &rarr;</a></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="stats-card">
+                <div class="stats-card-icon" style="background:rgba(32,201,151,0.1);color:#20c997;">
+                    <i class="fas fa-envelope-open-text"></i>
+                </div>
+                <div>
+                    <div class="stats-card-num" id="unreadMessages">—</div>
+                    <div class="stats-card-label">New Inquiries</div>
+                    <div class="stats-card-sub"><a href="/admin/messages.html" class="text-success text-decoration-none fw-semibold">Open inbox &rarr;</a></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="row g-4">
-        <div class="col-md-6">
+    <!-- Operational Shortcuts & Quick Links -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-7">
             <div class="card border-0 shadow-sm" style="border-radius:16px;">
-                <div class="card-body p-4">
-                    <h5 class="card-title mb-4" style="font-family:'Playfair Display',serif;">Quick Actions</h5>
-                    <div class="d-grid gap-2">
-                        <a href="/admin/menu.html" class="btn btn-fn rounded-pill">
-                            <i class="fas fa-plus me-2"></i>Add New Food Item
-                        </a>
-                        <a href="/admin/orders.html" class="btn btn-outline-secondary rounded-pill">
-                            <i class="fas fa-list me-2"></i>Manage Orders
-                        </a>
-                        <a href="/admin/reservations.html" class="btn btn-outline-secondary rounded-pill">
-                            <i class="fas fa-calendar me-2"></i>View Reservations
-                        </a>
+                <div class="card-header bg-white border-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0" style="font-family:'Playfair Display',serif;">Quick Operations</h5>
+                    <span class="badge bg-light text-muted border px-2 py-1">Direct Actions</span>
+                </div>
+                <div class="card-body p-4 pt-2">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <a href="/admin/menu.html" class="card card-body border p-3 text-decoration-none text-dark h-100 hover-shadow rounded-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-circle p-2 bg-danger bg-opacity-10 text-danger"><i class="fas fa-plus fa-lg"></i></div>
+                                    <div>
+                                        <div class="fw-bold">Manage Menu Catalog</div>
+                                        <small class="text-muted">Add dishes, set prices & photos</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="/admin/orders.html" class="card card-body border p-3 text-decoration-none text-dark h-100 hover-shadow rounded-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-circle p-2 bg-success bg-opacity-10 text-success"><i class="fas fa-concierge-bell fa-lg"></i></div>
+                                    <div>
+                                        <div class="fw-bold">Live Kitchen & Orders</div>
+                                        <small class="text-muted">Accept, prepare & dispatch</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="/admin/reservations.html" class="card card-body border p-3 text-decoration-none text-dark h-100 hover-shadow rounded-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-circle p-2 bg-primary bg-opacity-10 text-primary"><i class="fas fa-chair fa-lg"></i></div>
+                                    <div>
+                                        <div class="fw-bold">Table Reservations</div>
+                                        <small class="text-muted">Confirm guest bookings</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="/admin/messages.html" class="card card-body border p-3 text-decoration-none text-dark h-100 hover-shadow rounded-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-circle p-2 bg-warning bg-opacity-10 text-warning"><i class="fas fa-comments fa-lg"></i></div>
+                                    <div>
+                                        <div class="fw-bold">Guest Inquiries</div>
+                                        <small class="text-muted">Catering & banquet queries</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-lg-5">
             <div class="card border-0 shadow-sm" style="border-radius:16px;">
-                <div class="card-body p-4">
-                    <h5 class="card-title mb-4" style="font-family:'Playfair Display',serif;">System Info</h5>
-                    <table class="table table-sm table-borderless mb-0">
-                        <tr><td class="text-muted">Application</td><td><strong>Kaveri Restaurant Group Management</strong></td></tr>
-                        <tr><td class="text-muted">Framework</td><td><strong>Spring Boot 3.3.4</strong></td></tr>
-                        <tr><td class="text-muted">Database</td><td><strong>MySQL 8.0</strong></td></tr>
-                        <tr><td class="text-muted">API Docs</td><td><a href="/swagger-ui.html" target="_blank">Swagger UI <i class="fas fa-external-link-alt fa-xs"></i></a></td></tr>
+                <div class="card-header bg-white border-0 pt-4 pb-2 px-4">
+                    <h5 class="fw-bold mb-0" style="font-family:'Playfair Display',serif;">Restaurant Information</h5>
+                </div>
+                <div class="card-body p-4 pt-2">
+                    <table class="table table-sm table-borderless align-middle mb-0">
+                        <tr>
+                            <td class="text-muted"><i class="fas fa-store me-2 text-warning"></i>Establishment</td>
+                            <td class="text-end fw-semibold">Kaveri Restaurant Group</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted"><i class="fas fa-map-marker-alt me-2 text-danger"></i>Location</td>
+                            <td class="text-end fw-semibold">Ranchi, Jharkhand</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted"><i class="fas fa-server me-2 text-primary"></i>Engine</td>
+                            <td class="text-end fw-semibold">Spring Boot 3.3.4 (Java 21)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted"><i class="fas fa-database me-2 text-success"></i>Database</td>
+                            <td class="text-end fw-semibold">MySQL 8.0 / JPA</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted"><i class="fas fa-shield-alt me-2 text-secondary"></i>Auth Protocol</td>
+                            <td class="text-end fw-semibold">JWT Bearer Security</td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -192,7 +312,7 @@
 <script src="/js/main.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
-    // Guard: redirect if not admin
+    // 1. Guard check
     if (!Auth.isLoggedIn() || !Auth.isAdmin()) {
         alert('Admin access required');
         window.location.href = '/login.html';
@@ -201,23 +321,71 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const user = Auth.getUser();
     document.getElementById('adminName').textContent = user?.name || 'Admin';
-
     document.getElementById('adminLogout').addEventListener('click', () => Auth.logout());
 
-    // Load dashboard stats
-    try {
-        const res = await Api.get('/admin/dashboard');
-        const d = res.data;
-        document.getElementById('totalOrders').textContent = d.totalOrders.toLocaleString();
-        document.getElementById('totalRevenue').textContent = '₹' + parseFloat(d.totalRevenue || 0).toLocaleString('en-IN', {minimumFractionDigits: 0});
-        document.getElementById('totalCustomers').textContent = d.totalCustomers.toLocaleString();
-        document.getElementById('avgRating').textContent = d.averageRating ? parseFloat(d.averageRating).toFixed(1) + '★' : 'N/A';
-        document.getElementById('todaysOrders').textContent = d.todaysOrders;
-        document.getElementById('pendingOrders').textContent = d.pendingOrders;
-        document.getElementById('pendingReservations').textContent = d.pendingReservations;
-    } catch (err) {
-        Toast.error('Failed to load dashboard: ' + err.message);
+    // Sidebar drawer toggle on mobile
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('adminSidebar');
+    const backdrop = document.getElementById('adminBackdrop');
+    if (toggleBtn && sidebar && backdrop) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('show');
+            backdrop.classList.toggle('show');
+        });
+        backdrop.addEventListener('click', () => {
+            sidebar.classList.remove('show');
+            backdrop.classList.remove('show');
+        });
     }
+
+    async function loadDashboard() {
+        try {
+            const res = await Api.get('/admin/dashboard');
+            const d = res.data;
+
+            document.getElementById('totalOrders').textContent = (d.totalOrders || 0).toLocaleString();
+            document.getElementById('todaysOrders').textContent = (d.todaysOrders || 0).toLocaleString();
+            document.getElementById('pendingOrders').textContent = (d.pendingOrders || 0).toLocaleString();
+
+            const rev = parseFloat(d.totalRevenue || 0);
+            document.getElementById('totalRevenue').textContent = '₹' + rev.toLocaleString('en-IN', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+            
+            const todayRev = parseFloat(d.todayRevenue || 0);
+            document.getElementById('todayRevenue').textContent = '₹' + todayRev.toLocaleString('en-IN', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+
+            document.getElementById('totalReservations').textContent = (d.totalReservations || 0).toLocaleString();
+            document.getElementById('todaysReservations').textContent = (d.todaysReservations || 0).toLocaleString();
+            document.getElementById('pendingReservations').textContent = (d.pendingReservations || 0).toLocaleString();
+
+            document.getElementById('avgRating').textContent = d.averageRating ? parseFloat(d.averageRating).toFixed(1) + ' ★' : '5.0 ★';
+            document.getElementById('totalReviews').textContent = (d.totalReviews || 0).toLocaleString();
+
+            document.getElementById('totalMenuItems').textContent = (d.totalMenuItems || 0).toLocaleString();
+            document.getElementById('itemsWithImages').textContent = (d.itemsWithImages || 0).toLocaleString();
+            document.getElementById('itemsWithoutImages').textContent = (d.itemsWithoutImages || 0).toLocaleString();
+
+            const unread = d.unreadContactMessages || 0;
+            document.getElementById('unreadMessages').textContent = unread.toLocaleString();
+            const badge = document.getElementById('unreadMsgBadge');
+            if (badge) {
+                if (unread > 0) {
+                    badge.textContent = unread;
+                    badge.style.display = 'inline-block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        } catch (err) {
+            Toast.error('Failed to load dashboard: ' + err.message);
+        }
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+        loadDashboard();
+        Toast.info('Dashboard refreshed');
+    });
+
+    loadDashboard();
 });
 </script>
 </body>
