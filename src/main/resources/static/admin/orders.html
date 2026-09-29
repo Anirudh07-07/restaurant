@@ -499,7 +499,7 @@ function openOrderDetails(orderId) {
 
     let itemsHtml = '';
     (o.items || []).forEach(it => {
-        const itemImg = it.foodImageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=120';
+        const itemImg = it.foodImageUrl || '/images/Thekaveris.jpg';
         const subtotalFormatted = '₹' + parseFloat(it.subtotal || (it.foodPrice * it.quantity)).toLocaleString('en-IN', {minimumFractionDigits: 2});
         const unitPrice = '₹' + parseFloat(it.foodPrice || 0).toLocaleString('en-IN', {minimumFractionDigits: 2});
 
@@ -507,7 +507,7 @@ function openOrderDetails(orderId) {
             <tr>
                 <td style="width:50px;">
                     <img src="${itemImg}" alt="${escapeHtml(it.foodName)}" class="rounded" style="width:46px;height:46px;object-fit:cover;"
-                         onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=120'">
+                         onerror="this.src='/images/Thekaveris.jpg'">
                 </td>
                 <td>
                     <div class="fw-bold">${escapeHtml(it.foodName)}</div>

@@ -284,7 +284,7 @@
             </div>
             <div class="modal-body py-3">
                 <div class="text-center mb-3">
-                    <img id="imageUploadPreview" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400"
+                    <img id="imageUploadPreview" src="/images/Thekaveris.jpg"
                          class="rounded-3 shadow-sm" style="width:100%;height:150px;object-fit:cover;">
                 </div>
                 <p class="small text-muted mb-2">Upload a high-quality picture for <strong id="uploadFoodTitle">Dish</strong>:</p>
@@ -485,7 +485,7 @@ function renderTable() {
 
     let html = '';
     pageItems.forEach(item => {
-        const imgSrc = item.imageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=120';
+        const imgSrc = item.imageUrl || '/images/Thekaveris.jpg';
         const priceFmt = '₹' + parseFloat(item.price || 0).toLocaleString('en-IN', {minimumFractionDigits: 2});
         const vegBadge = item.vegetarian
             ? '<span class="badge badge-veg-subtle">🟢 Veg</span>'
@@ -501,7 +501,7 @@ function renderTable() {
             <td class="ps-4">
                 <div class="d-flex align-items-center gap-3">
                     <img src="${imgSrc}" alt="${escapeHtml(item.name)}" class="food-thumb"
-                         onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=120'">
+                         onerror="this.src='/images/Thekaveris.jpg'">
                     <div>
                         <div class="fw-bold text-dark">${escapeHtml(item.name)}</div>
                         <small class="text-muted text-truncate d-inline-block" style="max-width:260px;">

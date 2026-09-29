@@ -173,14 +173,14 @@ const FoodCard = {
             : '<span class="diet-pill nonveg"><i class="fas fa-circle" style="font-size:0.5rem;"></i> Non-Veg</span>';
         const spicyBadge = food.spicy ? '<span class="diet-pill spicy"><i class="fas fa-pepper-hot"></i> Spicy</span>' : '';
         const rating = food.rating ? parseFloat(food.rating).toFixed(1) : 'New';
-        const imgSrc = food.imageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80';
+        const imgSrc = food.imageUrl || (window.KAVERI_MENU_IMAGES && window.KAVERI_MENU_IMAGES[food.name]) || '/images/Thekaveris.jpg';
 
         return `
         <div class="col-lg-3 col-md-6 col-sm-6 fade-in">
             <div class="food-card" onclick="window.location.href='/food.html?id=${food.id}'" role="button" tabindex="0" aria-label="${food.name}">
                 <div class="food-card-img-wrap">
                     <img src="${imgSrc}" alt="${food.name}" class="food-card-img" loading="lazy"
-                         onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80'">
+                         onerror="this.src='/images/Thekaveris.jpg'">
                     ${vegBadge}
                     ${spicyBadge}
                     ${!food.available ? '<div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background:rgba(18,18,23,0.65); backdrop-filter:blur(3px);"><span class="badge bg-secondary px-3 py-2 rounded-pill font-sans">Unavailable Today</span></div>' : ''}

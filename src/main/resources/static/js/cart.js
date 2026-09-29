@@ -32,9 +32,9 @@ async function loadCart() {
         // Render Cart Items
         listContainer.innerHTML = cart.items.map(item => `
             <div class="cart-item-card fade-in">
-                <img src="${item.foodImageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200'}"
+                <img src="${item.foodImageUrl || '/images/Thekaveris.jpg'}"
                      alt="${item.foodName}" class="cart-item-img"
-                     onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200'">
+                     onerror="this.src='/images/Thekaveris.jpg'">
                 <div class="cart-item-info">
                     <h5 class="cart-item-name">${item.foodName}</h5>
                     <div class="text-muted small mb-2">Price: ₹${item.unitPrice}</div>
