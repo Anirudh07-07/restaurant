@@ -131,19 +131,35 @@ const Toast = {
     info: (msg) => Toast.show(msg, 'info')
 };
 
-// ---- Cart Badge ----
+// ---- Cart Badge (With lightweight 15s session cache to reduce API roundtrips) ----
 const CartBadge = {
-    update: async () => {
+    update: async (force = false) => {
         if (!Auth.isLoggedIn()) return;
+        const cacheKey = 'fn_cart_badge';
+        const cached = sessionStorage.getItem(cacheKey);
+        const now = Date.now();
+        if (!force && cached) {
+            try {
+                const parsed = JSON.parse(cached);
+                if (now - parsed.timestamp < 15000) {
+                    CartBadge.applyBadge(parsed.count);
+                    return;
+                }
+            } catch (_) {}
+        }
         try {
             const res = await Api.get('/cart');
             const count = res.data?.itemCount || 0;
-            const badge = document.getElementById('cartBadge');
-            if (badge) {
-                badge.textContent = count;
-                badge.style.display = count > 0 ? 'flex' : 'none';
-            }
+            sessionStorage.setItem(cacheKey, JSON.stringify({ count, timestamp: now }));
+            CartBadge.applyBadge(count);
         } catch (_) {}
+    },
+    applyBadge: (count) => {
+        const badge = document.getElementById('cartBadge');
+        if (badge) {
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'flex' : 'none';
+        }
     }
 };
 
@@ -179,7 +195,7 @@ const FoodCard = {
         <div class="col-lg-3 col-md-6 col-sm-6 fade-in">
             <div class="food-card" onclick="window.location.href='/food.html?id=${food.id}'" role="button" tabindex="0" aria-label="${food.name}">
                 <div class="food-card-img-wrap">
-                    <img src="${imgSrc}" alt="${food.name}" class="food-card-img" loading="lazy"
+                    <img src="${imgSrc}" alt="${food.name}" class="food-card-img" loading="lazy" decoding="async" width="400" height="250"
                          onerror="this.src='/images/Thekaveris.jpg'">
                     ${vegBadge}
                     ${spicyBadge}
@@ -239,7 +255,7 @@ const CartActions = {
         try {
             await Api.post('/cart/items', { foodItemId, quantity: 1 });
             Toast.success(`${foodName} added to cart!`);
-            CartBadge.update();
+            CartBadge.update(true);
         } catch (err) {
             Toast.error(err.message);
         }
@@ -299,16 +315,25 @@ const Navbar = {
             });
         }
 
-        // Navbar scroll effect
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('mainNav');
-            if (nav) nav.classList.toggle('scrolled', window.scrollY > 50);
-        });
-
-        // Back to top
+        // Optimized Navbar scroll effect using requestAnimationFrame & passive listener
+        let isScrolling = false;
+        const nav = document.getElementById('mainNav');
         const btt = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
+            if (!isScrolling) {
+                window.requestAnimationFrame(() => {
+                    const scrollY = window.scrollY;
+                    if (nav) nav.classList.toggle('scrolled', scrollY > 50);
+                    if (btt) btt.classList.toggle('show', scrollY > 400);
+                    isScrolling = false;
+                });
+                isScrolling = true;
+            }
+        }, { passive: true });
+
+        // Back to top click handler
         if (btt) {
-            window.addEventListener('scroll', () => btt.classList.toggle('show', window.scrollY > 400));
             btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
         }
     }

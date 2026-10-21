@@ -428,7 +428,7 @@
       <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
         <div class="food-view-card" onclick="window.openDishDetail('${dish.id}')">
           <div class="food-view-card-img-holder">
-            <img src="${imgSrc}" alt="${escapeHtml(dish.name)}" class="food-view-card-img" loading="lazy"
+            <img src="${imgSrc}" alt="${escapeHtml(dish.name)}" class="food-view-card-img" loading="lazy" decoding="async" width="400" height="250"
                  onerror="this.src='/images/Thekaveris.jpg'">
             <div class="food-card-overlay-veg">
               <span class="veg-box-symbol" style="width:14px;height:14px;"><span class="veg-inner-dot" style="width:6px;height:6px;"></span></span>
