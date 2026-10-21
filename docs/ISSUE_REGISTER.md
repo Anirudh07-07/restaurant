@@ -27,6 +27,7 @@
 | **ISS-07** | Render PostgreSQL URL Normalization for HikariCP | **P0** | **Confirmed (Fixed)** | Deployment / DB | `DatabaseEnvironmentPostProcessor.java` |
 | **ISS-08** | Inescapable Back-Forward Cache Redirect Loop on Cart Page | **P2** | **Confirmed (Fixed)** | Frontend / UX | `cart.js:7-12` & `login.html:188` |
 | **ISS-09** | Kaveri Club Registration Displays "Validation failed" | **P1** | **Confirmed (Fixed)** | Auth / Validation | `RegisterRequest.java`, `GlobalExceptionHandler.java`, `register.html` |
+| **ISS-10** | `GET /api/cart` Returns HTTP 500 & Add-to-Cart Does Not Persist | **P0** | **Confirmed (Fixed)** | Backend & Frontend | `CartServiceImpl.java`, `CartController.java`, `cart.js`, `menu.js` |
 
 ---
 
@@ -175,3 +176,30 @@
   3. Enhanced `GlobalExceptionHandler` to compile human-readable, specific field error messages in `response.message` while maintaining the structured field error map in `response.data`.
   4. Upgraded `register.html` with explicit password rules, password visibility toggle, pre-submission client-side validation, field-level `.invalid-feedback` and `.is-invalid` highlighting, and live input error clearing.
   5. Added comprehensive regression tests in `AuthControllerTest` verifying +91, 0-prefix, empty phone, invalid phone, and password validation with specific error messages.
+
+---
+
+### [ISS-10] `GET /api/cart` Returns HTTP 500 & Add-to-Cart Does Not Persist
+- **Severity**: P0 (Critical - Core Order Flow)
+- **Status**: Confirmed (Fixed)
+- **Category**: Backend / Frontend / Order Flow
+- **Files**:
+  - [`src/main/java/com/kaveri/service/impl/CartServiceImpl.java`](file:///Users/anirudhsingh/Downloads/programing/res/foodnest/src/main/java/com/kaveri/service/impl/CartServiceImpl.java)
+  - [`src/main/java/com/kaveri/controller/CartController.java`](file:///Users/anirudhsingh/Downloads/programing/res/foodnest/src/main/java/com/kaveri/controller/CartController.java)
+  - [`src/main/java/com/kaveri/dto/request/CartItemRequest.java`](file:///Users/anirudhsingh/Downloads/programing/res/foodnest/src/main/java/com/kaveri/dto/request/CartItemRequest.java)
+  - [`src/main/resources/static/js/menu.js`](file:///Users/anirudhsingh/Downloads/programing/res/foodnest/src/main/resources/static/js/menu.js)
+  - [`src/main/resources/static/js/cart.js`](file:///Users/anirudhsingh/Downloads/programing/res/foodnest/src/main/resources/static/js/cart.js)
+  - [`src/test/java/com/kaveri/service/CartServiceTest.java`](file:///Users/anirudhsingh/Downloads/programing/res/foodnest/src/test/java/com/kaveri/service/CartServiceTest.java)
+  - [`src/test/java/com/kaveri/controller/CartControllerTest.java`](file:///Users/anirudhsingh/Downloads/programing/res/foodnest/src/test/java/com/kaveri/controller/CartControllerTest.java)
+- **Root Cause Analysis**:
+  1. **Mutating Database Write in Read-Only Transaction**: `getCart()` was marked `@Transactional(readOnly = true)`. When a user without an existing cart row accessed `/api/cart`, `getOrCreateCart(user)` attempted `cartRepository.save(newCart)`. In PostgreSQL, read-only transactions forbid `INSERT`, throwing `PSQLException: cannot execute INSERT in a read-only transaction` and returning HTTP 500.
+  2. **Add-to-Cart Disconnected from Backend**: `window.handleMenuAdd` in `menu.js` only showed a toast and called `CartBadge.update()`; it never dispatched `POST /api/cart/items`. Items were never saved to the database.
+  3. **Role Authorization Constraint**: `CartController` had `@PreAuthorize("hasRole('CUSTOMER')")`, forbidding authenticated administrators from accessing cart features during administrative previews.
+  4. **Frontend Infinite Spinner**: `cart.js` never dismissed `#cartLoading` on error or empty state, and did not target the actual HTML elements in `cart.html`, leaving the cart page spinning indefinitely.
+- **Resolution**:
+  1. Updated `getCart()` in `CartServiceImpl` to return an empty `CartResponse` when no cart exists in the database without attempting an insert. Write operations only occur upon actual item additions (`addItem`).
+  2. Enabled dual item resolution by `foodItemId` or `foodName` in `CartItemRequest` and `CartServiceImpl.addItem`.
+  3. Updated `window.handleMenuAdd` in `menu.js` to dispatch `POST /api/cart/items` with error handling.
+  4. Refactored `cart.js` to manage `#cartLoading`, `#cartEmpty`, and `#cartContent` state transitions with a user-facing retry banner.
+  5. Widened `CartController` authorization to `@PreAuthorize("isAuthenticated()")`.
+  6. Added 10 new regression tests (6 integration tests in `CartControllerTest`, 4 unit tests in `CartServiceTest`), bringing passing suite to 72/72 tests.

@@ -5,134 +5,166 @@
 // ===================================================
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const listContainer = document.getElementById('cartItemsList');
-    const summaryContainer = document.getElementById('cartSummaryBox');
-
-    if (!Auth.isLoggedIn()) {
-        renderLoginPrompt(listContainer, summaryContainer);
-        return;
+    // Setup clear cart button
+    const clearBtn = document.getElementById('clearCartBtn');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', async () => {
+            if (!confirm('Are you sure you want to clear your cart?')) return;
+            try {
+                await Api.delete('/cart');
+                if (typeof Toast !== 'undefined') Toast.info('Cart cleared');
+                await loadCart();
+            } catch (err) {
+                if (typeof Toast !== 'undefined') Toast.error(err.message || 'Failed to clear cart');
+            }
+        });
     }
 
     await loadCart();
 });
 
-function renderLoginPrompt(listContainer, summaryContainer) {
-    if (listContainer) {
-        listContainer.innerHTML = `
-            <div class="empty-state py-5 text-center">
-                <div class="empty-state-icon mb-3" style="font-size:3rem; color:var(--gold);"><i class="fas fa-user-lock"></i></div>
-                <h3 class="font-playfair fw-bold mb-2">Sign in to view your bag</h3>
-                <p class="text-muted mb-4">Please log in to your Kaveri account to view your cart items, review order totals, and checkout.</p>
-                <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <a href="/login.html?redirect=/cart.html" class="btn btn-fn rounded-pill px-4">
-                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
-                    </a>
-                    <a href="/menu.html" class="btn btn-outline-secondary rounded-pill px-4">
-                        <i class="fas fa-utensils me-2"></i>Explore Menu
-                    </a>
-                </div>
-            </div>
-        `;
-    }
-    if (summaryContainer) {
-        summaryContainer.innerHTML = '';
-    }
-}
-
 async function loadCart() {
+    const loadingEl = document.getElementById('cartLoading');
+    const emptyEl = document.getElementById('cartEmpty');
+    const contentEl = document.getElementById('cartContent');
     const listContainer = document.getElementById('cartItemsList');
-    const summaryContainer = document.getElementById('cartSummaryBox');
-    if (!listContainer) return;
+    const container = document.getElementById('cartContainer');
+
+    // Remove any previous error banner
+    const prevError = document.getElementById('cartErrorAlert');
+    if (prevError) prevError.remove();
+
+    if (typeof Auth !== 'undefined' && !Auth.isLoggedIn()) {
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (emptyEl) emptyEl.style.display = 'none';
+        if (contentEl) contentEl.style.display = 'none';
+        renderLoginPrompt(container);
+        return;
+    }
 
     try {
+        if (loadingEl) loadingEl.style.display = 'block';
+        if (emptyEl) emptyEl.style.display = 'none';
+        if (contentEl) contentEl.style.display = 'none';
+
         const res = await Api.get('/cart');
         const cart = res.data;
 
+        if (loadingEl) loadingEl.style.display = 'none';
+
         if (!cart || !cart.items || cart.items.length === 0) {
-            renderEmptyCart(listContainer, summaryContainer);
-            CartBadge.update();
+            if (contentEl) contentEl.style.display = 'none';
+            if (emptyEl) emptyEl.style.display = 'block';
+            if (typeof CartBadge !== 'undefined') CartBadge.applyBadge(0);
             return;
         }
 
         // Render Cart Items
-        listContainer.innerHTML = cart.items.map(item => `
-            <div class="cart-item-card fade-in">
-                <img src="${item.foodImageUrl || '/images/Thekaveris.jpg'}"
-                     alt="${item.foodName}" class="cart-item-img"
-                     onerror="this.src='/images/Thekaveris.jpg'">
-                <div class="cart-item-info">
-                    <h5 class="cart-item-name">${item.foodName}</h5>
-                    <div class="text-muted small mb-2">Price: ₹${item.unitPrice}</div>
-                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                        <div class="qty-control">
-                            <button class="qty-btn" onclick="updateItemQuantity(${item.cartItemId}, ${item.quantity - 1})">−</button>
-                            <span class="fw-bold px-2">${item.quantity}</span>
-                            <button class="qty-btn" onclick="updateItemQuantity(${item.cartItemId}, ${item.quantity + 1})" ${item.quantity >= 20 ? 'disabled' : ''}>+</button>
-                        </div>
-                        <div class="cart-item-price">₹${item.itemSubtotal}</div>
-                    </div>
-                </div>
-                <button class="btn btn-outline-danger btn-sm rounded-circle p-2 ms-2" title="Remove item" onclick="removeCartItem(${item.cartItemId})">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
-            </div>
-        `).join('');
+        if (emptyEl) emptyEl.style.display = 'none';
+        if (contentEl) contentEl.style.display = 'block';
 
-        // Render Order Summary
-        if (summaryContainer) {
-            summaryContainer.innerHTML = `
-                <div class="order-summary-card shadow">
-                    <h4 class="mb-4" style="font-family:'Playfair Display', serif; color: var(--fn-secondary);">Order Summary</h4>
-                    <div class="summary-row">
-                        <span>Items (${cart.itemCount})</span>
-                        <span>₹${cart.subtotal}</span>
+        const itemCountEl = document.getElementById('itemCount');
+        if (itemCountEl) itemCountEl.textContent = cart.itemCount || cart.items.length;
+
+        if (listContainer) {
+            listContainer.innerHTML = cart.items.map(item => `
+                <div class="cart-item-card fade-in" id="cart-item-${item.cartItemId}">
+                    <img src="${item.foodImageUrl || '/images/Thekaveris.jpg'}"
+                         alt="${item.foodName}" class="cart-item-img"
+                         onerror="this.src='/images/Thekaveris.jpg'">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.foodName}</div>
+                        <div class="cart-item-price">₹${item.unitPrice}</div>
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-2">
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="updateItemQuantity(${item.cartItemId}, ${item.quantity - 1})" aria-label="Decrease quantity">−</button>
+                                <span class="qty-display">${item.quantity}</span>
+                                <button type="button" class="qty-btn" onclick="updateItemQuantity(${item.cartItemId}, ${item.quantity + 1})" ${item.quantity >= 20 ? 'disabled' : ''} aria-label="Increase quantity">+</button>
+                            </div>
+                            <div class="cart-item-subtotal">₹${item.itemSubtotal}</div>
+                        </div>
                     </div>
-                    <div class="summary-row">
-                        <span>GST / Taxes (5%)</span>
-                        <span>₹${cart.tax}</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Delivery Fee</span>
-                        <span>${cart.deliveryFee == 0 ? '<span class="badge bg-success">FREE</span>' : '₹' + cart.deliveryFee}</span>
-                    </div>
-                    ${cart.subtotal < 500 ? '<small class="text-warning d-block mt-2 mb-2">Add ₹' + (500 - cart.subtotal) + ' more for FREE delivery!</small>' : ''}
-                    <hr style="border-color: rgba(255,255,255,0.1);">
-                    <div class="summary-row summary-total">
-                        <span>Total Payable</span>
-                        <span>₹${cart.total}</span>
-                    </div>
-                    <div class="d-grid gap-2 mt-4">
-                        <a href="/checkout.html" class="btn btn-fn btn-lg rounded-pill">Proceed to Checkout <i class="fas fa-arrow-right ms-2"></i></a>
-                        <a href="/menu.html" class="btn btn-outline-light rounded-pill">Add More Items</a>
-                    </div>
+                    <button type="button" class="remove-btn ms-2" title="Remove item" onclick="removeCartItem(${item.cartItemId})">
+                        <i class="fas fa-trash-alt me-1"></i>Remove
+                    </button>
                 </div>
-            `;
+            `).join('');
         }
 
-        CartBadge.update();
+        // Update Summary values in cart.html
+        const subtotalEl = document.getElementById('summarySubtotal');
+        const taxEl = document.getElementById('summaryTax');
+        const deliveryEl = document.getElementById('summaryDelivery');
+        const totalEl = document.getElementById('summaryTotal');
+        const freeDeliveryMsg = document.getElementById('freeDeliveryMsg');
+
+        if (subtotalEl) subtotalEl.textContent = `₹${cart.subtotal}`;
+        if (taxEl) taxEl.textContent = `₹${cart.tax}`;
+        if (deliveryEl) {
+            deliveryEl.innerHTML = (Number(cart.deliveryFee) === 0)
+                ? '<span class="badge bg-success">FREE</span>'
+                : `₹${cart.deliveryFee}`;
+        }
+        if (totalEl) totalEl.textContent = `₹${cart.total}`;
+        if (freeDeliveryMsg) {
+            if (Number(cart.subtotal) < 500) {
+                freeDeliveryMsg.style.display = 'block';
+                const remaining = (500 - Number(cart.subtotal)).toFixed(2);
+                freeDeliveryMsg.innerHTML = `<i class="fas fa-truck me-1 text-success"></i>Add ₹${remaining} more for FREE delivery!`;
+            } else {
+                freeDeliveryMsg.style.display = 'block';
+                freeDeliveryMsg.innerHTML = `<i class="fas fa-check-circle me-1 text-success"></i>Eligible for FREE delivery!`;
+            }
+        }
+
+        if (typeof CartBadge !== 'undefined') {
+            CartBadge.applyBadge(cart.itemCount || cart.items.length);
+        }
 
     } catch (err) {
-        listContainer.innerHTML = `
-            <div class="alert alert-danger py-4 text-center">
-                <i class="fas fa-exclamation-circle fa-2x mb-2"></i>
-                <p>Could not load cart: ${err.message}</p>
-            </div>
-        `;
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (emptyEl) emptyEl.style.display = 'none';
+        if (contentEl) contentEl.style.display = 'none';
+
+        if (container) {
+            const alertDiv = document.createElement('div');
+            alertDiv.id = 'cartErrorAlert';
+            alertDiv.className = 'alert alert-danger py-4 text-center my-4 rounded-4 shadow-sm';
+            alertDiv.innerHTML = `
+                <i class="fas fa-exclamation-triangle fa-2x mb-3 text-danger"></i>
+                <h5 class="fw-bold mb-2">Could not load your shopping cart</h5>
+                <p class="text-muted mb-3">${err.message || 'Please check your connection and try again.'}</p>
+                <button type="button" class="btn btn-fn rounded-pill px-4" onclick="loadCart()">
+                    <i class="fas fa-redo me-2"></i>Retry
+                </button>
+            `;
+            container.prepend(alertDiv);
+        }
     }
 }
 
-function renderEmptyCart(listContainer, summaryContainer) {
-    listContainer.innerHTML = `
-        <div class="empty-state py-5">
-            <div class="empty-state-icon"><i class="fas fa-shopping-basket"></i></div>
-            <h3>Your cart is empty!</h3>
-            <p class="text-muted">Looks like you haven't added anything to your cart yet.</p>
-            <a href="/menu.html" class="btn btn-fn rounded-pill px-4 mt-3">
-                <i class="fas fa-utensils me-2"></i>Explore Our Menu
+function renderLoginPrompt(container) {
+    if (!container) return;
+    const existingPrompt = document.getElementById('cartLoginPrompt');
+    if (existingPrompt) return;
+
+    const div = document.createElement('div');
+    div.id = 'cartLoginPrompt';
+    div.className = 'empty-cart py-5';
+    div.innerHTML = `
+        <i class="fas fa-user-lock" style="font-size:3.5rem; color:var(--gold-dark); margin-bottom:16px;"></i>
+        <h4 class="fw-bold mb-2" style="color:var(--primary-dark);">Sign in to view your bag</h4>
+        <p class="text-muted mb-4">Please log in to your Kaveri account to view your cart items, review order totals, and checkout.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="/login.html?redirect=/cart.html" class="btn btn-fn-gold rounded-pill px-4">
+                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+            </a>
+            <a href="/menu.html" class="btn btn-outline-secondary rounded-pill px-4">
+                <i class="fas fa-utensils me-2"></i>Explore Menu
             </a>
         </div>
     `;
-    if (summaryContainer) summaryContainer.innerHTML = '';
+    container.appendChild(div);
 }
 
 window.updateItemQuantity = async function(cartItemId, newQty) {
@@ -140,16 +172,16 @@ window.updateItemQuantity = async function(cartItemId, newQty) {
         await Api.put(`/cart/items/${cartItemId}`, { quantity: newQty });
         await loadCart();
     } catch (err) {
-        Toast.error(err.message);
+        if (typeof Toast !== 'undefined') Toast.error(err.message || 'Failed to update item quantity');
     }
 };
 
 window.removeCartItem = async function(cartItemId) {
     try {
         await Api.delete(`/cart/items/${cartItemId}`);
-        Toast.info('Item removed from cart');
+        if (typeof Toast !== 'undefined') Toast.info('Item removed from cart');
         await loadCart();
     } catch (err) {
-        Toast.error(err.message);
+        if (typeof Toast !== 'undefined') Toast.error(err.message || 'Failed to remove item');
     }
 };

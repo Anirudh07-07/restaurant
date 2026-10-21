@@ -565,16 +565,30 @@
       if (typeof Toast !== 'undefined') {
         Toast.warning(`Please login to add ${name} to your order bag.`);
       }
+      const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
       setTimeout(() => {
-        window.location.href = '/login.html';
+        window.location.href = `/login.html?redirect=${returnUrl}`;
       }, 800);
       return;
     }
 
-    if (typeof Toast !== 'undefined') {
-      Toast.success(`Added ${name} (₹${price}) to your order bag.`);
+    try {
+      const parsedId = Number(id);
+      const payload = {
+        foodItemId: (!isNaN(parsedId) && parsedId > 0) ? parsedId : null,
+        foodName: name,
+        quantity: 1
+      };
+      await Api.post('/cart/items', payload);
+      if (typeof Toast !== 'undefined') {
+        Toast.success(`Added ${name} (₹${price}) to your order bag.`);
+      }
       if (typeof CartBadge !== 'undefined') {
-        CartBadge.update();
+        CartBadge.update(true);
+      }
+    } catch (err) {
+      if (typeof Toast !== 'undefined') {
+        Toast.error(err.message || `Failed to add ${name} to order bag.`);
       }
     }
   };

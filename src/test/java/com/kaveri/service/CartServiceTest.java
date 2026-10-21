@@ -62,7 +62,39 @@ class CartServiceTest {
     }
 
     @Test
-    @DisplayName("Add item to cart - Success")
+    @DisplayName("Get cart - When cart does not exist in DB, returns empty response without inserting")
+    void getCart_whenCartDoesNotExist_shouldReturnEmptyResponseWithoutDatabaseInsert() {
+        when(securityUtils.getCurrentUser()).thenReturn(testUser);
+        when(cartRepository.findByUserId(1L)).thenReturn(Optional.empty());
+
+        CartResponse response = cartService.getCart();
+
+        assertThat(response).isNotNull();
+        assertThat(response.getItemCount()).isEqualTo(0);
+        assertThat(response.getItems()).isEmpty();
+        assertThat(response.getSubtotal()).isEqualByComparingTo("0.00");
+        assertThat(response.getTax()).isEqualByComparingTo("0.00");
+        assertThat(response.getDeliveryFee()).isEqualByComparingTo("0.00");
+        assertThat(response.getTotal()).isEqualByComparingTo("0.00");
+        verify(cartRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Get cart - When cart exists but is empty, returns zero delivery fee and zero total")
+    void getCart_whenCartIsEmpty_shouldReturnZeroFeesAndZeroTotal() {
+        when(securityUtils.getCurrentUser()).thenReturn(testUser);
+        when(cartRepository.findByUserId(1L)).thenReturn(Optional.of(testCart));
+
+        CartResponse response = cartService.getCart();
+
+        assertThat(response).isNotNull();
+        assertThat(response.getItemCount()).isEqualTo(0);
+        assertThat(response.getDeliveryFee()).isEqualByComparingTo("0.00");
+        assertThat(response.getTotal()).isEqualByComparingTo("0.00");
+    }
+
+    @Test
+    @DisplayName("Add item to cart by ID - Success")
     void addItem_toCart_shouldSucceed() {
         CartItemRequest request = new CartItemRequest(10L, 2);
 
@@ -76,6 +108,36 @@ class CartServiceTest {
 
         assertThat(response).isNotNull();
         verify(cartRepository).save(any(Cart.class));
+    }
+
+    @Test
+    @DisplayName("Add item to cart by Food Name - Success")
+    void addItem_byFoodName_shouldSucceed() {
+        CartItemRequest request = new CartItemRequest("Margherita", 1);
+
+        when(securityUtils.getCurrentUser()).thenReturn(testUser);
+        when(cartRepository.findByUserId(1L)).thenReturn(Optional.of(testCart));
+        when(foodItemRepository.findByNameIgnoreCase("Margherita")).thenReturn(Optional.of(testFood));
+        when(cartItemRepository.findByCartIdAndFoodItemId(1L, 10L)).thenReturn(Optional.empty());
+        when(cartRepository.save(any(Cart.class))).thenReturn(testCart);
+
+        CartResponse response = cartService.addItem(request);
+
+        assertThat(response).isNotNull();
+        verify(cartRepository).save(any(Cart.class));
+    }
+
+    @Test
+    @DisplayName("Add item without food ID or name - Throws BadRequestException")
+    void addItem_withoutIdOrName_shouldThrowBadRequestException() {
+        CartItemRequest request = CartItemRequest.builder().quantity(1).build();
+
+        when(securityUtils.getCurrentUser()).thenReturn(testUser);
+        when(cartRepository.findByUserId(1L)).thenReturn(Optional.of(testCart));
+
+        assertThatThrownBy(() -> cartService.addItem(request))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("Either food item ID or food name is required");
     }
 
     @Test

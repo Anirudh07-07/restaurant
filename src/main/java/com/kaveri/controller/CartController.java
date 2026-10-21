@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/cart")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('CUSTOMER')")
+@PreAuthorize("isAuthenticated()")
 @Tag(name = "Cart", description = "Shopping cart management")
 @SecurityRequirement(name = "bearerAuth")
 public class CartController {
