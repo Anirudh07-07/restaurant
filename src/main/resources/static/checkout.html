@@ -497,41 +497,80 @@
         }
 
         const order = await orderRes.json();
+        const orderData = order.data || order;
+        const orderId = orderData.id || orderData.orderId;
+
+        if (!orderId) {
+          throw new Error('Order was placed but no order ID was returned');
+        }
 
         if (selectedPayment === 'COD') {
-          showSuccess(order.id || order.orderId);
+          showSuccess(orderId);
         } else {
-          const payRes = await fetch(`/api/payments/create/${order.id || order.orderId}`, {
+          const payRes = await fetch(`/api/payments/create/${orderId}`, {
             method: 'POST',
             headers: authHeaders()
           });
-          if (!payRes.ok) throw new Error('Payment initiation failed');
-          const payData = await payRes.json();
+          if (!payRes.ok) {
+            const errBody = await payRes.json().catch(() => ({}));
+            throw new Error(errBody.message || 'Payment initiation failed');
+          }
+          const payJson = await payRes.json();
+          const payData = payJson.data || payJson;
+
+          // Sandbox / Mock simulation fallback
+          if (payData.razorpayOrderId && payData.razorpayOrderId.startsWith('order_mock_')) {
+            const verifyRes = await fetch('/api/payments/verify', {
+              method: 'POST',
+              headers: authHeaders(),
+              body: JSON.stringify({
+                razorpayPaymentId: 'pay_mock_' + Date.now(),
+                razorpayOrderId: payData.razorpayOrderId,
+                razorpaySignature: 'mock_signature'
+              })
+            });
+            if (!verifyRes.ok) {
+              const vErr = await verifyRes.json().catch(() => ({}));
+              throw new Error(vErr.message || 'Payment verification failed');
+            }
+            showSuccess(orderId);
+            return;
+          }
 
           const options = {
-            key: payData.key,
-            amount: payData.amount,
-            currency: payData.currency || 'INR',
+            key: payData.razorpayKeyId || payData.key,
+            amount: Math.round(Number(payData.amount) * 100),
+            currency: 'INR',
             name: 'Kaveri Restaurant Group',
-            description: 'Kaveri Ranchi Food Order',
+            description: 'Order #' + orderId + ' — Online Food Order',
             order_id: payData.razorpayOrderId,
             handler: async function(response) {
-              await fetch('/api/payments/verify', {
-                method: 'POST',
-                headers: authHeaders(),
-                body: JSON.stringify({
-                  razorpayPaymentId: response.razorpay_payment_id,
-                  razorpayOrderId: response.razorpay_order_id,
-                  razorpaySignature: response.razorpay_signature,
-                  orderId: order.id || order.orderId
-                })
-              });
-              showSuccess(order.id || order.orderId);
+              try {
+                const verifyRes = await fetch('/api/payments/verify', {
+                  method: 'POST',
+                  headers: authHeaders(),
+                  body: JSON.stringify({
+                    razorpayPaymentId: response.razorpay_payment_id,
+                    razorpayOrderId: response.razorpay_order_id,
+                    razorpaySignature: response.razorpay_signature
+                  })
+                });
+                if (!verifyRes.ok) {
+                  const vErr = await verifyRes.json().catch(() => ({}));
+                  throw new Error(vErr.message || 'Payment verification failed');
+                }
+                showSuccess(orderId);
+              } catch(vErr) {
+                errDiv.textContent = vErr.message || 'Payment verification failed. Please contact support.';
+                errDiv.style.display = 'block';
+                document.getElementById('placeOrderText').style.display = 'inline';
+                document.getElementById('placeOrderSpinner').style.display = 'none';
+                document.getElementById('placeOrderBtn').disabled = false;
+              }
             },
             prefill: {
-              name: payData.customerName || '',
-              email: payData.customerEmail || '',
-              contact: payData.customerPhone || ''
+              name: (Auth.getUser() && Auth.getUser().name) || '',
+              email: (Auth.getUser() && Auth.getUser().email) || ''
             },
             theme: { color: '#75171e' },
             modal: {
@@ -542,7 +581,15 @@
               }
             }
           };
+
           const rzp = new Razorpay(options);
+          rzp.on('payment.failed', function(response) {
+            errDiv.textContent = 'Payment Failed: ' + (response.error.description || 'Transaction declined');
+            errDiv.style.display = 'block';
+            document.getElementById('placeOrderText').style.display = 'inline';
+            document.getElementById('placeOrderSpinner').style.display = 'none';
+            document.getElementById('placeOrderBtn').disabled = false;
+          });
           rzp.open();
           return;
         }

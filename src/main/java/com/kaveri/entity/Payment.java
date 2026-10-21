@@ -42,6 +42,14 @@ public class Payment {
     @Column(name = "transaction_id", length = 100)
     private String transactionId;
 
+    /** Razorpay refund ID if order was refunded */
+    @Column(name = "refund_id", length = 100)
+    private String refundId;
+
+    /** Failure reason if payment failed */
+    @Column(name = "failure_reason", length = 255)
+    private String failureReason;
+
     @Column(name = "amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 

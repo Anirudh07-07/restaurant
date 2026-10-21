@@ -1,0 +1,46 @@
+# ==============================================================
+# Render Infrastructure as Code (Blueprint)
+# Deploy with 1-click on https://dashboard.render.com
+# ==============================================================
+
+services:
+  - type: web
+    name: kaveri-restaurant
+    runtime: docker
+    dockerfilePath: Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: kaveridb
+          property: connectionString
+      - key: DATABASE_USERNAME
+        fromDatabase:
+          name: kaveridb
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: kaveridb
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: "86400000"
+      - key: RAZORPAY_MOCK_ENABLED
+        value: "true"
+      - key: WHATSAPP_MOCK_ENABLED
+        value: "true"
+      - key: RATELIMIT_ENABLED
+        value: "true"
+
+databases:
+  - name: kaveridb
+    plan: free
+    region: oregon
+    databaseName: kaveridb
+    user: kaveri

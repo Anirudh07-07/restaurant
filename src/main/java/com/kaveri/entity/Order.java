@@ -34,9 +34,17 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Version
+    @Column(name = "version")
+    private Long version;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "maker_id")
+    private User maker;
 
     // Delivery address snapshot (stored as embedded to decouple from Address changes)
     @Column(name = "delivery_address", nullable = false, length = 500)

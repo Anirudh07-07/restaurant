@@ -18,6 +18,8 @@ public class PaymentResponse {
     private Long orderId;
     private String razorpayOrderId;
     private String transactionId;
+    private String refundId;
+    private String failureReason;
     private BigDecimal amount;
     private PaymentMethod paymentMethod;
     private PaymentStatus paymentStatus;

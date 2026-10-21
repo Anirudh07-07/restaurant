@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/payments")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('CUSTOMER')")
 @Tag(name = "Payments", description = "Razorpay payment integration")
-@SecurityRequirement(name = "bearerAuth")
 public class PaymentController {
 
     private final PaymentService paymentService;
 
     @PostMapping("/create/{orderId}")
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN')")
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Create Razorpay order to initiate payment")
     public ResponseEntity<ApiResponse<PaymentResponse>> createPayment(
             @PathVariable Long orderId) {
@@ -33,10 +33,32 @@ public class PaymentController {
     }
 
     @PostMapping("/verify")
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN')")
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Verify Razorpay payment signature (server-side)")
     public ResponseEntity<ApiResponse<PaymentResponse>> verifyPayment(
             @Valid @RequestBody PaymentVerifyRequest request) {
         PaymentResponse response = paymentService.verifyPayment(request);
         return ResponseEntity.ok(ApiResponse.success(response, "Payment verified successfully!"));
+    }
+
+    @PostMapping("/webhook")
+    @Operation(summary = "Razorpay asynchronous webhook callback handler")
+    public ResponseEntity<ApiResponse<Void>> handleWebhook(
+            @RequestBody String payload,
+            @RequestHeader(value = "X-Razorpay-Signature", required = false) String signature) {
+        paymentService.processWebhook(payload, signature);
+        return ResponseEntity.ok(ApiResponse.success(null, "Webhook processed successfully"));
+    }
+
+    @PostMapping("/refund/{orderId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Refund an online payment (Admin only)")
+    public ResponseEntity<ApiResponse<PaymentResponse>> refundPayment(
+            @PathVariable Long orderId,
+            @RequestParam(required = false, defaultValue = "Administrative refund") String reason) {
+        PaymentResponse response = paymentService.refundPayment(orderId, reason);
+        return ResponseEntity.ok(ApiResponse.success(response, "Payment refunded successfully"));
     }
 }

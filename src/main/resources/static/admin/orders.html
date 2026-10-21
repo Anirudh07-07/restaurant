@@ -347,26 +347,74 @@ function renderOrders(pageData) {
             dateStyle: 'medium', timeStyle: 'short'
         }) : '—';
 
+        const curStatus = o.orderStatus || o.status || 'PLACED';
+        const customerName = o.userName || o.customerName || 'Customer';
+        const customerPhone = o.deliveryPhone || o.customerPhone || 'N/A';
+
+        // Kitchen Workflow Action Buttons
+        let quickActionHtml = '';
+        if (curStatus === 'PLACED') {
+            quickActionHtml = `
+                <button class="btn btn-sm btn-success rounded-pill px-2 py-0 me-1" onclick="quickUpdateStatus(${o.id}, 'CONFIRMED', this)" title="Accept Order">
+                    <i class="fas fa-check me-1"></i>Accept
+                </button>
+                <button class="btn btn-sm btn-outline-danger rounded-pill px-2 py-0 me-1" onclick="quickUpdateStatus(${o.id}, 'CANCELLED', this)" title="Reject Order">
+                    <i class="fas fa-times me-1"></i>Reject
+                </button>
+            `;
+        } else if (curStatus === 'CONFIRMED') {
+            quickActionHtml = `
+                <button class="btn btn-sm btn-primary rounded-pill px-2 py-0 me-1" onclick="quickUpdateStatus(${o.id}, 'PREPARING', this)" title="Start Kitchen Cooking">
+                    <i class="fas fa-fire me-1"></i>Cook
+                </button>
+            `;
+        } else if (curStatus === 'PREPARING') {
+            quickActionHtml = `
+                <button class="btn btn-sm btn-info text-white rounded-pill px-2 py-0 me-1" onclick="quickUpdateStatus(${o.id}, 'READY', this)" title="Mark Food Ready">
+                    <i class="fas fa-box me-1"></i>Ready
+                </button>
+            `;
+        } else if (curStatus === 'READY') {
+            quickActionHtml = `
+                <button class="btn btn-sm btn-warning text-dark rounded-pill px-2 py-0 me-1" onclick="quickUpdateStatus(${o.id}, 'OUT_FOR_DELIVERY', this)" title="Dispatch for Delivery">
+                    <i class="fas fa-motorcycle me-1"></i>Dispatch
+                </button>
+                <button class="btn btn-sm btn-outline-success rounded-pill px-2 py-0 me-1" onclick="quickUpdateStatus(${o.id}, 'DELIVERED', this)" title="Mark Delivered">
+                    <i class="fas fa-check-double me-1"></i>Delivered
+                </button>
+            `;
+        } else if (curStatus === 'OUT_FOR_DELIVERY') {
+            quickActionHtml = `
+                <button class="btn btn-sm btn-success rounded-pill px-2 py-0 me-1" onclick="quickUpdateStatus(${o.id}, 'DELIVERED', this)" title="Mark Delivered">
+                    <i class="fas fa-check-double me-1"></i>Delivered
+                </button>
+            `;
+        }
+
         html += `
             <tr>
                 <td class="ps-4 fw-bold text-dark font-monospace">#${o.id}</td>
                 <td>
-                    <div class="fw-semibold">${o.customerName || 'Customer'}</div>
-                    <small class="text-muted"><i class="fas fa-phone me-1"></i>${o.customerPhone || 'N/A'}</small>
+                    <div class="fw-semibold">${customerName}</div>
+                    <small class="text-muted"><i class="fas fa-phone me-1"></i>${customerPhone}</small>
                 </td>
                 <td class="fw-bold text-primary font-serif">₹${parseFloat(o.totalAmount || 0).toFixed(2)}</td>
                 <td>
-                    <span class="badge ${o.paymentMethod === 'COD' ? 'payment-COD' : 'payment-PAID'} px-2 py-1">
+                    <span class="badge ${o.paymentMethod === 'CASH_ON_DELIVERY' || o.paymentMethod === 'COD' ? 'payment-COD' : 'payment-PAID'} px-2 py-1">
                         ${o.paymentMethod || 'ONLINE'} - ${o.paymentStatus || 'PAID'}
                     </span>
                 </td>
                 <td>
-                    <span class="status-badge status-${o.status}">${o.status}</span>
+                    <span class="status-badge status-${curStatus}">${curStatus}</span>
+                    <span class="badge bg-light text-success border border-success-subtle ms-1" title="WhatsApp Synchronization Active">
+                        <i class="fab fa-whatsapp text-success"></i>
+                    </span>
                 </td>
                 <td><small class="text-muted">${formattedDate}</small></td>
-                <td class="text-end pe-4">
-                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="viewOrderDetails(${o.id})">
-                        <i class="fas fa-eye me-1"></i> View Bill
+                <td class="text-end pe-4 text-nowrap">
+                    ${quickActionHtml}
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-2 py-0" onclick="viewOrderDetails(${o.id})">
+                        <i class="fas fa-eye me-1"></i>View
                     </button>
                 </td>
             </tr>
@@ -464,6 +512,21 @@ async function viewOrderDetails(id) {
     }
 }
 
+async function quickUpdateStatus(orderId, newStatus, btn) {
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+    }
+    try {
+        await Api.patch(`/admin/orders/${orderId}/status?status=${newStatus}`);
+        Toast.success(`Order #${orderId} moved to ${newStatus}`);
+        loadOrders();
+    } catch (err) {
+        Toast.error('Status update failed: ' + err.message);
+        loadOrders();
+    }
+}
+
 async function handleUpdateModalStatus() {
     if (!activeOrder) return;
     const newStatus = document.getElementById('modalOrderStatusSelect').value;
@@ -481,6 +544,14 @@ async function handleUpdateModalStatus() {
         btn.disabled = false;
     }
 }
+
+// Auto-sync polling every 15 seconds to reflect WhatsApp status updates live
+setInterval(() => {
+    const modalEl = document.getElementById('orderDetailsModal');
+    if (modalEl && !modalEl.classList.contains('show')) {
+        loadOrders();
+    }
+}, 15000);
 </script>
 </body>
 </html>

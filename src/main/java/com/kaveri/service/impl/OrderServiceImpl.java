@@ -12,6 +12,7 @@ import com.kaveri.exception.UnauthorizedException;
 import com.kaveri.repository.*;
 import com.kaveri.service.NotificationService;
 import com.kaveri.service.OrderService;
+import com.kaveri.service.PaymentService;
 import com.kaveri.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,9 @@ public class OrderServiceImpl implements OrderService {
     private final FoodItemRepository foodItemRepository;
     private final NotificationService notificationService;
     private final SecurityUtils securityUtils;
+    private final PaymentService paymentService;
+    private final com.kaveri.util.OrderStatusTransitionValidator orderStatusTransitionValidator;
+    private final com.kaveri.service.WhatsAppNotificationService whatsAppNotificationService;
 
     @Value("${app.tax.rate:0.05}")
     private BigDecimal taxRate;
@@ -146,6 +150,13 @@ public class OrderServiceImpl implements OrderService {
                 "Your order #" + savedOrder.getId() + " has been placed successfully. " +
                 "Total: ₹" + total);
 
+        // 10. Notify maker on WhatsApp
+        try {
+            whatsAppNotificationService.notifyMakerNewOrder(savedOrder);
+        } catch (Exception e) {
+            log.error("Failed to notify maker on WhatsApp for new order #{}: {}", savedOrder.getId(), e.getMessage());
+        }
+
         log.info("Order #{} placed by user {}", savedOrder.getId(), user.getEmail());
         return toResponse(savedOrder);
     }
@@ -178,20 +189,29 @@ public class OrderServiceImpl implements OrderService {
             throw new BadRequestException("Order cannot be cancelled at status: " + order.getOrderStatus());
         }
 
+        orderStatusTransitionValidator.validateTransition(order.getOrderStatus(), OrderStatus.CANCELLED);
         order.setOrderStatus(OrderStatus.CANCELLED);
 
-        // Refund if already paid online
-        paymentRepository.findByOrderId(order.getId()).ifPresent(payment -> {
-            if (payment.getPaymentStatus() == PaymentStatus.PAID) {
-                payment.setPaymentStatus(PaymentStatus.REFUNDED);
-                paymentRepository.save(payment);
-                order.setPaymentStatus(PaymentStatus.REFUNDED);
-            }
-        });
+        // Refund if already paid online via payment gateway
+        try {
+            paymentRepository.findByOrderId(order.getId()).ifPresent(payment -> {
+                if (payment.getPaymentStatus() == PaymentStatus.PAID) {
+                    paymentService.refundPayment(order.getId(), "Order cancelled by customer");
+                }
+            });
+        } catch (Exception e) {
+            log.error("Failed to process refund for cancelled order #{}: {}", id, e.getMessage());
+        }
 
         Order saved = orderRepository.save(order);
         notificationService.createNotification(user, "Order Cancelled",
                 "Order #" + id + " has been cancelled.");
+
+        try {
+            whatsAppNotificationService.notifyCustomerStatusUpdate(saved, OrderStatus.CANCELLED);
+        } catch (Exception e) {
+            log.error("Failed to notify customer on WhatsApp for cancelled order #{}: {}", id, e.getMessage());
+        }
 
         return toResponse(saved);
     }
@@ -209,12 +229,36 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order", "id", id));
 
+        // Validate state machine transition (e.g. PLACED -> CONFIRMED, CONFIRMED -> PREPARING)
+        orderStatusTransitionValidator.validateTransition(order.getOrderStatus(), newStatus);
+
         order.setOrderStatus(newStatus);
+
+        if (newStatus == OrderStatus.CANCELLED) {
+            try {
+                paymentRepository.findByOrderId(order.getId()).ifPresent(payment -> {
+                    if (payment.getPaymentStatus() == PaymentStatus.PAID) {
+                        paymentService.refundPayment(order.getId(), "Order cancelled by restaurant management");
+                    }
+                });
+            } catch (Exception e) {
+                log.error("Failed to process refund for admin-cancelled order #{}: {}", id, e.getMessage());
+            }
+        }
+
         Order saved = orderRepository.save(order);
 
+        // 1. In-app notification
         notificationService.createNotification(order.getUser(),
                 "Order Update",
                 "Your order #" + id + " is now: " + newStatus.name().replace("_", " "));
+
+        // 2. WhatsApp notification to customer
+        try {
+            whatsAppNotificationService.notifyCustomerStatusUpdate(saved, newStatus);
+        } catch (Exception e) {
+            log.error("Failed to notify customer on WhatsApp for order #{} status {}: {}", id, newStatus, e.getMessage());
+        }
 
         return toResponse(saved);
     }
@@ -244,6 +288,9 @@ public class OrderServiceImpl implements OrderService {
                 .id(order.getId())
                 .userId(order.getUser().getId())
                 .userName(order.getUser().getName())
+                .makerId(order.getMaker() != null ? order.getMaker().getId() : null)
+                .makerName(order.getMaker() != null ? order.getMaker().getName() : null)
+                .makerPhone(order.getMaker() != null ? order.getMaker().getPhone() : null)
                 .deliveryAddress(order.getDeliveryAddress())
                 .deliveryCity(order.getDeliveryCity())
                 .deliveryPincode(order.getDeliveryPincode())

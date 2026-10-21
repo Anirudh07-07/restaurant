@@ -20,6 +20,10 @@ public class OrderResponse {
     private Long userId;
     private String userName;
 
+    private Long makerId;
+    private String makerName;
+    private String makerPhone;
+
     private String deliveryAddress;
     private String deliveryCity;
     private String deliveryPincode;
@@ -38,6 +42,10 @@ public class OrderResponse {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public OrderStatus getStatus() {
+        return orderStatus;
+    }
 
     @Getter
     @Setter
