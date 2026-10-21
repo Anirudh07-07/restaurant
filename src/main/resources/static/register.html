@@ -69,11 +69,38 @@
       border-radius: 14px;
       height: 58px;
       font-size: 0.95rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
     .form-floating > .form-control:focus {
       background: rgba(255, 255, 255, 0.14);
       border-color: var(--gold);
       box-shadow: 0 0 0 4px rgba(197, 155, 39, 0.25);
+      color: #ffffff;
+    }
+    .form-floating > .form-control.is-invalid {
+      border-color: #ff5252 !important;
+      box-shadow: 0 0 0 3px rgba(255, 82, 82, 0.25) !important;
+    }
+    .invalid-feedback {
+      color: #ff8a80;
+      font-size: 0.82rem;
+      margin-top: 4px;
+      margin-left: 4px;
+      text-align: left;
+    }
+    .pw-toggle {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      z-index: 10;
+      transition: color 0.2s ease;
+    }
+    .pw-toggle:hover {
       color: #ffffff;
     }
     .btn-auth-submit {
@@ -86,12 +113,16 @@
       font-size: 1rem;
       width: 100%;
       box-shadow: var(--shadow-gold);
-      transition: all 0.3s ease;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, filter 0.25s ease;
+      will-change: transform;
     }
     .btn-auth-submit:hover {
       filter: brightness(1.1);
       transform: translateY(-2px);
       color: #ffffff;
+    }
+    .btn-auth-submit:active {
+      transform: translateY(0);
     }
     .auth-alert-error {
       background: rgba(211, 47, 47, 0.2);
@@ -117,7 +148,7 @@
 
   <div class="auth-card">
     <h4 class="text-white text-center fw-bold mb-1" style="font-family:'Playfair Display', serif;">Join Kaveri Club</h4>
-    <p class="text-center text-white-50 small mb-4">Create an account to book tables and order sweets & delicacies.</p>
+    <p class="text-center text-white-50 small mb-4">Create an account to book tables, track orders and enjoy member benefits.</p>
 
     <!-- Error Alert -->
     <div class="auth-alert-error mb-3" id="regError">
@@ -127,28 +158,38 @@
     <!-- Form -->
     <form id="regForm" novalidate>
       <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="regName" placeholder="Full Name" required>
+        <input type="text" class="form-control" id="regName" placeholder="Full Name" required autocomplete="name">
         <label for="regName"><i class="far fa-user me-2"></i>Full Name</label>
+        <div class="invalid-feedback" id="regNameFeedback">Please enter your full name (minimum 2 characters).</div>
       </div>
 
       <div class="form-floating mb-3">
         <input type="email" class="form-control" id="regEmail" placeholder="name@example.com" required autocomplete="email">
         <label for="regEmail"><i class="far fa-envelope me-2"></i>Email Address</label>
+        <div class="invalid-feedback" id="regEmailFeedback">Please provide a valid email address.</div>
       </div>
 
       <div class="form-floating mb-3">
-        <input type="tel" class="form-control" id="regPhone" placeholder="+91 9876543210" required>
-        <label for="regPhone"><i class="fas fa-phone me-2"></i>Phone Number</label>
+        <input type="tel" class="form-control" id="regPhone" placeholder="e.g. 9876543210 or +91 9876543210" autocomplete="tel">
+        <label for="regPhone"><i class="fas fa-phone me-2"></i>Phone Number (e.g. 9876543210)</label>
+        <div class="invalid-feedback" id="regPhoneFeedback">Please provide a valid 10-digit Indian phone number.</div>
       </div>
 
-      <div class="form-floating mb-3">
-        <input type="password" class="form-control" id="regPassword" placeholder="Password (min 8 chars)" required>
-        <label for="regPassword"><i class="fas fa-lock me-2"></i>Password (min 8 characters)</label>
+      <div class="form-floating mb-2 position-relative">
+        <input type="password" class="form-control pe-5" id="regPassword" placeholder="Password (min 8 chars)" required autocomplete="new-password">
+        <label for="regPassword"><i class="fas fa-lock me-2"></i>Password</label>
+        <button type="button" class="pw-toggle" id="pwToggle" tabindex="-1" title="Show/Hide password">
+          <i class="far fa-eye" id="pwToggleIcon"></i>
+        </button>
+        <div class="invalid-feedback" id="regPasswordFeedback">Password must be at least 8 characters and include at least one letter and one number.</div>
+      </div>
+      <div class="text-white-50 small mb-4" style="font-size: 0.78rem;">
+        <i class="fas fa-info-circle me-1 text-gold"></i>Must contain at least 8 characters, including at least one letter and one number.
       </div>
 
       <button type="submit" class="btn-auth-submit mb-4" id="regBtn">
         <span id="regBtnText"><i class="fas fa-user-plus me-2"></i>Create Account</span>
-        <span id="regSpinner" style="display:none;"><span class="spinner-border spinner-border-sm me-2"></span>Registering...</span>
+        <span id="regSpinner" style="display:none;"><span class="spinner-border spinner-border-sm me-2"></span>Creating Account...</span>
       </button>
 
       <hr style="border-color: rgba(255,255,255,0.15);">
@@ -162,22 +203,117 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/main.js"></script>
 <script>
+  // Safe redirect if already authenticated (replaces history entry so Back button works naturally)
+  if (typeof Auth !== 'undefined' && Auth.isLoggedIn()) {
+    if (Auth.isAdmin()) {
+      window.location.replace('/admin/dashboard.html');
+    } else {
+      window.location.replace('/');
+    }
+  }
+
+  // Handle browser back-forward cache cleanly
+  window.addEventListener('pageshow', function(event) {
+    if (event.persisted && typeof Auth !== 'undefined' && Auth.isLoggedIn()) {
+      window.location.replace(Auth.isAdmin() ? '/admin/dashboard.html' : '/');
+    }
+  });
+
+  // Password visibility toggle
+  document.getElementById('pwToggle').addEventListener('click', function() {
+    const inp = document.getElementById('regPassword');
+    const icon = document.getElementById('pwToggleIcon');
+    if (inp.type === 'password') {
+      inp.type = 'text';
+      icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+      inp.type = 'password';
+      icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+  });
+
+  // Clear validation styling when user types
+  ['regName', 'regEmail', 'regPhone', 'regPassword'].forEach(function(id) {
+    document.getElementById(id).addEventListener('input', function() {
+      this.classList.remove('is-invalid');
+      const errDiv = document.getElementById('regError');
+      if (document.querySelectorAll('.form-control.is-invalid').length === 0) {
+        errDiv.style.display = 'none';
+      }
+    });
+  });
+
   document.getElementById('regForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const name = document.getElementById('regName').value.trim();
-    const email = document.getElementById('regEmail').value.trim();
-    const phone = document.getElementById('regPhone').value.trim();
-    const password = document.getElementById('regPassword').value;
+
+    const nameInp = document.getElementById('regName');
+    const emailInp = document.getElementById('regEmail');
+    const phoneInp = document.getElementById('regPhone');
+    const passwordInp = document.getElementById('regPassword');
+
+    const name = nameInp.value.trim();
+    const email = emailInp.value.trim();
+    const rawPhone = phoneInp.value.trim();
+    const password = passwordInp.value;
+
     const errDiv = document.getElementById('regError');
     const errMsg = document.getElementById('regErrorMsg');
     const btnText = document.getElementById('regBtnText');
     const spinner = document.getElementById('regSpinner');
 
+    // Reset previous states
     errDiv.style.display = 'none';
+    [nameInp, emailInp, phoneInp, passwordInp].forEach(el => el.classList.remove('is-invalid'));
 
-    if (!name || !email || !password) {
-      errMsg.textContent = 'Please fill in all required fields.';
+    // Client-side validations
+    let hasError = false;
+    let firstInvalid = null;
+
+    if (!name || name.length < 2) {
+      nameInp.classList.add('is-invalid');
+      document.getElementById('regNameFeedback').textContent = 'Please enter your full name (at least 2 characters).';
+      hasError = true;
+      if (!firstInvalid) firstInvalid = nameInp;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      emailInp.classList.add('is-invalid');
+      document.getElementById('regEmailFeedback').textContent = 'Please enter a valid email address.';
+      hasError = true;
+      if (!firstInvalid) firstInvalid = emailInp;
+    }
+
+    // Phone is optional, but if provided must match 10-digit Indian mobile pattern
+    if (rawPhone) {
+      const cleanPhone = rawPhone.replace(/[\s-]/g, '');
+      const indianPhoneRegex = /^(?:(?:\+91|0)?[6-9]\d{9})$/;
+      if (!indianPhoneRegex.test(cleanPhone)) {
+        phoneInp.classList.add('is-invalid');
+        document.getElementById('regPhoneFeedback').textContent = 'Please provide a valid 10-digit Indian phone number (e.g. 9876543210 or +91 9876543210).';
+        hasError = true;
+        if (!firstInvalid) firstInvalid = phoneInp;
+      }
+    }
+
+    // Password must be at least 8 chars, containing at least 1 letter and 1 digit
+    const hasLetter = /[a-zA-Z]/.test(password);
+    const hasDigit = /\d/.test(password);
+    if (!password || password.length < 8 || !hasLetter || !hasDigit) {
+      passwordInp.classList.add('is-invalid');
+      if (password.length < 8) {
+        document.getElementById('regPasswordFeedback').textContent = 'Password must be at least 8 characters long.';
+      } else {
+        document.getElementById('regPasswordFeedback').textContent = 'Password must contain at least one letter and one number.';
+      }
+      hasError = true;
+      if (!firstInvalid) firstInvalid = passwordInp;
+    }
+
+    if (hasError) {
+      errMsg.textContent = 'Please correct the highlighted fields before proceeding.';
       errDiv.style.display = 'block';
+      if (firstInvalid) firstInvalid.focus();
       return;
     }
 
@@ -189,7 +325,12 @@
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, phone, password })
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          phone: rawPhone ? rawPhone : null,
+          password: password
+        })
       });
 
       const responseData = await res.json();
@@ -197,13 +338,30 @@
       if (res.ok && responseData.data && responseData.data.token) {
         Auth.save(responseData.data);
         Toast.success('Welcome to Kaveri Restaurant Group, ' + responseData.data.name + '!');
-        setTimeout(() => { window.location.href = '/'; }, 600);
+        setTimeout(() => { window.location.replace('/'); }, 600);
       } else {
+        // Map backend field errors to specific UI fields if available
+        if (responseData.data && typeof responseData.data === 'object') {
+          const fieldMap = {
+            name: { inp: nameInp, fb: 'regNameFeedback' },
+            email: { inp: emailInp, fb: 'regEmailFeedback' },
+            phone: { inp: phoneInp, fb: 'regPhoneFeedback' },
+            password: { inp: passwordInp, fb: 'regPasswordFeedback' }
+          };
+
+          for (const [field, message] of Object.entries(responseData.data)) {
+            if (fieldMap[field]) {
+              fieldMap[field].inp.classList.add('is-invalid');
+              document.getElementById(fieldMap[field].fb).textContent = message;
+            }
+          }
+        }
+
         errMsg.textContent = responseData.message || 'Registration failed. Email may already be in use.';
         errDiv.style.display = 'block';
       }
     } catch (err) {
-      errMsg.textContent = 'Could not reach server. Please check connection.';
+      errMsg.textContent = 'Could not reach server. Please check your connection.';
       errDiv.style.display = 'block';
     } finally {
       btnText.style.display = 'inline';

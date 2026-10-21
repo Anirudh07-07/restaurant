@@ -24,6 +24,11 @@ public class RegisterRequest {
              message = "Password must contain at least one letter and one number")
     private String password;
 
-    @Pattern(regexp = "^[6-9]\\d{9}$", message = "Please provide a valid 10-digit Indian phone number")
+    @Pattern(regexp = "^$|^(?:\\+91|0)?[\\s-]?[6-9](?:[\\s-]?\\d){9}$",
+             message = "Please provide a valid 10-digit Indian phone number (e.g. 9876543210 or +91 9876543210)")
     private String phone;
+
+    public void setPhone(String phone) {
+        this.phone = phone != null ? phone.trim() : null;
+    }
 }

@@ -26,6 +26,7 @@
 | **ISS-06** | WhatsApp Webhook URL Ambiguity Across Documentation | **P2** | **Confirmed** | Backend / WhatsApp | `WhatsAppWebhookController.java:12` |
 | **ISS-07** | Render PostgreSQL URL Normalization for HikariCP | **P0** | **Confirmed (Fixed)** | Deployment / DB | `DatabaseEnvironmentPostProcessor.java` |
 | **ISS-08** | Inescapable Back-Forward Cache Redirect Loop on Cart Page | **P2** | **Confirmed (Fixed)** | Frontend / UX | `cart.js:7-12` & `login.html:188` |
+| **ISS-09** | Kaveri Club Registration Displays "Validation failed" | **P1** | **Confirmed (Fixed)** | Auth / Validation | `RegisterRequest.java`, `GlobalExceptionHandler.java`, `register.html` |
 
 ---
 
@@ -150,3 +151,27 @@
 - **Evidence**: Controller mapped to `@RequestMapping("/api/whatsapp/webhook")`, while some deployment documentation mentions `/api/webhook/whatsapp`.
 - **Recommended Fix**: Map both routes `@RequestMapping({"/api/whatsapp/webhook", "/api/webhook/whatsapp"})` and update `SecurityConfig.java` to permit both.
 - **Test Required**: Webhook challenge GET verification on both paths.
+
+---
+
+### [ISS-09] Kaveri Club Registration Displays Generic "Validation failed"
+- **Severity**: P1 (High)
+- **Status**: Confirmed (Fixed)
+- **Category**: Auth / Validation / UX
+- **Files**:
+  - [`src/main/java/com/kaveri/dto/request/RegisterRequest.java`](file:///Users/anirudhsingh/Downloads/programing/res/foodnest/src/main/java/com/kaveri/dto/request/RegisterRequest.java)
+  - [`src/main/java/com/kaveri/service/impl/AuthServiceImpl.java`](file:///Users/anirudhsingh/Downloads/programing/res/foodnest/src/main/java/com/kaveri/service/impl/AuthServiceImpl.java)
+  - [`src/main/java/com/kaveri/exception/GlobalExceptionHandler.java`](file:///Users/anirudhsingh/Downloads/programing/res/foodnest/src/main/java/com/kaveri/exception/GlobalExceptionHandler.java)
+  - [`src/main/resources/static/register.html`](file:///Users/anirudhsingh/Downloads/programing/res/foodnest/src/main/resources/static/register.html)
+  - [`src/test/java/com/kaveri/controller/AuthControllerTest.java`](file:///Users/anirudhsingh/Downloads/programing/res/foodnest/src/test/java/com/kaveri/controller/AuthControllerTest.java)
+- **Evidence & Root Causes**:
+  1. **Strict Phone Number Regex vs Placeholder Mismatch**: `register.html` presented the placeholder `+91 9876543210`. If a user followed this format or entered an empty string `""` or included spaces/dashes/prefixes, `RegisterRequest`'s rigid regex `@Pattern(regexp = "^[6-9]\\d{9}$")` rejected it immediately.
+  2. **Uncommunicated Password Requirements**: Backend required at least one letter AND one number (`^(?=.*[a-zA-Z])(?=.*\\d).+$`), but the frontend label only noted `(min 8 characters)`. Passwords without digits failed server validation.
+  3. **Opaque Error Masking in GlobalExceptionHandler**: `GlobalExceptionHandler.handleValidationErrors` hardcoded `message: "Validation failed"`.
+  4. **Frontend Error Display**: `register.html` only printed `responseData.message`, completely hiding the underlying field errors and validation guidance.
+- **Resolution**:
+  1. Updated `RegisterRequest` phone regex to allow standard 10-digit mobile, `+91` prefix, `0` prefix, optional spacing/hyphens, and empty/blank strings (`^$|^(?:\\+91|0)?[\\s-]?[6-9](?:[\\s-]?\\d){9}$`).
+  2. Implemented phone normalization in `AuthServiceImpl` to cleanly format stored phone numbers to 10 digits.
+  3. Enhanced `GlobalExceptionHandler` to compile human-readable, specific field error messages in `response.message` while maintaining the structured field error map in `response.data`.
+  4. Upgraded `register.html` with explicit password rules, password visibility toggle, pre-submission client-side validation, field-level `.invalid-feedback` and `.is-invalid` highlighting, and live input error clearing.
+  5. Added comprehensive regression tests in `AuthControllerTest` verifying +91, 0-prefix, empty phone, invalid phone, and password validation with specific error messages.

@@ -45,10 +45,21 @@ public class AuthServiceImpl implements AuthService {
         Role customerRole = roleRepository.findByName(RoleName.ROLE_CUSTOMER)
                 .orElseThrow(() -> new IllegalStateException("ROLE_CUSTOMER not found. Run data seeder first."));
 
+        String normalizedPhone = null;
+        if (request.getPhone() != null && !request.getPhone().isBlank()) {
+            String digits = request.getPhone().replaceAll("[^0-9]", "");
+            if (digits.length() == 12 && digits.startsWith("91")) {
+                digits = digits.substring(2);
+            } else if (digits.length() == 11 && digits.startsWith("0")) {
+                digits = digits.substring(1);
+            }
+            normalizedPhone = digits;
+        }
+
         User user = User.builder()
                 .name(request.getName().trim())
                 .email(request.getEmail().toLowerCase().trim())
-                .phone(request.getPhone())
+                .phone(normalizedPhone)
                 .password(passwordEncoder.encode(request.getPassword()))
                 .roles(Set.of(customerRole))
                 .enabled(true)
