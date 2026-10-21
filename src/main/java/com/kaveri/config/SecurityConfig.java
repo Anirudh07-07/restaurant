@@ -80,7 +80,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/payments/webhook").permitAll()
 
                 // Meta WhatsApp server-to-server Webhook (validated via verify_token & HMAC SHA-256)
-                .requestMatchers("/api/whatsapp/webhook").permitAll()
+                .requestMatchers("/api/whatsapp/webhook", "/api/webhook/whatsapp").permitAll()
 
                 // Public API endpoints
                 .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()

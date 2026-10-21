@@ -319,8 +319,7 @@
         Toast.success(`Thank you, ${payload.senderName}! Your message regarding "${payload.ventureDepartment}" has been sent. Our team will contact you shortly.`);
         form.reset();
       } catch (err) {
-        Toast.success(`Thank you, ${payload.senderName}! Your message regarding "${payload.ventureDepartment}" has been received. Our team will contact you shortly at ${payload.senderPhone}.`);
-        form.reset();
+        Toast.error(err.message || 'Could not send message. Please check your network connection or contact Kaveri directly at 0651 2330330.');
       } finally {
         if (submitBtn) {
           submitBtn.disabled = false;

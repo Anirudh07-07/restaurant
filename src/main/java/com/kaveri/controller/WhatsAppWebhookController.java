@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/whatsapp/webhook")
+@RequestMapping({"/api/whatsapp/webhook", "/api/webhook/whatsapp"})
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "WhatsApp Webhook", description = "Meta WhatsApp Business Platform Cloud API Webhook Integration")

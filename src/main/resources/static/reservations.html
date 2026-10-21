@@ -256,15 +256,23 @@
         const btn = document.getElementById('submitResBtn');
         btn.disabled = true;
 
+        if (!Auth.isLoggedIn()) {
+          Toast.warning('Please sign in to confirm and guarantee your table reservation');
+          const returnUrl = encodeURIComponent(window.location.pathname);
+          setTimeout(() => {
+            window.location.href = `/login.html?redirect=${returnUrl}`;
+          }, 1000);
+          btn.disabled = false;
+          return;
+        }
+
         try {
-          if (Auth.isLoggedIn()) {
-            await Api.post('/reservations', { reservationDate, reservationTime, numberOfGuests, specialRequest });
-          }
+          await Api.post('/reservations', { reservationDate, reservationTime, numberOfGuests, specialRequest });
           Toast.success('Table reserved successfully! Kaveri hostess has registered your booking.');
           document.getElementById('resSpecialRequest').value = '';
-          if (Auth.isLoggedIn()) await loadMyReservations();
+          await loadMyReservations();
         } catch (err) {
-          Toast.success('Table reservation request received! We look forward to serving you.');
+          Toast.error(err.message || 'Could not complete table reservation. Please select a different time or date.');
         } finally {
           btn.disabled = false;
         }

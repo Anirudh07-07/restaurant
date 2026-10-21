@@ -332,20 +332,55 @@
     document.getElementById('submitReviewForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const form = e.target;
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Submit Review';
+
+      if (!Auth.isLoggedIn()) {
+        Toast.warning('Please log in to submit an official guest review');
+        const returnUrl = encodeURIComponent(window.location.pathname);
+        setTimeout(() => {
+          window.location.href = `/login.html?redirect=${returnUrl}`;
+        }, 1000);
+        return;
+      }
+
+      const ratingVal = parseInt(form.rating.value);
+      if (isNaN(ratingVal) || ratingVal < 1 || ratingVal > 5) {
+        Toast.warning('Please select a star rating between 1 and 5');
+        return;
+      }
+
+      const reviewerName = form.reviewerName ? form.reviewerName.value.trim() : 'Guest';
+      const venture = form.ventureVisited ? form.ventureVisited.value : 'Kaveri Restaurant';
+      const reviewText = form.reviewText ? form.reviewText.value.trim() : '';
+
+      if (!reviewText) {
+        Toast.warning('Please write a brief comment describing your dining experience');
+        return;
+      }
+
       const data = {
-        rating: parseInt(form.rating.value),
-        comment: `${form.ventureVisited.value}: ${form.reviewText.value}`
+        foodItemId: null,
+        rating: ratingVal,
+        comment: `[${venture}] ${reviewText}`
       };
 
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Submitting...';
+      }
+
       try {
-        if (Auth.isLoggedIn()) {
-          await Api.post('/reviews/restaurant', data);
-        }
-        Toast.success(`Thank you, ${form.reviewerName.value}! Your review has been submitted and will appear on the wall after verification.`);
+        await Api.post('/reviews/restaurant', data);
+        Toast.success(`Thank you, ${reviewerName}! Your review has been submitted and registered with Kaveri management.`);
         form.reset();
       } catch (err) {
-        Toast.success(`Thank you, ${form.reviewerName.value}! Your review has been received by Kaveri management.`);
-        form.reset();
+        Toast.error(err.message || 'Could not submit review. Please try again.');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
+        }
       }
     });
   </script>

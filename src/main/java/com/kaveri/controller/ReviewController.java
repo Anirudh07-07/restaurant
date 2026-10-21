@@ -52,6 +52,17 @@ public class ReviewController {
                 .body(ApiResponse.success(reviewService.createReview(request), "Review submitted"));
     }
 
+    @PostMapping("/restaurant")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Submit a restaurant review")
+    public ResponseEntity<ApiResponse<ReviewResponse>> createRestaurantReview(
+            @Valid @RequestBody ReviewRequest request) {
+        request.setFoodItemId(null);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(reviewService.createReview(request), "Restaurant review submitted"));
+    }
+
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('CUSTOMER')")
     @SecurityRequirement(name = "bearerAuth")

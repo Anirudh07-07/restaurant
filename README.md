@@ -1,368 +1,105 @@
-# 🍽️ FoodNest — Restaurant Management & Online Food Ordering System
+# 🍽️ Kaveri Restaurant Group — Enterprise Food Ordering & Management Platform
 
-> **A production-quality, full-stack Restaurant Management System built with Spring Boot 3, Java 21, MySQL, and Bootstrap 5. Designed as a portfolio-grade project showcasing clean architecture, JWT security, payment integration, and a premium UI.**
+> **A production-ready, full-stack Restaurant Management, Online Food Ordering, and Digital Operations Platform built with Spring Boot 3, Java 21 LTS, PostgreSQL 18 / MySQL, and Bootstrap 5. Features enterprise multi-tier security, sliding-window rate limiting, Razorpay payment gateway integration, and real-time Meta WhatsApp Business Cloud API two-way status synchronization.**
+
+[![Build & Test](https://img.shields.io/badge/tests-56%20passed-brightgreen.svg)](#-automated-testing)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.4-6DB33F.svg?logo=springboot)](https://spring.io/projects/spring-boot)
+[![Java](https://img.shields.io/badge/Java-21%20LTS-ED8B00.svg?logo=openjdk)](https://openjdk.org/)
+[![Database](https://img.shields.io/badge/PostgreSQL-18%20Managed-4169E1.svg?logo=postgresql)](https://www.postgresql.org/)
+[![Live Status](https://img.shields.io/badge/Production-Live%20on%20Render-46E3B7.svg)](https://kaveri-restaurant.onrender.com)
 
 ---
 
-## 🚀 Live Features
+## 🌐 Live Production Deployment
 
-### Customer Features
-- ✅ Register & Login (JWT Authentication)
-- ✅ Browse full menu with beautiful food cards
-- ✅ Search food by name/description
-- ✅ Filter by category, vegetarian, spicy, price range
-- ✅ Sort by price, rating, creation date
-- ✅ Paginated results (no full table scans)
-- ✅ View detailed food page with reviews
-- ✅ Add to cart / Update quantity / Remove items
-- ✅ Delivery fee calculation (FREE above ₹500)
-- ✅ Tax calculation (5%)
-- ✅ Save multiple delivery addresses
-- ✅ Set default address
-- ✅ Place orders (COD or Online Payment)
-- ✅ Razorpay payment integration (server-side signature verification)
-- ✅ Order tracking with visual timeline
-- ✅ Order history
-- ✅ Cancel orders (PLACED/CONFIRMED status)
-- ✅ Table reservations with slot management
-- ✅ Submit food & restaurant reviews (1-5 stars)
-- ✅ Edit & delete own reviews
-- ✅ In-app notifications
-- ✅ Profile management
+- **Public Storefront**: [https://kaveri-restaurant.onrender.com](https://kaveri-restaurant.onrender.com)
+- **Digital Menu (242 Delicacies)**: [https://kaveri-restaurant.onrender.com/menu.html](https://kaveri-restaurant.onrender.com/menu.html)
+- **Actuator Health Probe**: [https://kaveri-restaurant.onrender.com/actuator/health](https://kaveri-restaurant.onrender.com/actuator/health)
+- **Kitchen Admin Console**: [https://kaveri-restaurant.onrender.com/admin/dashboard.html](https://kaveri-restaurant.onrender.com/admin/dashboard.html)
 
-### Admin Features
-- ✅ Secure admin dashboard with KPI stats
-- ✅ Add / Edit / Delete food items
-- ✅ Upload food images
-- ✅ Toggle food availability
-- ✅ Manage food categories (CRUD)
-- ✅ View all orders with search & filter
-- ✅ Update order status (full lifecycle)
-- ✅ View and manage customers (enable/disable)
-- ✅ View & manage table reservations
-- ✅ Confirm / Reject / Complete reservations
-- ✅ Moderate reviews
+---
+
+## 🚀 Key Feature Highlights
+
+### 🛒 Customer Storefront & Ordering
+- **Dual-Mode Digital Menu**: Fast toggle between Traditional Restaurant List Menu and Visual Food Cards.
+- **Client & Server Search**: 180ms debounced search with category filter tabs and veg/spicy pills.
+- **Secure Shopping Bag & Checkout**: Server-calculated taxes (5%), delivery fees (free over ₹500), and delivery addresses.
+- **Razorpay Payments**: End-to-end payment order creation, client checkout signature verification, and automated refunds on cancellation. Includes an embedded sandbox mock simulator for zero-cost demos.
+- **Table Reservations**: Date/time slot booking with party size validation and maximum 10-simultaneous reservation slot capacity limits.
+- **Customer Order Timeline**: Real-time order progress tracking with visual timestamps.
+- **In-App & WhatsApp Notifications**: Status alerts dispatched when kitchen accepts, cooks, dispatches, or delivers food.
+
+### 👨‍🍳 Kitchen Maker & WhatsApp Operations
+- **Two-Way Meta WhatsApp Cloud Synchronization**:
+  - Outbound interactive button alerts sent to the kitchen maker when a customer places an order.
+  - Makers can tap **Accept**, **Cook**, **Ready**, **Dispatch**, or **Deliver** directly from WhatsApp to update order status.
+  - Customer receives matching WhatsApp template notifications automatically.
+- **Transactional Outbox Pattern**: Delivery attempts are recorded in `whatsapp_notification_logs` with exponential retries so failed network calls never roll back committed orders.
+- **Webhook Idempotency**: `whatsapp_webhook_events` ensures incoming webhook retries from Meta are processed strictly once.
+
+### 🛡️ Multi-Tier Security Perimeter
+- **Sliding-Window IP Rate Limiter**: Protects auth endpoints (10/min), payments (15/min), and public forms (120/min), returning `HTTP 429 Too Many Requests` with `Retry-After: 60`.
+- **Strict Security Headers**: Enforces Content-Security-Policy (CSP), HSTS (`max-age=31536000`), `X-Frame-Options: SAMEORIGIN`, and `X-Content-Type-Options: nosniff`.
+- **Synchronous Admin Guard**: Prevents unauthenticated access or UI layout leaks across administrative pages before DOM rendering.
+- **IDOR Protection**: Order queries and payment verifications validate that the caller's JWT identity owns the targeted records.
 
 ---
 
 ## 🛠️ Technology Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Backend Language | Java 21 |
-| Framework | Spring Boot 3.3.4 |
-| Security | Spring Security 6 + JWT (JJWT 0.12.6) |
-| Database | MySQL 8.0 |
-| ORM | Spring Data JPA / Hibernate |
-| Validation | Jakarta Bean Validation |
-| Payment | Razorpay Java SDK |
-| API Docs | SpringDoc OpenAPI (Swagger UI) |
-| Build | Maven |
-| Utilities | Lombok, MapStruct |
-| Frontend | HTML5, CSS3, JavaScript (Vanilla), Bootstrap 5 |
-| Icons | Font Awesome 6 |
-| Fonts | Google Fonts (Playfair Display, Inter) |
-| Maps | OpenStreetMap |
-| Containers | Docker, Docker Compose |
-| Testing | JUnit 5, Mockito, Spring Boot Test |
+| Layer | Technologies |
+| :--- | :--- |
+| **Backend Framework** | Spring Boot 3.3.4 on Java 21 LTS |
+| **Persistence / ORM** | Spring Data JPA / Hibernate 6.5.3 |
+| **Production Database** | Managed PostgreSQL 18 (Render Cloud DB) |
+| **Development Database** | PostgreSQL, MySQL 8.0, or H2 In-Memory |
+| **Security & Auth** | Spring Security 6, JJWT 0.12.5 (HMAC-SHA256) |
+| **Payment Gateway** | Razorpay Java SDK 1.4.3 + Webhooks |
+| **Messaging Integration** | Meta WhatsApp Business Platform Cloud API (Graph API v20.0) |
+| **Frontend** | HTML5, CSS3, ES6 JavaScript, Bootstrap 5.3.2, FontAwesome 6 |
+| **Testing** | JUnit 5, Mockito, Spring Boot Test, MockMvc (56 tests) |
+| **Containerization** | Docker multi-stage build (`eclipse-temurin:21-jre-alpine`) |
 
 ---
 
-## 🏗️ Architecture
-
-```
-src/main/java/com/foodnest/foodnest/
-├── config/           # SecurityConfig, OpenApiConfig, WebConfig, DataSeeder
-├── controller/       # REST Controllers (thin, no business logic)
-├── service/          # Service interfaces
-│   └── impl/         # Service implementations (all business logic here)
-├── repository/       # Spring Data JPA repositories
-├── entity/           # JPA entities
-├── dto/
-│   ├── request/      # Incoming request DTOs with validation
-│   └── response/     # Outgoing response DTOs (no entity exposure)
-├── security/
-│   ├── filter/       # JwtAuthenticationFilter
-│   └── service/      # JwtService, CustomUserDetailsService
-├── exception/        # Custom exceptions + GlobalExceptionHandler
-├── enums/            # OrderStatus, PaymentStatus, ReservationStatus, etc.
-└── util/             # SecurityUtils
-```
-
-**Clean Architecture Principles:**
-- No business logic in controllers
-- No JPA entities exposed via API
-- All prices fetched from DB (never trusted from frontend)
-- Ownership checks in service layer
-
----
-
-## 🗄️ Database Schema
-
-**Tables:** users, roles, user_roles, categories, food_items, carts, cart_items, addresses, orders, order_items, payments, reservations, reviews, notifications
-
-**Key Design Decisions:**
-- `order_items` stores food name & price snapshots → historical accuracy preserved
-- `orders.delivery_address` stores address snapshot → orders don't break if address deleted
-- Indexed: email, food category, order status, reservation date, notification read-status
-- BCrypt for all passwords — plain-text NEVER stored
-
----
-
-## 📡 API Endpoints
-
-### Authentication
-```
-POST /api/auth/register    Register new customer
-POST /api/auth/login       Login and get JWT token
-```
-
-### Menu (Public)
-```
-GET  /api/menu             All food (paginated)
-GET  /api/menu/{id}        Food detail
-GET  /api/menu/search      Search & filter (keyword, category, price, veg, spicy)
-GET  /api/menu/category/{id}  By category
-GET  /api/menu/top-rated   Top rated dishes
-GET  /api/categories        All categories
-```
-
-### Cart (CUSTOMER)
-```
-GET    /api/cart                Get my cart
-POST   /api/cart/items          Add item
-PUT    /api/cart/items/{id}     Update quantity
-DELETE /api/cart/items/{id}     Remove item
-DELETE /api/cart                Clear cart
-```
-
-### Orders (CUSTOMER)
-```
-POST   /api/orders              Place order
-GET    /api/orders              My order history
-GET    /api/orders/{id}         Order detail
-PATCH  /api/orders/{id}/cancel  Cancel order
-```
-
-### Payments (CUSTOMER)
-```
-POST /api/payments/create/{orderId}  Create Razorpay order
-POST /api/payments/verify            Verify payment signature
-```
-
-### Addresses (CUSTOMER)
-```
-GET    /api/addresses           My addresses
-POST   /api/addresses           Add address
-PUT    /api/addresses/{id}      Update address
-DELETE /api/addresses/{id}      Delete address
-PATCH  /api/addresses/{id}/set-default  Set as default
-```
-
-### Reservations (CUSTOMER)
-```
-POST  /api/reservations         Make reservation
-GET   /api/reservations         My reservations
-PATCH /api/reservations/{id}/cancel  Cancel
-```
-
-### Reviews (Public GET, CUSTOMER POST)
-```
-GET  /api/reviews/food/{id}     Food reviews (public)
-GET  /api/reviews/restaurant    Restaurant reviews (public)
-POST /api/reviews               Submit review
-PUT  /api/reviews/{id}          Update review
-DELETE /api/reviews/{id}        Delete review
-```
-
-### Admin (ADMIN only)
-```
-GET  /api/admin/dashboard
-GET  /api/admin/orders?keyword=&status=
-PATCH /api/admin/orders/{id}/status?status=
-POST  /api/admin/menu
-PUT   /api/admin/menu/{id}
-DELETE /api/admin/menu/{id}
-POST  /api/admin/menu/{id}/image (multipart)
-PATCH /api/admin/menu/{id}/toggle-availability
-GET/POST/PUT/DELETE /api/admin/categories
-GET  /api/admin/users
-PATCH /api/admin/users/{id}/toggle-status
-GET  /api/admin/reservations
-PATCH /api/admin/reservations/{id}/status
-GET  /api/admin/reviews
-DELETE /api/admin/reviews/{id}
-```
-
----
-
-## ⚙️ Setup & Running Locally
+## 🏃 Local Quickstart & Development
 
 ### Prerequisites
-- Java 21+
-- Maven 3.8+
-- MySQL 8.0+
-- (Optional) Docker & Docker Compose
+- **JDK 21 LTS** (`JAVA_HOME=/opt/homebrew/opt/openjdk@21` on macOS)
+- **Maven 3.9+**
 
-### 1. Clone & Configure
-
+### 1. Run in In-Memory H2 Mode (Zero DB Setup Required)
 ```bash
-git clone https://github.com/yourusername/foodnest.git
 cd foodnest
-
-# Copy env example and fill in values
-cp .env.example .env
+mvn spring-boot:run -Dspring-boot.run.profiles=h2
 ```
+Access the application locally at: **`http://localhost:8080`**
 
-### 2. Create MySQL Database
+### 2. Default Seeded Credentials
+- **Admin**: `admin@thekaveri.com` / `Admin@1234`
+- **Customer**: `customer@thekaveri.com` / `Customer@1234`
 
-```sql
-CREATE DATABASE foodnest;
-```
+---
 
-### 3. Set Environment Variables
+## 🧪 Automated Testing
 
+Run the full automated test suite (56 tests / 0 failures):
 ```bash
-export DATABASE_URL=jdbc:mysql://localhost:3306/foodnest?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-export DATABASE_USERNAME=root
-export DATABASE_PASSWORD=your_password
-export JWT_SECRET=your-minimum-32-character-secret-key
-export RAZORPAY_KEY_ID=your_razorpay_key_id
-export RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+cd foodnest
+JAVA_HOME=/opt/homebrew/opt/openjdk@21 mvn clean test
 ```
 
-### 4. Run the Application
-
-```bash
-mvn spring-boot:run
-```
-
-Access at: **http://localhost:8080**
-
-API Docs: **http://localhost:8080/swagger-ui.html**
+See [`docs/TESTING.md`](docs/TESTING.md) for full test matrix and coverage details.
 
 ---
 
-## 🐳 Docker Setup
+## ☁️ Production Deployment
 
-```bash
-# Set required env vars or edit docker-compose.yml
-docker compose up --build
-```
+### 1-Click Render Blueprint Deployment
+The repository includes a ready-to-run [`render.yaml`](render.yaml) Blueprint:
+1. Connect your GitHub repository to [dashboard.render.com](https://dashboard.render.com).
+2. Create a **New Blueprint Instance**, select branch `client/kaveri`.
+3. Render automatically provisions the PostgreSQL database (`kaveridb`), builds the Docker container, wires environment credentials, and publishes your HTTPS URL.
 
-Access at: **http://localhost:8080**
-
----
-
-## 🌱 Default Credentials (Seeded on Startup)
-
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@foodnest.com | Admin@1234 |
-| Customer | customer@foodnest.com | Customer@1234 |
-
-> **Change these immediately in production!**
-
----
-
-## 🧪 Running Tests
-
-```bash
-mvn test
-```
-
-Tests use H2 in-memory database — no MySQL required.
-
----
-
-## 🔒 Security
-
-- **JWT** stateless authentication
-- **BCrypt** password hashing (strength 10)
-- Role-based authorization (`ROLE_CUSTOMER`, `ROLE_ADMIN`)
-- Customers can ONLY access their own resources (enforced at service layer)
-- Admin endpoints completely isolated (`/api/admin/**`)
-- All prices re-fetched from DB at checkout (frontend price tampering impossible)
-- Razorpay HMAC SHA256 signature verified server-side
-- CORS configured
-- No sensitive data (passwords, JWT secrets) ever returned in API responses
-
----
-
-## 🌍 Environment Variables Reference
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `DATABASE_URL` | JDBC connection URL | ✅ |
-| `DATABASE_USERNAME` | DB username | ✅ |
-| `DATABASE_PASSWORD` | DB password | ✅ |
-| `JWT_SECRET` | Min 32-char secret key | ✅ |
-| `JWT_EXPIRATION` | Token TTL in ms (default: 86400000) | ❌ |
-| `RAZORPAY_KEY_ID` | Razorpay public key | ✅ (for online pay) |
-| `RAZORPAY_KEY_SECRET` | Razorpay secret key | ✅ (for online pay) |
-| `UPLOAD_DIR` | Image upload directory path | ❌ (default: uploads) |
-
----
-
-## 🗺️ Project Structure
-
-```
-foodnest/
-├── src/main/java/com/foodnest/foodnest/
-├── src/main/resources/
-│   ├── static/               # Frontend HTML/CSS/JS
-│   │   ├── index.html        # Homepage
-│   │   ├── menu.html         # Menu page
-│   │   ├── cart.html         # Cart page
-│   │   ├── checkout.html     # Checkout
-│   │   ├── orders.html       # Order history
-│   │   ├── food.html         # Food detail
-│   │   ├── reservations.html # Table reservations
-│   │   ├── profile.html      # User profile
-│   │   ├── login.html        # Login page
-│   │   ├── register.html     # Registration
-│   │   ├── about.html        # About page
-│   │   ├── contact.html      # Contact page
-│   │   ├── admin/
-│   │   │   └── dashboard.html # Admin panel
-│   │   ├── css/style.css     # Main stylesheet
-│   │   └── js/main.js        # Shared utilities
-│   └── application.properties
-├── src/test/java/
-├── Dockerfile
-├── docker-compose.yml
-├── .env.example
-├── .gitignore
-└── pom.xml
-```
-
----
-
-## 🔮 Future Improvements
-
-- [ ] Email notifications (Spring Mail)
-- [ ] Push notifications (WebSocket/Firebase)
-- [ ] Cloudinary image storage
-- [ ] Admin analytics charts (Chart.js)
-- [ ] Coupon/discount system
-- [ ] Loyalty points
-- [ ] Multiple restaurant support
-- [ ] Real-time order tracking (WebSocket)
-- [ ] Driver assignment system
-- [ ] Mobile app (Flutter)
-- [ ] CI/CD pipeline (GitHub Actions)
-- [ ] Rate limiting (Spring RateLimiter)
-- [ ] Redis caching for menu
-
----
-
-## 📄 License
-
-MIT License — free to use for portfolio, educational, and commercial projects.
-
----
-
-<p align="center">
-  <strong>Built with ❤️ using Spring Boot & Bootstrap 5</strong><br>
-  <em>FoodNest — Good Food. Great Moments.</em>
-</p>
+See [`deployment/DEPLOY_GUIDE.md`](deployment/DEPLOY_GUIDE.md) and [`docs/PRODUCTION_READINESS.md`](docs/PRODUCTION_READINESS.md) for complete production operations.
