@@ -166,18 +166,8 @@ const CartBadge = {
 // ---- Notification Badge ----
 const NotifBadge = {
     update: async () => {
-        if (!Auth.isLoggedIn()) return;
-        try {
-            const res = await Api.get('/notifications/unread-count');
-            const count = res.data || 0;
-            const badge = document.getElementById('notifBadge');
-            const btn = document.getElementById('notifBtn');
-            if (btn) btn.style.display = 'flex';
-            if (badge) {
-                badge.textContent = count;
-                badge.style.display = count > 0 ? 'flex' : 'none';
-            }
-        } catch (_) {}
+        // Disabled: prevents unnecessary background requests on page load / back navigation
+        return;
     }
 };
 
@@ -248,8 +238,11 @@ const FoodCard = {
 const CartActions = {
     addToCart: async (foodItemId, foodName) => {
         if (!Auth.isLoggedIn()) {
-            Toast.warning('Please login to add items to cart');
-            setTimeout(() => window.location.href = '/login.html', 1000);
+            Toast.warning('Please log in to add items to your bag');
+            const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
+            setTimeout(() => {
+                window.location.href = `/login.html?redirect=${returnUrl}`;
+            }, 800);
             return;
         }
         try {

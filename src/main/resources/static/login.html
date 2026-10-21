@@ -183,13 +183,21 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/main.js"></script>
 <script>
+  // Safe redirect if already authenticated (replaces history entry so Back button works naturally)
   if (typeof Auth !== 'undefined' && Auth.isLoggedIn()) {
     if (Auth.isAdmin()) {
-      window.location.href = '/admin/dashboard.html';
+      window.location.replace('/admin/dashboard.html');
     } else {
-      window.location.href = '/';
+      window.location.replace('/');
     }
   }
+
+  // Handle browser back-forward cache cleanly
+  window.addEventListener('pageshow', function(event) {
+    if (event.persisted && typeof Auth !== 'undefined' && Auth.isLoggedIn()) {
+      window.location.replace(Auth.isAdmin() ? '/admin/dashboard.html' : '/');
+    }
+  });
 
   document.getElementById('pwToggle').addEventListener('click', function() {
     const inp = document.getElementById('loginPassword');
@@ -239,12 +247,12 @@
         
         setTimeout(() => {
           if (responseData.data.role === 'ROLE_ADMIN') {
-            window.location.href = '/admin/dashboard.html';
+            window.location.replace('/admin/dashboard.html');
           } else {
             const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
-            window.location.href = redirect;
+            window.location.replace(redirect);
           }
-        }, 500);
+        }, 400);
       } else {
         errMsg.textContent = responseData.message || 'Invalid email or password.';
         errDiv.style.display = 'block';

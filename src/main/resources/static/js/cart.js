@@ -5,14 +5,39 @@
 // ===================================================
 
 document.addEventListener('DOMContentLoaded', async () => {
+    const listContainer = document.getElementById('cartItemsList');
+    const summaryContainer = document.getElementById('cartSummaryBox');
+
     if (!Auth.isLoggedIn()) {
-        Toast.warning('Please log in to view your cart.');
-        setTimeout(() => window.location.href = '/login.html', 1500);
+        renderLoginPrompt(listContainer, summaryContainer);
         return;
     }
 
     await loadCart();
 });
+
+function renderLoginPrompt(listContainer, summaryContainer) {
+    if (listContainer) {
+        listContainer.innerHTML = `
+            <div class="empty-state py-5 text-center">
+                <div class="empty-state-icon mb-3" style="font-size:3rem; color:var(--gold);"><i class="fas fa-user-lock"></i></div>
+                <h3 class="font-playfair fw-bold mb-2">Sign in to view your bag</h3>
+                <p class="text-muted mb-4">Please log in to your Kaveri account to view your cart items, review order totals, and checkout.</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="/login.html?redirect=/cart.html" class="btn btn-fn rounded-pill px-4">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </a>
+                    <a href="/menu.html" class="btn btn-outline-secondary rounded-pill px-4">
+                        <i class="fas fa-utensils me-2"></i>Explore Menu
+                    </a>
+                </div>
+            </div>
+        `;
+    }
+    if (summaryContainer) {
+        summaryContainer.innerHTML = '';
+    }
+}
 
 async function loadCart() {
     const listContainer = document.getElementById('cartItemsList');
